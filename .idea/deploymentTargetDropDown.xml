@@ -3,22 +3,6 @@
   <component name="deploymentTargetDropDown">
     <value>
       <entry key="TestActivity">
-        <State>
-          <runningDeviceTargetSelectedWithDropDown>
-            <Target>
-              <type value="RUNNING_DEVICE_TARGET" />
-              <deviceKey>
-                <Key>
-                  <type value="SERIAL_NUMBER" />
-                  <value value="RQCW703B0AT" />
-                </Key>
-              </deviceKey>
-            </Target>
-          </runningDeviceTargetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2024-02-22T20:45:29.053780600Z" />
-        </State>
-      </entry>
-      <entry key="TestActivity (1)">
         <State />
       </entry>
       <entry key="TestActivityRun">
