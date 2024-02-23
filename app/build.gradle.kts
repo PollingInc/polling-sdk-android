@@ -1,5 +1,6 @@
 plugins {
-    id("com.android.application")
+    // id("com.android.application") //for testing app
+    id("com.android.library") //for building
 }
 
 android {
@@ -20,8 +21,10 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+        //sourceCompatibility = JavaVersion.VERSION_1_8
+        //targetCompatibility = JavaVersion.VERSION_1_8
     }
     buildToolsVersion = "34.0.0"
 }
