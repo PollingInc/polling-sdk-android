@@ -25,7 +25,7 @@ public class WebViewDialog extends Dialog {
 
 
         StringBuffer buffer = new StringBuffer("https://demo.polling.com/sdk/available-surveys");
-        buffer.append("?customer_id="+ URLEncoder.encode("123"));
+        buffer.append("?customer_id="+ URLEncoder.encode("1200"));
         buffer.append("&api_key="+URLEncoder.encode("cli_wZJW1tH39TfUMbEumPLrDy15EXDqJA0a"));
 
         Log.d("TestActivity",buffer.toString());
@@ -36,3 +36,5 @@ public class WebViewDialog extends Dialog {
         //webView.loadUrl("https://demo.polling.com/sdk/available-surveys?customer_id=123&api_key=cli_wZJW1tH39TfUMbEumPLrDy15EXDqJA0a");
     }
 }
+
+
