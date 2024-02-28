@@ -5,6 +5,10 @@ import android.content.Context;
 
 
 /*
+
+EXAMPLE WEB VIEW
+https://demo.polling.com/sdk/available-surveys?customer_id=123&api_key=cli_wZJW1tH39TfUMbEumPLrDy15EXDqJA0a
+
 Available surveys
 GET     /api/sdk/surveys/available?customer_id=[ID]&api_key=cli_[KEY]
 WebView https://demo.polling.com/sdk/available-surveys
@@ -38,6 +42,11 @@ public class WebViewDialogHelper {
         });
     }
 
+    /*
+    public void showDialog(){
+        showDialog(dialog);
+    }
+    */
     public void showDialog(DialogRequest dialog)
     {
         showDialog(dialog.activity, currentUrl, dialog.customerId, dialog.apiKey);
@@ -49,10 +58,10 @@ public class WebViewDialogHelper {
         showDialog(this.dialog);
     }
 
-    //still needs some implementation to work like this, like overriding URL parameters
-    public void singleSurvey()
+
+    public void singleSurvey(int surveyId)
     {
-        this.currentUrl = "https://demo.polling.com/sdk/survey/";
+        this.currentUrl = "https://demo.polling.com/sdk/survey/" + surveyId;
         showDialog(this.dialog);
     }
 
