@@ -9,7 +9,7 @@ public class WebViewDialogHelper {
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                new WebViewDialog(activity).show();
+                new WebViewDialog(activity, "", "","").show();
             }
         });
     }

@@ -19,7 +19,7 @@ public class TestActivity extends Activity {
             @Override
             public void onClick(View v) {
                 // Show your WebViewDialog here
-                WebViewDialog webViewDialog = new WebViewDialog(TestActivity.this);
+                WebViewDialog webViewDialog = new WebViewDialog(TestActivity.this, "", "", "");
                 webViewDialog.show();
             }
         });

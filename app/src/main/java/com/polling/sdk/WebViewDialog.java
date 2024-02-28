@@ -4,14 +4,19 @@ import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.webkit.WebView;
-
-import android.util.Log;
 import java.net.URLEncoder;
 
 public class WebViewDialog extends Dialog {
+    private final String url;
+    private final String customerId;
+    private final String apiKey;
 
-    public WebViewDialog(Context context) {
+
+    public WebViewDialog(Context context, String url, String customerId, String apiKey) {
         super(context);
+        this.url = url;
+        this.customerId = customerId;
+        this.apiKey = apiKey;
     }
 
     @Override
@@ -23,17 +28,20 @@ public class WebViewDialog extends Dialog {
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setDomStorageEnabled(true);
 
+        webView.getSettings().setUseWideViewPort(true);
+        webView.getSettings().setLoadWithOverviewMode(true);
 
-        StringBuffer buffer = new StringBuffer("https://demo.polling.com/sdk/available-surveys");
-        buffer.append("?customer_id="+ URLEncoder.encode("1200"));
-        buffer.append("&api_key="+URLEncoder.encode("cli_wZJW1tH39TfUMbEumPLrDy15EXDqJA0a"));
+        //webView.getSettings().setTextZoom(percent);
 
-        Log.d("TestActivity",buffer.toString());
+        StringBuilder buffer = new StringBuilder(url);
+
+        if (customerId != null && !customerId.isEmpty() && apiKey != null && !apiKey.isEmpty()) {
+            buffer.append("?customer_id=").append(URLEncoder.encode(customerId));
+            buffer.append("&api_key=").append(URLEncoder.encode(apiKey));
+        }
+        //else ?
 
         webView.loadUrl(buffer.toString());
-
-
-        //webView.loadUrl("https://demo.polling.com/sdk/available-surveys?customer_id=123&api_key=cli_wZJW1tH39TfUMbEumPLrDy15EXDqJA0a");
     }
 }
 
