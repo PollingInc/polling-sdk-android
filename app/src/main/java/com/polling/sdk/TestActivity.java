@@ -15,13 +15,31 @@ public class TestActivity extends Activity {
 
         // Set a simple layout with a button
         setContentView(R.layout.activity_test);
+        Button buttonAvailableSurveys = findViewById(R.id.buttonAvailableSurveys);
+        Button buttonSingleSurvey = findViewById(R.id.buttonSingleSurvey);
+        Button buttonCompletedSurveys = findViewById(R.id.buttonCompletedSurveys);
 
-        Button testButton = findViewById(R.id.testButton);
-        testButton.setOnClickListener(new View.OnClickListener() {
+        // Set click listener for Available Surveys
+        buttonAvailableSurveys.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 newDialog().availableSurveys();
+            }
+        });
+
+        // Set click listener for Single Survey
+        buttonSingleSurvey.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                newDialog().singleSurvey("3875c65f-1e7a-411f-b8c3-be2ce19a9c6e");
+            }
+        });
+
+        // Set click listener for Completed Surveys
+        buttonCompletedSurveys.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                newDialog().completedSurveys();
             }
         });
     }

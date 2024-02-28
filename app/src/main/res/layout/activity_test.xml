@@ -3,10 +3,29 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <Button
-        android:id="@+id/testButton"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Open WebView Dialog"
-        android:layout_centerInParent="true"/>
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:layout_centerInParent="true">
+
+        <Button
+            android:id="@+id/buttonAvailableSurveys"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Available Surveys"/>
+
+        <Button
+            android:id="@+id/buttonSingleSurvey"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Single Survey"/>
+
+        <Button
+            android:id="@+id/buttonCompletedSurveys"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Completed Surveys"/>
+    </LinearLayout>
 </RelativeLayout>

@@ -59,7 +59,7 @@ public class WebViewDialogHelper {
     }
 
 
-    public void singleSurvey(int surveyId)
+    public void singleSurvey(String surveyId)
     {
         this.currentUrl = "https://demo.polling.com/sdk/survey/" + surveyId;
         showDialog(this.dialog);
