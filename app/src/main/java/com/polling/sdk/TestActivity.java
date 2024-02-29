@@ -44,9 +44,6 @@ public class TestActivity extends AppCompatActivity {
             }
         });
 
-
-
-
         // Set click listener for Single Survey
         buttonSingleSurveyDialog.setOnClickListener(new View.OnClickListener() {
             @Override

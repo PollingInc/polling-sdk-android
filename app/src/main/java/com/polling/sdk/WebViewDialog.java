@@ -24,7 +24,7 @@ public class WebViewDialog extends Dialog {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dialog_webview);
 
-        WebView webView = WebViewConfigs.ApplyDefault(findViewById(R.id.webview));
+        WebView webView = WebViewConfigs.applyDefault(findViewById(R.id.webview));
 
         StringBuilder buffer = new StringBuilder(url);
 

@@ -31,7 +31,7 @@ public class WebViewBottom extends BottomSheetDialogFragment
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
     {
         View v = inflater.inflate(R.layout.fragment_bottom_sheet_webview, container, false);
-        WebView webView = WebViewConfigs.ApplyDefault(v.findViewById(R.id.webview));
+        WebView webView = WebViewConfigs.applyDefault(v.findViewById(R.id.webview));
 
         StringBuilder buffer = new StringBuilder(url);
 

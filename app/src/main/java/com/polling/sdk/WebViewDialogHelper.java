@@ -1,7 +1,6 @@
 package com.polling.sdk;
 
 import android.app.Activity;
-import android.content.Context;
 
 
 /*
@@ -10,16 +9,16 @@ EXAMPLE WEB VIEW
 https://demo.polling.com/sdk/available-surveys?customer_id=123&api_key=cli_wZJW1tH39TfUMbEumPLrDy15EXDqJA0a
 
 Available surveys
-GET     /api/sdk/surveys/available?customer_id=[ID]&api_key=cli_[KEY]
-WebView https://demo.polling.com/sdk/available-surveys
+GET     https://demo-api.polling.com/api/sdk/surveys/available?customer_id=[ID]&api_key=cli_[KEY]
+WebView https://demo.polling.com/sdk/available-surveys?customer_id=[ID]&api_key=cli_[KEY]
 
 Specific survey
-GET     /api/sdk/surveys/[UUID]?customer_id={ID}&api_key=cli_[KEY]
-WebView https://demo.polling.com/sdk/survey/[uuid]
+GET     https://demo-api.polling.com/api/sdk/surveys/[UUID]?customer_id={ID}&api_key=cli_[KEY]
+WebView https://demo.polling.com/sdk/survey/[uuid]?customer_id=[ID]&api_key=cli_[KEY]
 
 Completed surveys:
-GET     /api/sdk/surveys/completed?customer_id=[ID]&api_key=cli_[KEY]
-WebView https://demo-api.polling.com/api/sdk/surveys/completed
+GET     https://demo-api.polling.com/api/sdk/surveys/completed?customer_id=[ID]&api_key=cli_[KEY]
+
 */
 
 public class WebViewDialogHelper {

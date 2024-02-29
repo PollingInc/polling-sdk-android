@@ -4,7 +4,7 @@ import android.webkit.WebView;
 
 public class WebViewConfigs
 {
-    public static WebView ApplyDefault(WebView webView)
+    public static WebView applyDefault(WebView webView)
     {
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setDomStorageEnabled(true);
