@@ -24,14 +24,7 @@ public class WebViewDialog extends Dialog {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dialog_webview);
 
-        WebView webView = findViewById(R.id.webview);
-        webView.getSettings().setJavaScriptEnabled(true);
-        webView.getSettings().setDomStorageEnabled(true);
-
-        webView.getSettings().setUseWideViewPort(true);
-        webView.getSettings().setLoadWithOverviewMode(true);
-
-        //webView.getSettings().setTextZoom(percent);
+        WebView webView = WebViewConfigs.ApplyDefault(findViewById(R.id.webview));
 
         StringBuilder buffer = new StringBuilder(url);
 

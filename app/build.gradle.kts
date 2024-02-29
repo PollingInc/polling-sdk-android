@@ -1,6 +1,6 @@
 plugins {
-    // id("com.android.application") //for testing app
-    id("com.android.library") //for building
+    id("com.android.application") //for testing app
+    //id("com.android.library") //for building
 }
 
 android {
@@ -30,5 +30,8 @@ android {
 }
 
 dependencies {
-    // ... (dependencies remain unchanged)
+    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+    implementation("androidx.appcompat:appcompat:1.6.1")
+    implementation("com.google.android.material:material:1.11.0")
 }
+

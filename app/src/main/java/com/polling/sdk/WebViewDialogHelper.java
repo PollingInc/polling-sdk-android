@@ -42,11 +42,6 @@ public class WebViewDialogHelper {
         });
     }
 
-    /*
-    public void showDialog(){
-        showDialog(dialog);
-    }
-    */
     public void showDialog(DialogRequest dialog)
     {
         showDialog(dialog.activity, currentUrl, dialog.customerId, dialog.apiKey);
