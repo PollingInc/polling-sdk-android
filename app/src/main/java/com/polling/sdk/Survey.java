@@ -2,42 +2,32 @@ package com.polling.sdk;
 
 public class Survey
 {
-    DialogRequest dialog;
+    RequestIdentification requestIdentification;
 
-    public Survey(DialogRequest dialog)
+    public Survey(RequestIdentification requestIdentification)
     {
-        this.dialog = dialog;
+        this.requestIdentification = requestIdentification;
     }
-    public void availableSurvey()
+    public void availableSurvey(WebRequestHandler.ResponseCallback responseCallbacks)
     {
         String url = "https://demo-api.polling.com/api/sdk/surveys/available";
-        requestSurvey(url);
+        requestSurvey(url, responseCallbacks);
     }
 
-    public void singleSurvey(String surveyId)
+    public void singleSurvey(String surveyId, WebRequestHandler.ResponseCallback responseCallbacks)
     {
         String url = "https://demo-api.polling.com/api/sdk/surveys/" + surveyId;
-        requestSurvey(url);
+        requestSurvey(url, responseCallbacks);
     }
 
-    public void completedSurveys()
+    public void completedSurveys(WebRequestHandler.ResponseCallback responseCallbacks)
     {
         String url = "https://demo-api.polling.com/api/sdk/surveys/completed";
-        requestSurvey(url);
+        requestSurvey(url, responseCallbacks);
     }
 
-    private void requestSurvey(String url)
+    private void requestSurvey(String url, WebRequestHandler.ResponseCallback responseCallbacks)
     {
-        WebRequestHandler.makeRequest(url, WebRequestType.GET, null, new WebRequestHandler.ResponseCallback() {
-            @Override
-            public void onResponse(String response) {
-                // Handle response
-            }
-
-            @Override
-            public void onError(String error) {
-                // Handle error
-            }
-        });
+        WebRequestHandler.makeRequest(url, WebRequestType.GET, null,responseCallbacks);
     }
 }
