@@ -28,7 +28,7 @@ public class TestActivity extends AppCompatActivity {
         Button buttonCompletedSurveysBottom = findViewById(R.id.buttonCompletedSurveysBottom);
 
 
-        // Set click listener for Available Surveys
+        //Available Surveys
         buttonAvailableSurveysDialog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -44,7 +44,7 @@ public class TestActivity extends AppCompatActivity {
             }
         });
 
-        // Set click listener for Single Survey
+        //Single Survey
         buttonSingleSurveyDialog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -52,7 +52,7 @@ public class TestActivity extends AppCompatActivity {
             }
         });
 
-        // Set click listener for Completed Surveys
+        //Completed Surveys
         buttonCompletedSurveysDialog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -63,12 +63,20 @@ public class TestActivity extends AppCompatActivity {
 
     private WebViewDialogHelper newDialog()
     {
-        DialogRequest dialogRequest = new DialogRequest();
-        dialogRequest.activity = TestActivity.this;
+
+        Activity activity = TestActivity.this;
 
         int random = new Random().nextInt(1000);
-        dialogRequest.customerId = String.valueOf(random);
-        dialogRequest.apiKey = "cli_wZJW1tH39TfUMbEumPLrDy15EXDqJA0a";
+        String customerId = String.valueOf(random);
+        String apiKey = "cli_wZJW1tH39TfUMbEumPLrDy15EXDqJA0a";
+
+        DialogRequest dialogRequest = new DialogRequest
+        (
+            activity,
+            customerId,
+            apiKey
+        );
+
 
         return new WebViewDialogHelper(dialogRequest);
     }
@@ -79,6 +87,8 @@ public class TestActivity extends AppCompatActivity {
         String customerId = String.valueOf(random);
         String apiKey = "cli_wZJW1tH39TfUMbEumPLrDy15EXDqJA0a";
 
-        return new WebViewBottom(url, customerId, apiKey);
+        RequestIdentification requestIdentification = new RequestIdentification(customerId, apiKey);
+
+        return new WebViewBottom(url, requestIdentification);
     }
 }

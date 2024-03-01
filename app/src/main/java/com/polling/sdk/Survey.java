@@ -2,7 +2,6 @@ package com.polling.sdk;
 
 public class Survey
 {
-
     DialogRequest dialog;
 
     public Survey(DialogRequest dialog)
@@ -12,6 +11,18 @@ public class Survey
     public void availableSurvey()
     {
         String url = "https://demo-api.polling.com/api/sdk/surveys/available";
+        requestSurvey(url);
+    }
+
+    public void singleSurvey(String surveyId)
+    {
+        String url = "https://demo-api.polling.com/api/sdk/surveys/" + surveyId;
+        requestSurvey(url);
+    }
+
+    public void completedSurveys()
+    {
+        String url = "https://demo-api.polling.com/api/sdk/surveys/completed";
         requestSurvey(url);
     }
 

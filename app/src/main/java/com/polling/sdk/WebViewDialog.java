@@ -7,6 +7,7 @@ import android.webkit.WebView;
 import java.net.URLEncoder;
 
 public class WebViewDialog extends Dialog {
+    /*
     private final String url;
     private final String customerId;
     private final String apiKey;
@@ -18,6 +19,16 @@ public class WebViewDialog extends Dialog {
         this.customerId = customerId;
         this.apiKey = apiKey;
     }
+    */
+    public final DialogRequest dialog;
+    public final String url;
+
+    public WebViewDialog(String url, DialogRequest dialog)
+    {
+        super(dialog.activity);
+        this.url = url;
+        this.dialog = dialog;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,15 +37,9 @@ public class WebViewDialog extends Dialog {
 
         WebView webView = WebViewConfigs.applyDefault(findViewById(R.id.webview));
 
-        StringBuilder buffer = new StringBuilder(url);
+        String endpoint = dialog.ApplyKeyToURL(url);
+        webView.loadUrl(endpoint);
 
-        if (customerId != null && !customerId.isEmpty() && apiKey != null && !apiKey.isEmpty()) {
-            buffer.append("?customer_id=").append(URLEncoder.encode(customerId));
-            buffer.append("&api_key=").append(URLEncoder.encode(apiKey));
-        }
-        //else ?
-
-        webView.loadUrl(buffer.toString());
     }
 }
 

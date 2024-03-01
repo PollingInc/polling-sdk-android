@@ -2,9 +2,18 @@ package com.polling.sdk;
 
 import android.app.Activity;
 
-public class DialogRequest
+public class DialogRequest extends RequestIdentification
 {
     public Activity activity;
-    public String customerId;
-    public String apiKey;
+
+    public DialogRequest(Activity activity, String customerId, String apiKey)
+    {
+        super(customerId, apiKey);
+        this.activity = activity;
+    }
+
+
+
+
+
 }

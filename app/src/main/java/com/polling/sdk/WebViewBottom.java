@@ -12,13 +12,11 @@ import java.net.URLEncoder;
 public class WebViewBottom extends BottomSheetDialogFragment
 {
     private final String url;
-    private final String customerId;
-    private final String apiKey;
+    private final RequestIdentification requestIdentification;
 
-    public WebViewBottom(String url, String customerId, String apiKey) {
+    public WebViewBottom(String url,RequestIdentification requestIdentification) {
         this.url = url;
-        this.customerId = customerId;
-        this.apiKey = apiKey;
+        this.requestIdentification = requestIdentification;
     }
 
     @Override
@@ -33,15 +31,8 @@ public class WebViewBottom extends BottomSheetDialogFragment
         View v = inflater.inflate(R.layout.fragment_bottom_sheet_webview, container, false);
         WebView webView = WebViewConfigs.applyDefault(v.findViewById(R.id.webview));
 
-        StringBuilder buffer = new StringBuilder(url);
-
-        if (customerId != null && !customerId.isEmpty() && apiKey != null && !apiKey.isEmpty()) {
-            buffer.append("?customer_id=").append(URLEncoder.encode(customerId));
-            buffer.append("&api_key=").append(URLEncoder.encode(apiKey));
-        }
-        //else ?
-
-        webView.loadUrl(buffer.toString());
+        String endpoint = requestIdentification.ApplyKeyToURL(url);
+        webView.loadUrl(endpoint);
 
         return v;
     }

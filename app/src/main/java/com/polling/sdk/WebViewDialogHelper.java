@@ -31,19 +31,13 @@ public class WebViewDialogHelper {
         this.dialog = dialog;
     }
 
-
-    public static void showDialog(Activity activity, String url, String customerId, String apiKey) {
-        activity.runOnUiThread(new Runnable() {
+    public static void showDialog(DialogRequest dialog) {
+        dialog.activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                new WebViewDialog(activity, url, customerId, apiKey).show();
+                new WebViewDialog(dialog).show();
             }
         });
-    }
-
-    public void showDialog(DialogRequest dialog)
-    {
-        showDialog(dialog.activity, currentUrl, dialog.customerId, dialog.apiKey);
     }
 
     public void availableSurveys()
