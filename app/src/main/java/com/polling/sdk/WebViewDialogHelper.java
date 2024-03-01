@@ -31,11 +31,11 @@ public class WebViewDialogHelper {
         this.dialog = dialog;
     }
 
-    public static void showDialog(DialogRequest dialog) {
+    public void showDialog(DialogRequest dialog) {
         dialog.activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                new WebViewDialog(dialog).show();
+                new WebViewDialog(currentUrl, dialog).show();
             }
         });
     }
