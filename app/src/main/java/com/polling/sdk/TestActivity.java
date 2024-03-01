@@ -59,13 +59,23 @@ public class TestActivity extends AppCompatActivity {
                             @Override
                             public void onResponse(String response) {
 
-                                dataField.setText(response);
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        updateText(response);
+                                    }
+                                });
+
                             }
 
                             @Override
                             public void onError(String error) {
-                                String text ="API ERROR - \n" + error;
-                                dataField.setText(text);
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        updateText(error);
+                                    }
+                                });
                             }
                         }
                 );
@@ -104,13 +114,23 @@ public class TestActivity extends AppCompatActivity {
                             @Override
                             public void onResponse(String response) {
 
-                                dataField.setText(response);
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        updateText(response);
+                                    }
+                                });
+
                             }
 
                             @Override
                             public void onError(String error) {
-                                String text ="API ERROR - \n" + error;
-                                dataField.setText(text);
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        updateText(error);
+                                    }
+                                });
                             }
                         }
                 );
@@ -139,13 +159,23 @@ public class TestActivity extends AppCompatActivity {
                             @Override
                             public void onResponse(String response) {
 
-                                dataField.setText(response);
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        updateText(response);
+                                    }
+                                });
+
                             }
 
                             @Override
                             public void onError(String error) {
-                                String text ="API ERROR - \n" + error;
-                                dataField.setText(text);
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        updateText(error);
+                                    }
+                                });
                             }
                         }
                 );
@@ -160,7 +190,7 @@ public class TestActivity extends AppCompatActivity {
         Activity activity = TestActivity.this;
 
         int random = new Random().nextInt(1000);
-        String customerId = String.valueOf(random);
+        String customerId = "199";//String.valueOf(random);
         String apiKey = "cli_wZJW1tH39TfUMbEumPLrDy15EXDqJA0a";
 
         DialogRequest dialogRequest = new DialogRequest
@@ -177,7 +207,7 @@ public class TestActivity extends AppCompatActivity {
     private WebViewBottom newBottom(String url)
     {
         int random = new Random().nextInt(1000);
-        String customerId = String.valueOf(random);
+        String customerId = "199";//String.valueOf(random);
         String apiKey = "cli_wZJW1tH39TfUMbEumPLrDy15EXDqJA0a";
 
         RequestIdentification requestIdentification = new RequestIdentification
@@ -192,7 +222,7 @@ public class TestActivity extends AppCompatActivity {
     private Survey newApi()
     {
         int random = new Random().nextInt(1000);
-        String customerId = String.valueOf(random);
+        String customerId = "199";//String.valueOf(random);
         String apiKey = "cli_wZJW1tH39TfUMbEumPLrDy15EXDqJA0a";
 
         RequestIdentification requestIdentification = new RequestIdentification
@@ -204,6 +234,11 @@ public class TestActivity extends AppCompatActivity {
         return new Survey(requestIdentification);
     }
 
+    private void updateText(String text)
+    {
+        TextView dataField = (TextView) findViewById(R.id.apiResponseData);
+        dataField.setText(text);
+    }
 
 
 }

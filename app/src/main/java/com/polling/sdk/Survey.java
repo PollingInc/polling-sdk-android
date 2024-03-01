@@ -28,6 +28,7 @@ public class Survey
 
     private void requestSurvey(String url, WebRequestHandler.ResponseCallback responseCallbacks)
     {
+        url = requestIdentification.ApplyKeyToURL(url);
         WebRequestHandler.makeRequest(url, WebRequestType.GET, null,responseCallbacks);
     }
 }
