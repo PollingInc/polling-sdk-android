@@ -109,31 +109,7 @@ public class TestActivity extends AppCompatActivity {
                 Survey survey = newApi();
 
                 TextView dataField = (TextView) findViewById(R.id.apiResponseData);
-                survey.singleSurvey("3875c65f-1e7a-411f-b8c3-be2ce19a9c6e",
-                        new WebRequestHandler.ResponseCallback() {
-                            @Override
-                            public void onResponse(String response) {
-
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        updateText(response);
-                                    }
-                                });
-
-                            }
-
-                            @Override
-                            public void onError(String error) {
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        updateText(error);
-                                    }
-                                });
-                            }
-                        }
-                );
+                survey.singleSurvey("3875c65f-1e7a-411f-b8c3-be2ce19a9c6e");
             }
         });
 
@@ -154,31 +130,7 @@ public class TestActivity extends AppCompatActivity {
                 Survey survey = newApi();
 
                 TextView dataField = (TextView) findViewById(R.id.apiResponseData);
-                survey.completedSurveys(
-                        new WebRequestHandler.ResponseCallback() {
-                            @Override
-                            public void onResponse(String response) {
-
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        updateText(response);
-                                    }
-                                });
-
-                            }
-
-                            @Override
-                            public void onError(String error) {
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        updateText(error);
-                                    }
-                                });
-                            }
-                        }
-                );
+                survey.completedSurveys();
             }
         });
 
@@ -231,7 +183,34 @@ public class TestActivity extends AppCompatActivity {
                 apiKey
         );
 
-        return new Survey(requestIdentification);
+        return new Survey(requestIdentification,
+
+
+                new JavaCallbackHandler() {
+                    @Override
+                    public void onSuccess(String response) {
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                updateText(response);
+                            }
+                        });
+
+                    }
+
+                    @Override
+                    public void onFailure(String error) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                updateText(error);
+                            }
+                        });
+                    }
+                }
+
+                );
     }
 
     private void updateText(String text)

@@ -23,7 +23,6 @@ GET     https://demo-api.polling.com/api/sdk/surveys/completed?customer_id=[ID]&
 
 public class WebViewDialogHelper {
 
-    public String currentUrl;
     public DialogRequest dialog;
 
     public WebViewDialogHelper(DialogRequest dialog)
@@ -31,32 +30,26 @@ public class WebViewDialogHelper {
         this.dialog = dialog;
     }
 
-    public void showDialog(DialogRequest dialog) {
+    public void showDialog(DialogRequest dialog, String url) {
         dialog.activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                new WebViewDialog(currentUrl, dialog).show();
+                new WebViewDialog(url, dialog).show();
             }
         });
     }
 
     public void availableSurveys()
     {
-        this.currentUrl = "https://demo.polling.com/sdk/available-surveys";
-        showDialog(this.dialog);
+        String url = "https://demo.polling.com/sdk/available-surveys";
+        showDialog(this.dialog, url);
     }
 
 
     public void singleSurvey(String surveyId)
     {
-        this.currentUrl = "https://demo.polling.com/sdk/survey/" + surveyId;
-        showDialog(this.dialog);
-    }
-
-    public void completedSurveys()
-    {
-        this.currentUrl = "https://demo-api.polling.com/api/sdk/surveys/completed";
-        showDialog(this.dialog);
+        String url = "https://demo.polling.com/sdk/survey/" + surveyId;
+        showDialog(this.dialog, url);
     }
 
 

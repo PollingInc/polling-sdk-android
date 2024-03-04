@@ -3,32 +3,46 @@ package com.polling.sdk;
 public class Survey
 {
     RequestIdentification requestIdentification;
+    CallbackHandler callbackHandler;
 
-    public Survey(RequestIdentification requestIdentification)
+    public Survey(RequestIdentification requestIdentification, CallbackHandler callbackHandler)
     {
         this.requestIdentification = requestIdentification;
+        this.callbackHandler = callbackHandler;
     }
     public void availableSurvey(WebRequestHandler.ResponseCallback responseCallbacks)
     {
         String url = "https://demo-api.polling.com/api/sdk/surveys/available";
-        requestSurvey(url, responseCallbacks);
+        requestSurvey(url);
     }
 
-    public void singleSurvey(String surveyId, WebRequestHandler.ResponseCallback responseCallbacks)
+    public void singleSurvey(String surveyId)
     {
         String url = "https://demo-api.polling.com/api/sdk/surveys/" + surveyId;
-        requestSurvey(url, responseCallbacks);
+        requestSurvey(url);
     }
 
-    public void completedSurveys(WebRequestHandler.ResponseCallback responseCallbacks)
+    public void completedSurveys()
     {
         String url = "https://demo-api.polling.com/api/sdk/surveys/completed";
-        requestSurvey(url, responseCallbacks);
+        requestSurvey(url);
     }
 
-    private void requestSurvey(String url, WebRequestHandler.ResponseCallback responseCallbacks)
+    private void requestSurvey(String url)
     {
         url = requestIdentification.ApplyKeyToURL(url);
-        WebRequestHandler.makeRequest(url, WebRequestType.GET, null,responseCallbacks);
+        WebRequestHandler.makeRequest(url, WebRequestType.GET, null,
+                new WebRequestHandler.ResponseCallback() {
+                    @Override
+                    public void onResponse(String response) {
+                        callbackHandler.onSuccess(response);
+                    }
+
+                    @Override
+                    public void onError(String error) {
+                        callbackHandler.onFailure(error);
+                    }
+                }
+        );
     }
 }
