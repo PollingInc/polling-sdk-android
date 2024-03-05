@@ -1,6 +1,6 @@
 plugins {
-    id("com.android.application") //for testing app
-    //id("com.android.library") //for building
+    //id("com.android.application") //for testing app
+    id("com.android.library") //for building
 }
 
 android {
