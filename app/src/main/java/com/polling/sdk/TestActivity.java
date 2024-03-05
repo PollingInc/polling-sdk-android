@@ -54,31 +54,7 @@ public class TestActivity extends AppCompatActivity {
                 Survey survey = newApi();
 
                 TextView dataField = (TextView) findViewById(R.id.apiResponseData);
-                survey.availableSurvey(
-                        new WebRequestHandler.ResponseCallback() {
-                            @Override
-                            public void onResponse(String response) {
-
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        updateText(response);
-                                    }
-                                });
-
-                            }
-
-                            @Override
-                            public void onError(String error) {
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        updateText(error);
-                                    }
-                                });
-                            }
-                        }
-                );
+                survey.availableSurveys();
             }
         });
 

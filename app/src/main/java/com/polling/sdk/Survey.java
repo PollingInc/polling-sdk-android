@@ -3,14 +3,14 @@ package com.polling.sdk;
 public class Survey
 {
     RequestIdentification requestIdentification;
-    CallbackHandler callbackHandler;
+    final CallbackHandler callbackHandler;
 
     public Survey(RequestIdentification requestIdentification, CallbackHandler callbackHandler)
     {
         this.requestIdentification = requestIdentification;
         this.callbackHandler = callbackHandler;
     }
-    public void availableSurvey(WebRequestHandler.ResponseCallback responseCallbacks)
+    public void availableSurveys()
     {
         String url = "https://demo-api.polling.com/api/sdk/surveys/available";
         requestSurvey(url);
