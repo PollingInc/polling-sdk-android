@@ -2,14 +2,20 @@ package com.polling.sdk;
 
 public class Survey
 {
-    RequestIdentification requestIdentification;
-    final CallbackHandler callbackHandler;
+    private final RequestIdentification requestIdentification;
+    private CallbackHandler callbackHandler;
 
     public Survey(RequestIdentification requestIdentification, CallbackHandler callbackHandler)
     {
         this.requestIdentification = requestIdentification;
         this.callbackHandler = callbackHandler;
     }
+
+    public void assignCallbacks(CallbackHandler callbackHandler)
+    {
+        this.callbackHandler = callbackHandler;
+    }
+
     public void availableSurveys()
     {
         String url = "https://demo-api.polling.com/api/sdk/surveys/available";

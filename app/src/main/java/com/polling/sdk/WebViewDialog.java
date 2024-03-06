@@ -7,19 +7,6 @@ import android.webkit.WebView;
 import java.net.URLEncoder;
 
 public class WebViewDialog extends Dialog {
-    /*
-    private final String url;
-    private final String customerId;
-    private final String apiKey;
-
-
-    public WebViewDialog(Context context, String url, String customerId, String apiKey) {
-        super(context);
-        this.url = url;
-        this.customerId = customerId;
-        this.apiKey = apiKey;
-    }
-    */
     public final DialogRequest dialog;
     public final String url;
 
