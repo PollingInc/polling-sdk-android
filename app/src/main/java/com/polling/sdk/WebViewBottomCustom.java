@@ -2,6 +2,7 @@ package com.polling.sdk;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -10,10 +11,10 @@ import android.widget.FrameLayout;
 public class WebViewBottomCustom
 {
     private Dialog dialog;
-    private String url;
-    private DialogRequest dialogRequest;
+    private final String url;
+    private final DialogRequest dialogRequest;
 
-    public WebViewBottomCustom(Context context, String url, DialogRequest dialogRequest) {
+    public WebViewBottomCustom(String url, DialogRequest dialogRequest) {
         this.url = url;
         this.dialogRequest = dialogRequest;
         initializeDialog(dialogRequest.activity);
@@ -28,6 +29,8 @@ public class WebViewBottomCustom
         if (window != null) {
             window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             window.setBackgroundDrawableResource(android.R.color.transparent);
+            window.setGravity(Gravity.BOTTOM);
+
         }
 
         WebView webView = dialog.findViewById(R.id.webview);

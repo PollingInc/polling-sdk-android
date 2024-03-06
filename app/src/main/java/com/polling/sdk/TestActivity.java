@@ -42,8 +42,13 @@ public class TestActivity extends AppCompatActivity {
         buttonAvailableSurveysBottom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                /*
                 WebViewBottom newBottom = newBottom("https://demo.polling.com/sdk/available-surveys");
                 newBottom.show(getSupportFragmentManager(), newBottom.getTag());
+                */
+                WebViewBottomCustom newBottom = newBottomCustom("https://demo.polling.com/sdk/available-surveys");
+                newBottom.show();
+
             }
         });
 
@@ -73,8 +78,13 @@ public class TestActivity extends AppCompatActivity {
         buttonSingleSurveyBottom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                /*
                 WebViewBottom newBottom = newBottom("https://demo.polling.com/sdk/survey/3875c65f-1e7a-411f-b8c3-be2ce19a9c6e");
                 newBottom.show(getSupportFragmentManager(), newBottom.getTag());
+                */
+                WebViewBottomCustom newBottom = newBottomCustom("https://demo.polling.com/sdk/survey/3875c65f-1e7a-411f-b8c3-be2ce19a9c6e");
+                newBottom.show();
+
             }
         });
 
@@ -135,7 +145,9 @@ public class TestActivity extends AppCompatActivity {
     private WebViewBottom newBottom(String url)
     {
         int random = new Random().nextInt(1000);
-        String customerId = "199";//String.valueOf(random);
+        String customerId = String.valueOf(random);
+        //String customerId = "199";
+
         String apiKey = "cli_wZJW1tH39TfUMbEumPLrDy15EXDqJA0a";
 
         RequestIdentification requestIdentification = new RequestIdentification
@@ -147,10 +159,31 @@ public class TestActivity extends AppCompatActivity {
         return new WebViewBottom(url, requestIdentification);
     }
 
+    private WebViewBottomCustom newBottomCustom(String url)
+    {
+        int random = new Random().nextInt(1000);
+        String customerId = String.valueOf(random);
+        //String customerId = "199";
+
+        String apiKey = "cli_wZJW1tH39TfUMbEumPLrDy15EXDqJA0a";
+
+        DialogRequest dialogRequest = new DialogRequest
+                (
+                        (Activity) this,
+                        customerId,
+                        apiKey
+                );
+
+        return new WebViewBottomCustom(url, dialogRequest);
+    }
+
+
     private Survey newApi()
     {
         int random = new Random().nextInt(1000);
-        String customerId = "199";//String.valueOf(random);
+        String customerId = String.valueOf(random);
+        //String customerId = "199";
+        
         String apiKey = "cli_wZJW1tH39TfUMbEumPLrDy15EXDqJA0a";
 
         RequestIdentification requestIdentification = new RequestIdentification
