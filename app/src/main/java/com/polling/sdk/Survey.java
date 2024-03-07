@@ -37,6 +37,9 @@ public class Survey
     private void requestSurvey(String url)
     {
         url = requestIdentification.ApplyKeyToURL(url);
+        url = requestIdentification.ApplyCompletionBypassToURL(url);
+
+
         WebRequestHandler.makeRequest(url, WebRequestType.GET, null,
                 new WebRequestHandler.ResponseCallback() {
                     @Override

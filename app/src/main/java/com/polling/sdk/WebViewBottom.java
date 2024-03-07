@@ -32,6 +32,8 @@ public class WebViewBottom extends BottomSheetDialogFragment
         WebView webView = WebViewConfigs.applyDefault(v.findViewById(R.id.webview));
 
         String endpoint = requestIdentification.ApplyKeyToURL(url);
+        endpoint = requestIdentification.ApplyCompletionBypassToURL(endpoint);
+
         webView.loadUrl(endpoint);
 
         return v;
