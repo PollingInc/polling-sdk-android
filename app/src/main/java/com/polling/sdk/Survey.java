@@ -14,7 +14,34 @@ public class Survey
         this.callbackHandler = callbackHandler;
     }
 
-    public void assignCallbacks(CallbackHandler callbackHandler)
+    public DialogHelper dialogHelper(Context context, ViewType viewType)
+    {
+        switch (viewType) {
+            case Dialog ->
+            {
+                DialogRequest dialogRequest = new DialogRequest(
+                        (Activity) context,
+                        requestIdentification.customerId,
+                        requestIdentification.apiKey);
+
+                return new WebViewDialogHelper(dialogRequest);
+            }
+            case Bottom ->
+            {
+                DialogRequest dialogRequest = new DialogRequest(
+                        (Activity) context,
+                        requestIdentification.customerId,
+                        requestIdentification.apiKey);
+
+                return new WebViewBottomHelper(dialogRequest);
+            }
+        }
+
+        return null;
+    }
+
+
+    public void updateCallbacks(CallbackHandler callbackHandler)
     {
         this.callbackHandler = callbackHandler;
     }
@@ -25,36 +52,12 @@ public class Survey
         requestSurvey(url);
     }
 
-    public void availableSurveys(Context context, ViewType viewType, RequestIdentification requestIdentification)
+    public void availableSurveys(Context context, ViewType viewType)
     {
-        switch (viewType) {
-            case None ->
-            {
-                this.availableSurveys();
-            }
-            case Dialog ->
-            {
-                DialogRequest dialogRequest = new DialogRequest(
-                        (Activity) context,
-                        requestIdentification.customerId,
-                        requestIdentification.apiKey);
+        DialogHelper dialog = dialogHelper(context, viewType);
 
-                WebViewDialogHelper dialog = new WebViewDialogHelper(dialogRequest);
-
-                dialog.availableSurveys();
-            }
-            case Bottom ->
-            {
-                DialogRequest dialogRequest = new DialogRequest(
-                        (Activity) context,
-                        requestIdentification.customerId,
-                        requestIdentification.apiKey);
-
-                WebViewBottomHelper bottom = new WebViewBottomHelper(dialogRequest);
-                bottom.availableSurveys();
-            }
-        }
-
+        if(dialog != null) dialog.availableSurveys();
+        else this.availableSurveys();
     }
 
     public void singleSurvey(String surveyId)
@@ -62,6 +65,15 @@ public class Survey
         String url = "https://demo-api.polling.com/api/sdk/surveys/" + surveyId;
         requestSurvey(url);
     }
+
+    public void singleSurvey(String surveyId, Context context, ViewType viewType)
+    {
+        DialogHelper dialog = dialogHelper(context, viewType);
+
+        if(dialog != null) dialog.singleSurvey(surveyId);
+        else this.singleSurvey(surveyId);
+    }
+
 
     public void completedSurveys()
     {
