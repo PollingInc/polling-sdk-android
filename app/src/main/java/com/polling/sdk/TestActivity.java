@@ -46,7 +46,7 @@ public class TestActivity extends AppCompatActivity {
                 WebViewBottom newBottom = newBottom("https://demo.polling.com/sdk/available-surveys");
                 newBottom.show(getSupportFragmentManager(), newBottom.getTag());
                 */
-                WebViewBottomCustom newBottom = newBottomCustom("https://demo.polling.com/sdk/available-surveys");
+                WebViewBottom newBottom = newBottomCustom("https://demo.polling.com/sdk/available-surveys");
                 newBottom.show();
 
             }
@@ -82,7 +82,7 @@ public class TestActivity extends AppCompatActivity {
                 WebViewBottom newBottom = newBottom("https://demo.polling.com/sdk/survey/3875c65f-1e7a-411f-b8c3-be2ce19a9c6e");
                 newBottom.show(getSupportFragmentManager(), newBottom.getTag());
                 */
-                WebViewBottomCustom newBottom = newBottomCustom("https://demo.polling.com/sdk/survey/3875c65f-1e7a-411f-b8c3-be2ce19a9c6e");
+                WebViewBottom newBottom = newBottomCustom("https://demo.polling.com/sdk/survey/3875c65f-1e7a-411f-b8c3-be2ce19a9c6e");
                 newBottom.show();
 
             }
@@ -142,7 +142,7 @@ public class TestActivity extends AppCompatActivity {
         return new WebViewDialogHelper(dialogRequest);
     }
 
-    private WebViewBottom newBottom(String url)
+    private WebViewBottomSheet newBottom(String url)
     {
         int random = new Random().nextInt(1000);
         String customerId = String.valueOf(random);
@@ -156,10 +156,10 @@ public class TestActivity extends AppCompatActivity {
             apiKey
         );
 
-        return new WebViewBottom(url, requestIdentification);
+        return new WebViewBottomSheet(url, requestIdentification);
     }
 
-    private WebViewBottomCustom newBottomCustom(String url)
+    private WebViewBottom newBottomCustom(String url)
     {
         int random = new Random().nextInt(1000);
         String customerId = String.valueOf(random);
@@ -174,7 +174,7 @@ public class TestActivity extends AppCompatActivity {
                         apiKey
                 );
 
-        return new WebViewBottomCustom(url, dialogRequest);
+        return new WebViewBottom(url, dialogRequest);
     }
 
 

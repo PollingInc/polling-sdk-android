@@ -6,9 +6,15 @@
 
     <application
         android:allowBackup="true"
-        android:supportsRtl="true">
+        android:supportsRtl="true"
+
+        >
+
+        <!-- Uncomment below to make it an app instead of a library-->
         <!--android:theme="@style/AppTheme"
         >
+
+
         <activity android:name=".TestActivity"
             android:exported="true">
             <intent-filter>
@@ -17,6 +23,8 @@
             </intent-filter>
         </activity>
         -->
+        <!-- Uncomment above to make it an app instead of a library-->
+
 
     </application>
 </manifest>

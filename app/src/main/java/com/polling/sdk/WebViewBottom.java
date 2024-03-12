@@ -1,42 +1,59 @@
 package com.polling.sdk;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
+
+import android.app.Dialog;
+import android.content.Context;
+import android.view.Gravity;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.webkit.WebView;
-import androidx.annotation.Nullable;
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
-import java.net.URLEncoder;
-
-public class WebViewBottom extends BottomSheetDialogFragment
+public class WebViewBottom
 {
+    private Dialog dialog;
     private final String url;
-    private final RequestIdentification requestIdentification;
+    private final DialogRequest dialogRequest;
 
-    public WebViewBottom(String url,RequestIdentification requestIdentification) {
+    public WebViewBottom(String url, DialogRequest dialogRequest) {
         this.url = url;
-        this.requestIdentification = requestIdentification;
+        this.dialogRequest = dialogRequest;
+        initializeDialog(dialogRequest.activity);
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
+    private void initializeDialog(Context context) {
+        dialog = new Dialog(context);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.fragment_bottom_sheet_webview);
 
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
-    {
-        View v = inflater.inflate(R.layout.fragment_bottom_sheet_webview, container, false);
-        WebView webView = WebViewConfigs.applyDefault(v.findViewById(R.id.webview));
+        Window window = dialog.getWindow();
+        if (window != null) {
+            window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            window.setBackgroundDrawableResource(android.R.color.transparent);
+            window.setGravity(Gravity.BOTTOM);
+        }
 
-        String endpoint = requestIdentification.ApplyKeyToURL(url);
-        endpoint = requestIdentification.ApplyCompletionBypassToURL(endpoint);
+        WebView webView = dialog.findViewById(R.id.webview);
 
+        String endpoint = dialogRequest.ApplyKeyToURL(url);
+        endpoint = dialogRequest.ApplyCompletionBypassToURL(endpoint);
+
+        WebViewConfigs.applyDefault(webView);
         webView.loadUrl(endpoint);
-
-        return v;
     }
 
+    public void show() {
+        if (dialog != null) {
+            dialog.show();
+        }
+    }
+
+    public void dismiss() {
+        if (dialog != null) {
+            dialog.dismiss();
+        }
+    }
+
+    private int convertDpToPx(Context context, int dp) {
+        return (int) (dp * context.getResources().getDisplayMetrics().density);
+    }
 }
+

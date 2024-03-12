@@ -1,5 +1,8 @@
 package com.polling.sdk;
 
+import android.app.Activity;
+import android.content.Context;
+
 public class Survey
 {
     private final RequestIdentification requestIdentification;
@@ -20,6 +23,38 @@ public class Survey
     {
         String url = "https://demo-api.polling.com/api/sdk/surveys/available";
         requestSurvey(url);
+    }
+
+    public void availableSurveys(Context context, ViewType viewType, RequestIdentification requestIdentification)
+    {
+        switch (viewType) {
+            case None ->
+            {
+                this.availableSurveys();
+            }
+            case Dialog ->
+            {
+                DialogRequest dialogRequest = new DialogRequest(
+                        (Activity) context,
+                        requestIdentification.customerId,
+                        requestIdentification.apiKey);
+
+                WebViewDialogHelper dialog = new WebViewDialogHelper(dialogRequest);
+
+                dialog.availableSurveys();
+            }
+            case Bottom ->
+            {
+                DialogRequest dialogRequest = new DialogRequest(
+                        (Activity) context,
+                        requestIdentification.customerId,
+                        requestIdentification.apiKey);
+
+                WebViewBottomHelper bottom = new WebViewBottomHelper(dialogRequest);
+                bottom.availableSurveys();
+            }
+        }
+
     }
 
     public void singleSurvey(String surveyId)
