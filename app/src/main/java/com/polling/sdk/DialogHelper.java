@@ -1,6 +1,7 @@
 package com.polling.sdk;
 
 import android.content.DialogInterface;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,6 +52,8 @@ public abstract class DialogHelper
     private void awaitForReward(DialogRequest dialog, WebRequestHandler.ResponseCallback apiCallback)
     {
         String url = "https://demo-api.polling.com/api/sdk/surveys/completed";
+        url = dialog.ApplyKeyToURL(url);
+
         WebRequestHandler.makeRequest(url,WebRequestType.GET,null, apiCallback);
     }
 
@@ -73,6 +76,7 @@ public abstract class DialogHelper
 
     private void getRewardsPreDialog(String json)
     {
+        Log.i("Polling", "Parsing JSON: " + json);
         SurveyDataParser surveyParser = new SurveyDataParser(json);
         var surveys = surveyParser.getSurveys();
 
@@ -87,6 +91,8 @@ public abstract class DialogHelper
 
     private void getRewardsPostDialog(String json, CallbackHandler callbackHandler)
     {
+        Log.w("Polling", "Entering post dialog");
+
         SurveyDataParser surveyParser = new SurveyDataParser(json);
         var surveys = surveyParser.getSurveys();
 
@@ -97,8 +103,10 @@ public abstract class DialogHelper
             var uuid = s.get("uuid");
             if(!surveysUid.contains(uuid))
             {
+                Log.w("Polling", "Pending Uuid: " + uuid);
                 pendingUuids.add(uuid);
             }
+            else Log.w("Polling", "Not pending Uuid: " + uuid);
         }
 
         List<Map<String, String>> filteredSurveys = new ArrayList<>();
@@ -106,13 +114,37 @@ public abstract class DialogHelper
         for (Map<String, String> survey : surveys) {
             String uuid = survey.get("uuid");
             if (pendingUuids.contains(uuid)) {
+                Log.w("Polling:", "Filtered survey uuid: " + uuid);
                 filteredSurveys.add(survey);
             }
         }
 
         if(!filteredSurveys.isEmpty())
         {
-            callbackHandler.onSuccess(filteredSurveys.toString());
+            StringBuilder jsonBuilder = new StringBuilder();
+            jsonBuilder.append("[");
+
+            for (int i = 0; i < filteredSurveys.size(); i++) {
+                Map<String, String> survey = filteredSurveys.get(i);
+                jsonBuilder.append("{");
+                for (String key : survey.keySet()) {
+                    jsonBuilder.append("\"").append(key).append("\":\"").append(survey.get(key)).append("\",");
+                }
+                // Remove the trailing comma
+                if (!survey.isEmpty()) {
+                    jsonBuilder.deleteCharAt(jsonBuilder.length() - 1);
+                }
+                jsonBuilder.append("}");
+                if (i < filteredSurveys.size() - 1) {
+                    jsonBuilder.append(",");
+                }
+            }
+
+            jsonBuilder.append("]");
+            callbackHandler.onSuccess(jsonBuilder.toString());
+
+
+
         }
 
     }

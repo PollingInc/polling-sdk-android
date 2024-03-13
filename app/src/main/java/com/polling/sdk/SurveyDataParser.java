@@ -1,6 +1,7 @@
 package com.polling.sdk;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -17,24 +18,43 @@ public class SurveyDataParser {
     }
 
     private void parseJson(String json) {
+        if (json == null || json.trim().isEmpty()) {
+            // Handle the case where the JSON string is null or empty
+            return;
+        }
+
         Gson gson = new Gson();
-        Type dataType = new TypeToken<Map<String, List<Map<String, Object>>>>() {}.getType();
-        Map<String, List<Map<String, Object>>> rawData = gson.fromJson(json, dataType);
+        try {
+            Type dataType = new TypeToken<Map<String, List<Map<String, Object>>>>() {}.getType();
+            Map<String, List<Map<String, Object>>> rawData = gson.fromJson(json, dataType);
 
-        for (Map<String, Object> survey : rawData.get("data")) {
-            Map<String, String> flattenedSurvey = new HashMap<>();
-            flattenedSurvey.put("uuid", (String) survey.get("uuid"));
-            flattenedSurvey.put("name", (String) survey.get("name"));
-            flattenedSurvey.put("started_at", (String) survey.get("started_at"));
-            flattenedSurvey.put("completed_at", (String) survey.get("completed_at"));
+            // Check if the 'data' key exists and has content
+            if (rawData != null && rawData.containsKey("data") && !rawData.get("data").isEmpty()) {
+                for (Map<String, Object> survey : rawData.get("data")) {
+                    Map<String, String> flattenedSurvey = new HashMap<>();
+                    flattenedSurvey.put("uuid", (String) survey.get("uuid"));
+                    flattenedSurvey.put("name", (String) survey.get("name"));
+                    flattenedSurvey.put("started_at", (String) survey.get("started_at"));
+                    flattenedSurvey.put("completed_at", (String) survey.get("completed_at"));
 
-            @SuppressWarnings("unchecked")
-            Map<String, String> reward = (Map<String, String>) survey.get("reward");
-            flattenedSurvey.putAll(reward); // This assumes reward's keys are unique and don't clash with survey's keys
+                    @SuppressWarnings("unchecked")
+                    Map<String, Object> reward = (Map<String, Object>) survey.get("reward");
+                    // Ensure reward is not null and contains the keys before accessing them
+                    if (reward != null) {
+                        flattenedSurvey.put("reward_amount", String.valueOf(reward.get("reward_amount")));
+                        flattenedSurvey.put("reward_name", String.valueOf(reward.get("reward_name")));
+                    }
 
-            this.surveys.add(flattenedSurvey);
+                    this.surveys.add(flattenedSurvey);
+                }
+            }
+        } catch (JsonSyntaxException e) {
+            // Log the exception or handle it according to your application's needs
+            System.err.println("Error parsing JSON: " + e.getMessage());
         }
     }
+
+
 
     public List<Map<String, String>> getSurveys() {
         return surveys;
