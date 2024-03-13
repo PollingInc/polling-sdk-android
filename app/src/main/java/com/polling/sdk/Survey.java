@@ -52,6 +52,11 @@ public class Survey
         requestSurvey(url);
     }
 
+    public void availableSurveys(Context context, String viewTypeStr)
+    {
+        ViewType viewType = ViewType.valueOf(viewTypeStr);
+        availableSurveys(context, viewType);
+    }
     public void availableSurveys(Context context, ViewType viewType)
     {
         DialogHelper dialog = dialogHelper(context, viewType);
@@ -64,6 +69,12 @@ public class Survey
     {
         String url = "https://demo-api.polling.com/api/sdk/surveys/" + surveyId;
         requestSurvey(url);
+    }
+
+    public void singleSurvey(String surveyId, Context context, String viewTypeStr)
+    {
+        ViewType viewType = ViewType.valueOf(viewTypeStr);
+        singleSurvey(surveyId, context, viewType);
     }
 
     public void singleSurvey(String surveyId, Context context, ViewType viewType)
