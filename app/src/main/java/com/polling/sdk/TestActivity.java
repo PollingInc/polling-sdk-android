@@ -2,6 +2,7 @@ package com.polling.sdk;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -35,7 +36,8 @@ public class TestActivity extends Activity {
         buttonAvailableSurveysDialog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                newDialog().availableSurveys();
+                //newDialog().availableSurveys();
+                survey().availableSurveys(TestActivity.this ,ViewType.Dialog);
             }
         });
 
@@ -70,7 +72,7 @@ public class TestActivity extends Activity {
         buttonSingleSurveyDialog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                newDialog().singleSurvey("3875c65f-1e7a-411f-b8c3-be2ce19a9c6e");
+                survey().singleSurvey("3875c65f-1e7a-411f-b8c3-be2ce19a9c6e", TestActivity.this, ViewType.Dialog);
             }
         });
 
@@ -121,6 +123,46 @@ public class TestActivity extends Activity {
         });
 
     }
+
+    private Survey survey()
+    {
+        Activity activity = TestActivity.this;
+
+        int random = new Random().nextInt(1000);
+        String customerId = "199";//String.valueOf(random);
+        String apiKey = "cli_wZJW1tH39TfUMbEumPLrDy15EXDqJA0a";
+
+        DialogRequest dialogRequest = new DialogRequest
+                (
+                        activity,
+                        customerId,
+                        apiKey
+                );
+        return new Survey(dialogRequest,new JavaCallbackHandler() {
+            @Override
+            public void onSuccess(String response) {
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        updateText(response);
+                    }
+                });
+
+            }
+
+            @Override
+            public void onFailure(String error) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        updateText(error);
+                    }
+                });
+            }
+        });
+    }
+
 
     private WebViewDialogHelper newDialog()
     {

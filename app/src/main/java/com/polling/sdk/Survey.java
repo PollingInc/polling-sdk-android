@@ -6,7 +6,7 @@ import android.content.Context;
 public class Survey
 {
     private final RequestIdentification requestIdentification;
-    private CallbackHandler callbackHandler;
+    public CallbackHandler callbackHandler;
 
     public Survey(RequestIdentification requestIdentification, CallbackHandler callbackHandler)
     {
@@ -61,7 +61,7 @@ public class Survey
     {
         DialogHelper dialog = dialogHelper(context, viewType);
 
-        if(dialog != null) dialog.availableSurveys();
+        if(dialog != null) dialog.availableSurveys(this);
         else this.availableSurveys();
     }
 
@@ -81,7 +81,7 @@ public class Survey
     {
         DialogHelper dialog = dialogHelper(context, viewType);
 
-        if(dialog != null) dialog.singleSurvey(surveyId);
+        if(dialog != null) dialog.singleSurvey(surveyId, this);
         else this.singleSurvey(surveyId);
     }
 
