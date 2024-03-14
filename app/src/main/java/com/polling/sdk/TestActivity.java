@@ -129,7 +129,7 @@ public class TestActivity extends Activity {
         Activity activity = TestActivity.this;
 
         int random = new Random().nextInt(1000);
-        String customerId = "199";//String.valueOf(random);
+        String customerId = "223";//String.valueOf(random);
         String apiKey = "cli_wZJW1tH39TfUMbEumPLrDy15EXDqJA0a";
 
         DialogRequest dialogRequest = new DialogRequest
