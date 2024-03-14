@@ -1,5 +1,7 @@
 package com.polling.sdk;
 
+import android.util.Log;
+
 import java.lang.reflect.Method;
 
 public class UnityCallbackHandler implements CallbackHandler {
@@ -26,6 +28,7 @@ public class UnityCallbackHandler implements CallbackHandler {
     private void invokeUnityMessage(String methodName, String message)
     {
         try {
+            Log.w("Polling", "Invoking on Unity " + methodName + " for " + gameObject);
             Class<?> unityPlayerClass = Class.forName("com.unity3d.player.UnityPlayer");
             Method unitySendMessageMethod = unityPlayerClass.getMethod("UnitySendMessage", String.class, String.class, String.class);
             unitySendMessageMethod.invoke(null, gameObject, methodName, message);

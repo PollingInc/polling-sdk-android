@@ -142,6 +142,7 @@ public abstract class DialogHelper
 
             jsonBuilder.append("]");
             Log.w("Polling", "Rewards json: " + jsonBuilder.toString());
+
             callbackHandler.onSuccess(jsonBuilder.toString());
 
 
