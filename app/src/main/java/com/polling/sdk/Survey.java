@@ -59,6 +59,12 @@ public class Survey
     }
     public void availableSurveys(Context context, ViewType viewType)
     {
+        if(viewType == ViewType.None)
+        {
+            availableSurveys();
+            return;
+        }
+
         DialogHelper dialog = dialogHelper(context, viewType);
 
         if(dialog != null) dialog.availableSurveys(this);
@@ -79,6 +85,12 @@ public class Survey
 
     public void singleSurvey(String surveyId, Context context, ViewType viewType)
     {
+        if(viewType == ViewType.None)
+        {
+            singleSurvey(surveyId);
+            return;
+        }
+
         DialogHelper dialog = dialogHelper(context, viewType);
 
         if(dialog != null) dialog.singleSurvey(surveyId, this);
