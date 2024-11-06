@@ -25,26 +25,64 @@ public abstract class DialogHelper
             @Override
             public void run()
             {
-                awaitForReward(dialogRequest, prePostRewardCallback(false, null));
-
-                var dialog = new WebViewBottom(url, dialogRequest); //used as default, but can be overridden on extended classes
-
-                dialog.show();
-                dialog.setOnDismissListener
-                (
-                    new DialogInterface.OnDismissListener()
-                    {
-                        @Override
-                        public void onDismiss(DialogInterface dialogInterface)
-                        {
-                            awaitForReward(dialogRequest, prePostRewardCallback(true, survey.callbackHandler));
-                        }
-                    }
-                );
+                runDefault(url, survey);
             }
         });
+    }
 
+    private void runDefault(String url, Survey survey)
+    {
+        awaitForReward(dialogRequest, prePostRewardCallback(false, null));
 
+        var dialog = new WebViewBottom(url, dialogRequest); //used as default, but can be overridden on extended classes
+
+        dialog.show();
+        dialog.setOnDismissListener
+                (
+                        new DialogInterface.OnDismissListener()
+                        {
+                            @Override
+                            public void onDismiss(DialogInterface dialogInterface)
+                            {
+                                awaitForReward(dialogRequest, prePostRewardCallback(true, survey.callbackHandler));
+                            }
+                        }
+                );
+    }
+
+    public void runOverride(WebViewDialog dialog, Survey survey)
+    {
+        awaitForReward(dialogRequest, prePostRewardCallback(false, null));
+        dialog.show();
+        dialog.setOnDismissListener
+                (
+                        new DialogInterface.OnDismissListener()
+                        {
+                            @Override
+                            public void onDismiss(DialogInterface dialogInterface)
+                            {
+                                awaitForReward(dialogRequest, prePostRewardCallback(true, survey.callbackHandler));
+                            }
+                        }
+                );
+
+    }
+
+    public void runOverride(WebViewBottom dialog, Survey survey)
+    {
+        awaitForReward(dialogRequest, prePostRewardCallback(false, null));
+        dialog.show();
+        dialog.setOnDismissListener
+                (
+                        new DialogInterface.OnDismissListener()
+                        {
+                            @Override
+                            public void onDismiss(DialogInterface dialogInterface)
+                            {
+                                awaitForReward(dialogRequest, prePostRewardCallback(true, survey.callbackHandler));
+                            }
+                        }
+                );
 
     }
 

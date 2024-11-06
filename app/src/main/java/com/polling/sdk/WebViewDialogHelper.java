@@ -9,11 +9,13 @@ public class WebViewDialogHelper extends DialogHelper
         super(dialog);
     }
 
-    public void showDialog(DialogRequest dialog, String url) {
+    public void showDialog(DialogRequest dialog, String url, Survey survey) {
         dialog.activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                new WebViewDialog(url, dialog).show();
+
+                var webDialog = new WebViewDialog(url, dialog);
+                runOverride(webDialog, survey);
             }
         });
     }
