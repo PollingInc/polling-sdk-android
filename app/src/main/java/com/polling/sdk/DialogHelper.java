@@ -1,6 +1,7 @@
 package com.polling.sdk;
 
 import android.content.DialogInterface;
+import android.app.Dialog;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -50,25 +51,7 @@ public abstract class DialogHelper
                 );
     }
 
-    public void runOverride(WebViewDialog dialog, Survey survey)
-    {
-        awaitForReward(dialogRequest, prePostRewardCallback(false, null));
-        dialog.show();
-        dialog.setOnDismissListener
-                (
-                        new DialogInterface.OnDismissListener()
-                        {
-                            @Override
-                            public void onDismiss(DialogInterface dialogInterface)
-                            {
-                                awaitForReward(dialogRequest, prePostRewardCallback(true, survey.callbackHandler));
-                            }
-                        }
-                );
-
-    }
-
-    public void runOverride(WebViewBottom dialog, Survey survey)
+    public void runOverride(Dialog dialog, Survey survey)
     {
         awaitForReward(dialogRequest, prePostRewardCallback(false, null));
         dialog.show();
