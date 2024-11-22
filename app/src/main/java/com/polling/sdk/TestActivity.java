@@ -2,12 +2,18 @@ package com.polling.sdk;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
+import com.polling.sdk.dialogs.WebViewBottom;
+import com.polling.sdk.dialogs.WebViewBottomSheet;
+import com.polling.sdk.dialogs.helpers.WebViewDialogHelper;
+import com.polling.sdk.models.DialogRequest;
+import com.polling.sdk.models.JavaCallbackHandler;
+import com.polling.sdk.models.RequestIdentification;
+import com.polling.sdk.models.Survey;
+import com.polling.sdk.utils.ViewType;
 
 import java.util.Random;
 
@@ -37,7 +43,7 @@ public class TestActivity extends Activity {
             @Override
             public void onClick(View v) {
                 //newDialog().availableSurveys();
-                survey().availableSurveys(TestActivity.this ,ViewType.Dialog);
+                survey().availableSurveys(TestActivity.this , ViewType.Dialog);
             }
         });
 
@@ -138,7 +144,7 @@ public class TestActivity extends Activity {
                         customerId,
                         apiKey
                 );
-        return new Survey(dialogRequest,new JavaCallbackHandler() {
+        return new Survey("", dialogRequest,new JavaCallbackHandler() {
             @Override
             public void onSuccess(String response) {
 
@@ -234,7 +240,7 @@ public class TestActivity extends Activity {
                 apiKey
         );
 
-        return new Survey(requestIdentification,
+        return new Survey("", requestIdentification,
 
 
                 new JavaCallbackHandler() {
