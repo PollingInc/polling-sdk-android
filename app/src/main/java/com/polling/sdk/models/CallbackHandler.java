@@ -4,7 +4,7 @@ public interface CallbackHandler
 {
     void onSuccess(String response);
     void onFailure(String error);
-    void OnReward();
-    void OnSurveyAvailable();
+    default void OnReward(){}; //optional
+    default void OnSurveyAvailable(){}; //optional
 
 }

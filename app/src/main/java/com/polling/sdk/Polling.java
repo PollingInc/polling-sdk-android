@@ -4,6 +4,8 @@ import android.os.Handler;
 
 import com.polling.sdk.models.CallbackHandler;
 import com.polling.sdk.models.RequestIdentification;
+import com.polling.sdk.network.WebRequestHandler;
+import com.polling.sdk.network.WebRequestType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -114,38 +116,56 @@ public class Polling
     }
 
     public void logEvent(String eventName, String eventValue) {
-        new Thread(() -> {
+        new Thread(() ->
+        {
             try {
-            const response = await fetch(this.eventApiUrl !, {
-                        method:'POST',
-                        headers:{
-                    'Content-Type':'application/x-www-form-urlencoded'
-                },
-                body:
-                new URLSearchParams({
-                        event:eventName,
-                        value:eventValue as any
-                })
-            });
 
-                if (!response.ok) {
-                    this.onFailure('Failed to log event: ' + response.status);
-                    return this;
-                }
 
-            const responseData = await response.json();
+                boolean continueRequest = true;
+                WebRequestHandler.ResponseCallback apiCallbacks = new WebRequestHandler.ResponseCallback() {
 
-                if (responseData ?.triggered_surveys ?.length){
-                    this.onTriggeredSurveysUpdated(responseData.triggered_surveys as TriggeredSurvey[])
-                    ;
-                }
+                    @Override
+                    public void onResponse(String response) {
+
+                        const responseData = await response.json();
+
+                            if (responseData ?.triggered_surveys ?.length)
+                            {
+                                this.onTriggeredSurveysUpdated(responseData.triggered_surveys as TriggeredSurvey[]);
+                                continueRequest = true; //probably here, check if it needs to move outside IF
+                            }
+                    }
+
+                    @Override
+                    public void onError(String error) {
+                        this.onFailure("Failed to log event:" + error);
+                        continueRequest = false;
+
+                    }
+                };
+
+                WebRequestHandler.makeRequest(this.eventApiUrl, WebRequestType.POST, "", apiCallbacks);
+
+                if(!continueRequest) return;
+
+                const response = await fetch( !, {
+                            method:'POST',
+                            headers:{
+                        'Content-Type':'application/x-www-form-urlencoded'
+                    },
+                    body:
+                    new URLSearchParams({
+                            event:eventName,
+                            value:eventValue as any
+                    })
+                });
+
+
+
             } catch (Exception error) {
                 this.callbackHandler.onFailure("Network error.");
             }
-
-
-            return;
-        }.start();
+        }).start();
     }
 
 
