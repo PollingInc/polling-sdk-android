@@ -1,8 +1,16 @@
-package com.polling.sdk;
+package com.polling.sdk.dialogs.helpers;
 
 import android.content.DialogInterface;
 import android.app.Dialog;
 import android.util.Log;
+
+import com.polling.sdk.models.CallbackHandler;
+import com.polling.sdk.models.DialogRequest;
+import com.polling.sdk.models.Survey;
+import com.polling.sdk.utils.SurveyDataParser;
+import com.polling.sdk.network.WebRequestHandler;
+import com.polling.sdk.network.WebRequestType;
+import com.polling.sdk.dialogs.WebViewBottom;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,7 +83,7 @@ public abstract class DialogHelper
         String url = "https://demo-api.polling.com/api/sdk/surveys/completed";
         url = dialog.ApplyKeyToURL(url);
 
-        WebRequestHandler.makeRequest(url,WebRequestType.GET,null, apiCallback);
+        WebRequestHandler.makeRequest(url, WebRequestType.GET,null, apiCallback);
     }
 
     private WebRequestHandler.ResponseCallback prePostRewardCallback(Boolean post, CallbackHandler callback)

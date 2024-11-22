@@ -1,10 +1,12 @@
-package com.polling.sdk;
+package com.polling.sdk.dialogs;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.os.Bundle;
 import android.webkit.WebView;
-import java.net.URLEncoder;
+
+import com.polling.sdk.models.DialogRequest;
+import com.polling.sdk.R;
+import com.polling.sdk.dialogs.helpers.WebViewConfigs;
 
 public class WebViewDialog extends Dialog {
     public final DialogRequest dialog;

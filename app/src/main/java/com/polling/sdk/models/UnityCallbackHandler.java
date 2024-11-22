@@ -1,4 +1,4 @@
-package com.polling.sdk;
+package com.polling.sdk.models;
 
 import android.util.Log;
 

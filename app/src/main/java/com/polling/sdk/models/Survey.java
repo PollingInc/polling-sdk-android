@@ -1,15 +1,25 @@
-package com.polling.sdk;
+package com.polling.sdk.models;
 
 import android.app.Activity;
 import android.content.Context;
+
+import com.polling.sdk.utils.ViewType;
+import com.polling.sdk.network.WebRequestHandler;
+import com.polling.sdk.network.WebRequestType;
+import com.polling.sdk.dialogs.helpers.DialogHelper;
+import com.polling.sdk.dialogs.helpers.WebViewBottomHelper;
+import com.polling.sdk.dialogs.helpers.WebViewDialogHelper;
 
 public class Survey
 {
     private final RequestIdentification requestIdentification;
     public CallbackHandler callbackHandler;
 
-    public Survey(RequestIdentification requestIdentification, CallbackHandler callbackHandler)
+    public String url;
+
+    public Survey(String url, RequestIdentification requestIdentification, CallbackHandler callbackHandler)
     {
+        this.url = url;
         this.requestIdentification = requestIdentification;
         this.callbackHandler = callbackHandler;
     }

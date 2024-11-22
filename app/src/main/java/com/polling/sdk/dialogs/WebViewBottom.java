@@ -1,12 +1,15 @@
-package com.polling.sdk;
+package com.polling.sdk.dialogs;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.webkit.WebView;
+
+import com.polling.sdk.models.DialogRequest;
+import com.polling.sdk.R;
+import com.polling.sdk.dialogs.helpers.WebViewConfigs;
 
 public class WebViewBottom extends Dialog
 {

@@ -1,4 +1,8 @@
-package com.polling.sdk;
+package com.polling.sdk.dialogs.helpers;
+
+import com.polling.sdk.models.DialogRequest;
+import com.polling.sdk.models.Survey;
+import com.polling.sdk.dialogs.WebViewBottom;
 
 public class WebViewBottomHelper extends DialogHelper
 {

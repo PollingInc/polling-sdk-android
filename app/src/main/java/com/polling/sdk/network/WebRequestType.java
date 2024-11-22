@@ -1,4 +1,4 @@
-package com.polling.sdk;
+package com.polling.sdk.network;
 
 public enum WebRequestType
 {

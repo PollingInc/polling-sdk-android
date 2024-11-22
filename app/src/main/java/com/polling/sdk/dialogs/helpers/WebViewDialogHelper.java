@@ -1,6 +1,8 @@
-package com.polling.sdk;
+package com.polling.sdk.dialogs.helpers;
 
-import android.app.Activity;
+import com.polling.sdk.models.DialogRequest;
+import com.polling.sdk.models.Survey;
+import com.polling.sdk.dialogs.WebViewDialog;
 
 
 public class WebViewDialogHelper extends DialogHelper
