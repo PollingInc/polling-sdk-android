@@ -9,6 +9,7 @@ import com.polling.sdk.network.WebRequestType;
 import com.polling.sdk.utils.DataParser;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Polling
@@ -120,8 +121,6 @@ public class Polling
         new Thread(() ->
         {
             try {
-
-
                 boolean continueRequest = true;
                 WebRequestHandler.ResponseCallback apiCallbacks = new WebRequestHandler.ResponseCallback() {
 
@@ -130,19 +129,30 @@ public class Polling
 
                         DataParser dataParser = new DataParser();
 
+                        dataParser.parse(response, false);
+                        var parsedData = dataParser.get();
 
-                            if (responseData ?.triggered_surveys ?.length)
+
+                        if (parsedData != null && !parsedData.isEmpty())
+                        {
+                            Map<String, Object> result = parsedData.get(0);
+
+                            Object surveys = result.get("triggered_surveys");
+
+                            continueRequest = true;
+
+                            if (surveys instanceof List)
                             {
-                                this.onTriggeredSurveysUpdated(responseData.triggered_surveys as TriggeredSurvey[]);
-                                continueRequest = true; //probably here, check if it needs to move outside IF
+                                this.onTriggeredSurveysUpdated(surveys);
+
                             }
+
+                        }
                     }
 
                     @Override
                     public void onError(String error) {
                         this.onFailure("Failed to log event:" + error);
-                        continueRequest = false;
-
                     }
                 };
 

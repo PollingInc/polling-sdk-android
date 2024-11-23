@@ -11,7 +11,7 @@ import java.util.Map;
 
 public class DataParser {
     private List<Map<String, String>> surveys;
-    private List<Map<String, String>> generic;
+    private List<Map<String, Object>> generic;
 
     public DataParser() {
         this.surveys = new ArrayList<>();
@@ -37,22 +37,24 @@ public class DataParser {
     }
 
     public List<Map<String, String>> parseSurveys(String json, boolean flattenNested) {
-        this.parseGeneric(json, flattenNested);
+        this.parse(json, flattenNested); // Parse JSON generically
 
         surveys = new ArrayList<>();
 
+        // Ensure generic is not null or empty
         if (this.generic != null && !this.generic.isEmpty()) {
-            Map<String, String> genericData = this.generic.get(0);
+            Map<String, Object> genericData = this.generic.get(0); // Access the first parsed item
 
-            String rawSurveyDataJson = genericData.get("data");
-            if (rawSurveyDataJson != null && !rawSurveyDataJson.isEmpty() && !rawSurveyDataJson.equals("null")) {
-                Gson gson = new Gson();
-                Type listType = new TypeToken<List<Map<String, Object>>>() {}.getType();
-                List<Map<String, Object>> rawSurveys = gson.fromJson(rawSurveyDataJson, listType);
+            // Access the "data" field, which is expected to be a list
+            Object rawSurveyData = genericData.get("data");
+
+            if (rawSurveyData instanceof List) {
+                List<Map<String, Object>> rawSurveys = (List<Map<String, Object>>) rawSurveyData;
 
                 for (Map<String, Object> survey : rawSurveys) {
                     Map<String, String> flattenedSurvey = new HashMap<>();
 
+                    // Extract known fields from each survey
                     flattenedSurvey.put("uuid", (String) survey.get("uuid"));
                     flattenedSurvey.put("name", (String) survey.get("name"));
                     flattenedSurvey.put("started_at", (String) survey.get("started_at"));
@@ -60,6 +62,7 @@ public class DataParser {
 
                     @SuppressWarnings("unchecked")
                     Map<String, Object> reward = (Map<String, Object>) survey.get("reward");
+
                     if (reward != null) {
                         flattenedSurvey.put("reward_amount", String.valueOf(reward.get("reward_amount")));
                         flattenedSurvey.put("reward_name", String.valueOf(reward.get("reward_name")));
@@ -75,17 +78,18 @@ public class DataParser {
 
     public List<Map<String, String>> getSurveys() { return surveys; }
 
-    public void parseGeneric(String json, boolean flattenNested) {
+    //----------------------------------------------------------------------------------------------
+    public void parse(String json, boolean flattenNested) {
         try {
             Map<String, Object> rawData = this.parseJson(json);
 
             if (rawData != null) {
-                Map<String, String> flattenedItem = new HashMap<>();
+                Map<String, Object> flattenedItem = new HashMap<>();
                 for (Map.Entry<String, Object> entry : rawData.entrySet()) {
                     String key = entry.getKey();
                     Object value = entry.getValue();
 
-                    String processedValue = processValue(value, flattenNested);
+                    Object processedValue = processValue(value, flattenNested);
                     flattenedItem.put(key, processedValue);
                 }
                 this.generic.add(flattenedItem);
@@ -95,13 +99,13 @@ public class DataParser {
         }
     }
 
-    private String processValue(Object value, boolean flattenNested) {
+    private Object processValue(Object value, boolean flattenNested) {
         if (value instanceof Map) {
-            return flattenNested ? flattenNestedMap((Map<?, ?>) value) : value.toString();
+            return flattenNested ? flattenNestedMap((Map<?, ?>) value) : value;
         } else if (value instanceof List) {
-            return flattenNested ? flattenList((List<?>) value) : value.toString();
+            return flattenNested ? flattenList((List<?>) value) : value;
         } else {
-            return value != null ? value.toString() : "null";
+            return value != null ? value : "null";
         }
     }
 
@@ -113,5 +117,5 @@ public class DataParser {
         return new Gson().toJson(list);
     }
 
-    public List<Map<String, String>> get() { return generic; }
+    public List<Map<String, Object>> get() { return generic; }
 }
