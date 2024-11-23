@@ -13,6 +13,11 @@ public class DataParser {
     private List<Map<String, String>> surveys;
     private List<Map<String, String>> generic;
 
+    public DataParser() {
+        this.surveys = new ArrayList<>();
+        this.generic = new ArrayList<>();
+    }
+
     private Map<String, Object> parseJson(String json) {
         if (json == null || json.trim().isEmpty()) {
             return null;
@@ -31,18 +36,16 @@ public class DataParser {
         return rawData;
     }
 
-
     public List<Map<String, String>> parseSurveys(String json, boolean flattenNested) {
-        DataParser parser = new DataParser();
-        parser.parseGeneric(json, flattenNested);
+        this.parseGeneric(json, flattenNested);
 
         surveys = new ArrayList<>();
 
-        if (parser.get() != null && !parser.get().isEmpty()) {
-            Map<String, String> genericData = parser.get().get(0);
+        if (this.generic != null && !this.generic.isEmpty()) {
+            Map<String, String> genericData = this.generic.get(0);
 
             String rawSurveyDataJson = genericData.get("data");
-            if (rawSurveyDataJson != null && !rawSurveyDataJson.equals("null")) {
+            if (rawSurveyDataJson != null && !rawSurveyDataJson.isEmpty() && !rawSurveyDataJson.equals("null")) {
                 Gson gson = new Gson();
                 Type listType = new TypeToken<List<Map<String, Object>>>() {}.getType();
                 List<Map<String, Object>> rawSurveys = gson.fromJson(rawSurveyDataJson, listType);
@@ -70,18 +73,10 @@ public class DataParser {
         return surveys;
     }
 
-
-
-
-    public List<Map<String, String>> getSurveys() {
-        return surveys;
-    }
-
-    //----------------------------------------------------------------------------------------------
+    public List<Map<String, String>> getSurveys() { return surveys; }
 
     public void parseGeneric(String json, boolean flattenNested) {
         try {
-            this.generic = new ArrayList<>();
             Map<String, Object> rawData = this.parseJson(json);
 
             if (rawData != null) {
@@ -119,7 +114,4 @@ public class DataParser {
     }
 
     public List<Map<String, String>> get() { return generic; }
-
-
 }
-
