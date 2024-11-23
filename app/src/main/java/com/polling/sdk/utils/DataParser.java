@@ -79,14 +79,12 @@ public class DataParser {
 
     //----------------------------------------------------------------------------------------------
 
-    public void parseGeneric(String json, boolean flattenNested)
-    {
+    public void parseGeneric(String json, boolean flattenNested) {
         try {
             this.generic = new ArrayList<>();
             var rawData = this.parseJson(json);
 
             if (rawData != null) {
-
                 for (Map.Entry<String, List<Map<String, Object>>> entry : rawData.entrySet()) {
                     String key = entry.getKey();
                     Object value = entry.getValue();
@@ -104,31 +102,45 @@ public class DataParser {
                                 if (obj instanceof Map) {
                                     Map<String, String> flattenedItem = new HashMap<>();
                                     for (Map.Entry<?, ?> field : ((Map<?, ?>) obj).entrySet()) {
-                                        flattenedItem.put(field.getKey().toString(),
-                                                field.getValue() != null ? field.getValue().toString() : "null");
+                                        String fieldValue = processValue(field.getValue(), flattenNested);
+                                        flattenedItem.put(field.getKey().toString(), fieldValue);
                                     }
                                     this.generic.add(flattenedItem);
                                 }
                             }
                         } else {
+
                             Map<String, String> listEntry = new HashMap<>();
-                            listEntry.put(key, flattenList(list));
+                            listEntry.put(key, processValue(list, flattenNested));
                             this.generic.add(listEntry);
                         }
                     } else {
+
                         Map<String, String> simpleEntry = new HashMap<>();
-                        simpleEntry.put(key, value != null ? value.toString() : "null");
+                        simpleEntry.put(key, processValue(value, flattenNested));
                         this.generic.add(simpleEntry);
                     }
                 }
             }
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             System.err.println("Error parsing generic JSON: " + e.getMessage());
         }
     }
-    
+
+    private String processValue(Object value, boolean flattenNested) {
+        if (value instanceof Map) {
+            return flattenNested ? flattenNestedMap((Map<?, ?>) value) : value.toString();
+        } else if (value instanceof List) {
+            return flattenNested ? flattenList((List<?>) value) : value.toString();
+        } else {
+            return value != null ? value.toString() : "null";
+        }
+    }
+
+    private String flattenNestedMap(Map<?, ?> map) {
+        return new Gson().toJson(map);
+    }
+
     private String flattenList(List<?> list) {
         return new Gson().toJson(list);
     }
