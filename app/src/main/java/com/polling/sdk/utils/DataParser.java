@@ -32,11 +32,11 @@ public class DataParser {
     }
 
 
-    public static List<Map<String, String>> parseSurveys(String json, boolean flattenNested) {
+    public List<Map<String, String>> parseSurveys(String json, boolean flattenNested) {
         DataParser parser = new DataParser();
         parser.parseGeneric(json, flattenNested);
 
-        List<Map<String, String>> surveys = new ArrayList<>();
+        surveys = new ArrayList<>();
 
         if (parser.get() != null && !parser.get().isEmpty()) {
             Map<String, String> genericData = parser.get().get(0);
