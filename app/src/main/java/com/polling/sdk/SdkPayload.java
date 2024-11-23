@@ -8,7 +8,5 @@ public class SdkPayload
     public RequestIdentification requestIdentification;
     public CallbackHandler callbackHandler;
     boolean disableAvailableSurveysPoll;
-    }
-
 
 }

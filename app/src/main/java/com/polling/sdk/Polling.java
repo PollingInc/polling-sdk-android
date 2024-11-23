@@ -6,6 +6,7 @@ import com.polling.sdk.models.CallbackHandler;
 import com.polling.sdk.models.RequestIdentification;
 import com.polling.sdk.network.WebRequestHandler;
 import com.polling.sdk.network.WebRequestType;
+import com.polling.sdk.utils.DataParser;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -111,8 +112,8 @@ public class Polling
         this.logEvent("Purchase", Integer.toString(integerCents));
     }
 
-    public logSession() {
-        this.logEvent("Session");
+    public void logSession() {
+        this.logEvent("Session", null);
     }
 
     public void logEvent(String eventName, String eventValue) {
@@ -127,7 +128,8 @@ public class Polling
                     @Override
                     public void onResponse(String response) {
 
-                        const responseData = await response.json();
+                        DataParser dataParser = new DataParser();
+
 
                             if (responseData ?.triggered_surveys ?.length)
                             {

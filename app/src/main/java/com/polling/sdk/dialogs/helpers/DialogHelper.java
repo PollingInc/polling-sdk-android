@@ -7,7 +7,7 @@ import android.util.Log;
 import com.polling.sdk.models.CallbackHandler;
 import com.polling.sdk.models.DialogRequest;
 import com.polling.sdk.models.Survey;
-import com.polling.sdk.utils.SurveyDataParser;
+import com.polling.sdk.utils.DataParser;
 import com.polling.sdk.network.WebRequestHandler;
 import com.polling.sdk.network.WebRequestType;
 import com.polling.sdk.dialogs.WebViewBottom;
@@ -106,7 +106,10 @@ public abstract class DialogHelper
     private void getRewardsPreDialog(String json)
     {
         Log.i("Polling", "Parsing JSON: " + json);
-        SurveyDataParser surveyParser = new SurveyDataParser(json);
+
+        DataParser surveyParser = new DataParser();
+
+        surveyParser.parseSurveys(json);
         var surveys = surveyParser.getSurveys();
 
         surveysUid = new ArrayList<String>();
@@ -122,7 +125,9 @@ public abstract class DialogHelper
     {
         Log.w("Polling", "Entering post dialog");
 
-        SurveyDataParser surveyParser = new SurveyDataParser(json);
+        DataParser surveyParser = new DataParser();
+
+        surveyParser.parseSurveys(json);
         var surveys = surveyParser.getSurveys();
 
         List<String> pendingUuids = new ArrayList<String>();
