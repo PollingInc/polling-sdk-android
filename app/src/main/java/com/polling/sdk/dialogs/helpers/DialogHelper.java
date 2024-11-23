@@ -109,7 +109,7 @@ public abstract class DialogHelper
 
         DataParser surveyParser = new DataParser();
 
-        surveyParser.parseSurveys(json);
+        surveyParser.parseSurveys(json, true);
         var surveys = surveyParser.getSurveys();
 
         surveysUid = new ArrayList<String>();
@@ -127,7 +127,7 @@ public abstract class DialogHelper
 
         DataParser surveyParser = new DataParser();
 
-        surveyParser.parseSurveys(json);
+        surveyParser.parseSurveys(json, true);
         var surveys = surveyParser.getSurveys();
 
         List<String> pendingUuids = new ArrayList<String>();

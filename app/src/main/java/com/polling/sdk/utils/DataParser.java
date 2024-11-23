@@ -13,44 +13,43 @@ public class DataParser {
     private List<Map<String, String>> surveys;
     private List<Map<String, String>> generic;
 
-    private Map<String, List<Map<String, Object>>> parseJson(String json)
-    {
-
+    private Map<String, Object> parseJson(String json) {
         if (json == null || json.trim().isEmpty()) {
             return null;
         }
 
         Gson gson = new Gson();
+        Map<String, Object> rawData = null;
 
-        Map<String, List<Map<String, Object>>> rawData = null;
-
-        try
-        {
-            Type dataType = new TypeToken<Map<String, List<Map<String, Object>>>>() {
-            }.getType();
+        try {
+            Type dataType = new TypeToken<Map<String, Object>>() {}.getType();
             rawData = gson.fromJson(json, dataType);
-        }
-        catch (JsonSyntaxException e)
-        {
+        } catch (JsonSyntaxException e) {
             System.err.println("Error parsing JSON: " + e.getMessage());
         }
 
         return rawData;
-
     }
 
 
-    public void parseSurveys(String json) {
+    public static List<Map<String, String>> parseSurveys(String json, boolean flattenNested) {
+        DataParser parser = new DataParser();
+        parser.parseGeneric(json, flattenNested);
 
-        try
-        {
-            this.surveys = new ArrayList<>();
-            var rawData = this.parseJson(json);
+        List<Map<String, String>> surveys = new ArrayList<>();
 
-            // Check if the 'data' key exists and has content
-            if (rawData != null && rawData.containsKey("data") && !rawData.get("data").isEmpty()) {
-                for (Map<String, Object> survey : rawData.get("data")) {
+        if (parser.get() != null && !parser.get().isEmpty()) {
+            Map<String, String> genericData = parser.get().get(0);
+
+            String rawSurveyDataJson = genericData.get("data");
+            if (rawSurveyDataJson != null && !rawSurveyDataJson.equals("null")) {
+                Gson gson = new Gson();
+                Type listType = new TypeToken<List<Map<String, Object>>>() {}.getType();
+                List<Map<String, Object>> rawSurveys = gson.fromJson(rawSurveyDataJson, listType);
+
+                for (Map<String, Object> survey : rawSurveys) {
                     Map<String, String> flattenedSurvey = new HashMap<>();
+
                     flattenedSurvey.put("uuid", (String) survey.get("uuid"));
                     flattenedSurvey.put("name", (String) survey.get("name"));
                     flattenedSurvey.put("started_at", (String) survey.get("started_at"));
@@ -58,20 +57,21 @@ public class DataParser {
 
                     @SuppressWarnings("unchecked")
                     Map<String, Object> reward = (Map<String, Object>) survey.get("reward");
-                    // Ensure reward is not null and contains the keys before accessing them
                     if (reward != null) {
                         flattenedSurvey.put("reward_amount", String.valueOf(reward.get("reward_amount")));
                         flattenedSurvey.put("reward_name", String.valueOf(reward.get("reward_name")));
                     }
 
-                    this.surveys.add(flattenedSurvey);
+                    surveys.add(flattenedSurvey);
                 }
             }
-        } catch (JsonSyntaxException e) {
-            // Log the exception or handle it according to your application's needs
-            System.err.println("Error parsing JSON: " + e.getMessage());
         }
+
+        return surveys;
     }
+
+
+
 
     public List<Map<String, String>> getSurveys() {
         return surveys;
@@ -82,45 +82,18 @@ public class DataParser {
     public void parseGeneric(String json, boolean flattenNested) {
         try {
             this.generic = new ArrayList<>();
-            var rawData = this.parseJson(json);
+            Map<String, Object> rawData = this.parseJson(json);
 
             if (rawData != null) {
-                for (Map.Entry<String, List<Map<String, Object>>> entry : rawData.entrySet()) {
+                Map<String, String> flattenedItem = new HashMap<>();
+                for (Map.Entry<String, Object> entry : rawData.entrySet()) {
                     String key = entry.getKey();
                     Object value = entry.getValue();
 
-                    if (value instanceof List) {
-                        List<?> list = (List<?>) value;
-                        if (list.isEmpty()) {
-
-                            Map<String, String> emptyEntry = new HashMap<>();
-                            emptyEntry.put(key, "[]");
-                            this.generic.add(emptyEntry);
-                        } else if (list.get(0) instanceof Map) {
-
-                            for (Object obj : list) {
-                                if (obj instanceof Map) {
-                                    Map<String, String> flattenedItem = new HashMap<>();
-                                    for (Map.Entry<?, ?> field : ((Map<?, ?>) obj).entrySet()) {
-                                        String fieldValue = processValue(field.getValue(), flattenNested);
-                                        flattenedItem.put(field.getKey().toString(), fieldValue);
-                                    }
-                                    this.generic.add(flattenedItem);
-                                }
-                            }
-                        } else {
-
-                            Map<String, String> listEntry = new HashMap<>();
-                            listEntry.put(key, processValue(list, flattenNested));
-                            this.generic.add(listEntry);
-                        }
-                    } else {
-
-                        Map<String, String> simpleEntry = new HashMap<>();
-                        simpleEntry.put(key, processValue(value, flattenNested));
-                        this.generic.add(simpleEntry);
-                    }
+                    String processedValue = processValue(value, flattenNested);
+                    flattenedItem.put(key, processedValue);
                 }
+                this.generic.add(flattenedItem);
             }
         } catch (Exception e) {
             System.err.println("Error parsing generic JSON: " + e.getMessage());
