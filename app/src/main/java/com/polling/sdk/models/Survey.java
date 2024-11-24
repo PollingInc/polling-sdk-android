@@ -56,12 +56,6 @@ public class Survey
         this.callbackHandler = callbackHandler;
     }
 
-    public void availableSurveys()
-    {
-        String url = "https://demo-api.polling.com/api/sdk/surveys/available";
-        requestSurvey(url);
-    }
-
     public void availableSurveys(Context context, String viewTypeStr)
     {
         ViewType viewType = ViewType.valueOf(viewTypeStr);
@@ -69,25 +63,13 @@ public class Survey
     }
     public void availableSurveys(Context context, ViewType viewType)
     {
-        if(viewType == ViewType.None)
-        {
-            availableSurveys();
-            return;
-        }
-
         DialogHelper dialog = dialogHelper(context, viewType);
 
         String finalUrl = requestIdentification.ApplyKeyToURL(url);
 
         if(dialog != null) dialog.availableSurveys(this, finalUrl);
-        else this.availableSurveys();
     }
 
-    public void singleSurvey(String surveyId)
-    {
-        String url = "https://demo-api.polling.com/api/sdk/surveys/" + surveyId;
-        requestSurvey(url);
-    }
 
     public void singleSurvey(String surveyId, Context context, String viewTypeStr)
     {
@@ -97,19 +79,12 @@ public class Survey
 
     public void singleSurvey(String surveyId, Context context, ViewType viewType)
     {
-        if(viewType == ViewType.None)
-        {
-            singleSurvey(surveyId);
-            return;
-        }
-
         DialogHelper dialog = dialogHelper(context, viewType);
 
         String finalUrl = (url.endsWith("/") ? url : url + "/") + "survey/" + surveyId;
         finalUrl = requestIdentification.ApplyKeyToURL(finalUrl);
 
         if(dialog != null) dialog.singleSurvey(surveyId, this, finalUrl);
-        else this.singleSurvey(surveyId);
     }
 
 

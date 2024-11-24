@@ -28,12 +28,9 @@ public class TestActivity extends Activity {
 
         Button buttonAvailableSurveysDialog = findViewById(R.id.buttonAvailableSurveysDialog);
         Button buttonAvailableSurveysBottom = findViewById(R.id.buttonAvailableSurveysBottom);
-        Button buttonAvailableSurveysApi = findViewById(R.id.buttonAvailableSurveysApi);
 
         Button buttonSingleSurveyDialog = findViewById(R.id.buttonSingleSurveyDialog);
         Button buttonSingleSurveyBottom = findViewById(R.id.buttonSingleSurveyBottom);
-        Button buttonSingleSurveyApi = findViewById(R.id.buttonSingleSurveyApi);
-
 
         Button buttonCompletedSurveysApi = findViewById(R.id.buttonCompletedSurveysApi);
 
@@ -61,19 +58,6 @@ public class TestActivity extends Activity {
         });
 
 
-        buttonAvailableSurveysApi.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Survey survey = newApi();
-
-                TextView dataField = (TextView) findViewById(R.id.apiResponseData);
-                survey.availableSurveys();
-            }
-        });
-
-
-
-
         //Single Survey
         buttonSingleSurveyDialog.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,17 +77,6 @@ public class TestActivity extends Activity {
                 WebViewBottom newBottom = newBottomCustom("https://demo.polling.com/sdk/survey/3875c65f-1e7a-411f-b8c3-be2ce19a9c6e");
                 newBottom.show();
 
-            }
-        });
-
-
-        buttonSingleSurveyApi.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Survey survey = newApi();
-
-                TextView dataField = (TextView) findViewById(R.id.apiResponseData);
-                survey.singleSurvey("3875c65f-1e7a-411f-b8c3-be2ce19a9c6e");
             }
         });
 
