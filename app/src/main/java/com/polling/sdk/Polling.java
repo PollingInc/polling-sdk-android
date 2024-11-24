@@ -1,5 +1,6 @@
 package com.polling.sdk;
 
+import android.content.Context;
 import android.os.Handler;
 
 import com.polling.sdk.models.CallbackHandler;
@@ -8,6 +9,7 @@ import com.polling.sdk.models.Survey;
 import com.polling.sdk.network.WebRequestHandler;
 import com.polling.sdk.network.WebRequestType;
 import com.polling.sdk.utils.DataParser;
+import com.polling.sdk.utils.ViewType;
 
 import java.util.HashMap;
 import java.util.List;
@@ -166,7 +168,7 @@ public class Polling
     }
 
 
-    public void showSurvey(String surveyUuid) {
+    public void showSurvey(String surveyUuid, Context context) {
         if (this.isSurveyCurrentlyVisible) return;
 
         this.currentSurveyUuid = surveyUuid;
@@ -174,11 +176,11 @@ public class Polling
         Survey survey = new Survey(this.surveyViewBaseUrl, requestIdentification,null); //WILL IT HAVE NO CALLBACKS FOR THIS ONE? I DON'T THINK SO.
         //this.showFullPagePopup(`${this.surveyViewBaseUrl}/survey/${surveyUuid}?customer_id=${this.customerId}&api_key=${this.apiKey}`);
 
-        survey.singleSurvey(surveyUuid);
+        survey.singleSurvey(surveyUuid, context, ViewType.Dialog);
     }
 
 
-    public void showEmbedView() {
+    public void showEmbedView(Context context) {
         if (this.isSurveyCurrentlyVisible) return;
 
         Survey survey = new Survey(this.surveysDefaultEmbedViewUrl,null, null);

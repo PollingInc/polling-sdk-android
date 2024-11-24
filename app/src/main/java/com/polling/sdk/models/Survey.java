@@ -105,7 +105,7 @@ public class Survey
 
         DialogHelper dialog = dialogHelper(context, viewType);
 
-        String finalUrl = url + "/survey/" + surveyId; //NEED TO IMPLEMENT SLASH DETECTION
+        String finalUrl = (url.endsWith("/") ? url : url + "/") + "survey/" + surveyId;
         finalUrl = requestIdentification.ApplyKeyToURL(finalUrl);
 
         if(dialog != null) dialog.singleSurvey(surveyId, this, finalUrl);
