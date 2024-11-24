@@ -18,6 +18,13 @@ public class WebRequestHandler {
         void onError(String error);
     }
 
+
+    public static void makeRequest(final String urlString, final WebRequestType method, final String data, final ResponseCallback callback)
+    {
+        makeRequest(urlString, method, data, callback, "application/json");
+    }
+
+
     /**
      * Makes an HTTP request with the specified method and data.
      *
@@ -26,7 +33,7 @@ public class WebRequestHandler {
      * @param data        The data to send with the request (for POST/PUT), or null for methods that don't send data.
      * @param callback    The callback to handle the response or error.
      */
-    public static void makeRequest(final String urlString, final WebRequestType method, final String data, final ResponseCallback callback) {
+    public static void makeRequest(final String urlString, final WebRequestType method, final String data, final ResponseCallback callback, String contentType) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -40,7 +47,7 @@ public class WebRequestHandler {
 
                     if (data != null && !data.isEmpty() && (method.equals(WebRequestType.POST) || method.equals(WebRequestType.PUT))){
                         connection.setDoOutput(true);
-                        connection.setRequestProperty("Content-Type", "application/json");
+                        connection.setRequestProperty("Content-Type", contentType);
                         try (OutputStream os = connection.getOutputStream()) {
                             byte[] input = data.getBytes(StandardCharsets.UTF_8);
                             os.write(input, 0, input.length);
