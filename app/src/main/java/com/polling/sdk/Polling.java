@@ -173,8 +173,21 @@ public class Polling
 
         Survey survey = new Survey(this.surveyViewBaseUrl, requestIdentification,null); //WILL IT HAVE NO CALLBACKS FOR THIS ONE? I DON'T THINK SO.
         //this.showFullPagePopup(`${this.surveyViewBaseUrl}/survey/${surveyUuid}?customer_id=${this.customerId}&api_key=${this.apiKey}`);
+
+        survey.singleSurvey(surveyUuid);
     }
 
+
+    public void showEmbedView() {
+        if (this.isSurveyCurrentlyVisible) return;
+
+        Survey survey = new Survey(this.surveysDefaultEmbedViewUrl,null, null);
+        survey.singleSurvey();
+    }
+
+    public void getLocalSurveyResults(String surveyUuid) {
+        return localStorage.getItem(surveyUuid);
+    }
 
 
 

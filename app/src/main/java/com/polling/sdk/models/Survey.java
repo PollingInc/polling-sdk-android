@@ -77,7 +77,9 @@ public class Survey
 
         DialogHelper dialog = dialogHelper(context, viewType);
 
-        if(dialog != null) dialog.availableSurveys(this);
+        String finalUrl = requestIdentification.ApplyKeyToURL(url);
+
+        if(dialog != null) dialog.availableSurveys(this, finalUrl);
         else this.availableSurveys();
     }
 
@@ -103,7 +105,10 @@ public class Survey
 
         DialogHelper dialog = dialogHelper(context, viewType);
 
-        if(dialog != null) dialog.singleSurvey(surveyId, this);
+        String finalUrl = url + "/survey/" + surveyId; //NEED TO IMPLEMENT SLASH DETECTION
+        finalUrl = requestIdentification.ApplyKeyToURL(finalUrl);
+
+        if(dialog != null) dialog.singleSurvey(surveyId, this, finalUrl);
         else this.singleSurvey(surveyId);
     }
 
@@ -116,11 +121,9 @@ public class Survey
 
     private void requestSurvey(String url)
     {
-        url = requestIdentification.ApplyKeyToURL(url);
-        url = requestIdentification.ApplyCompletionBypassToURL(url);
+        String finalUrl = requestIdentification.ApplyKeyToURL(url);
 
-
-        WebRequestHandler.makeRequest(url, WebRequestType.GET, null,
+        WebRequestHandler.makeRequest(finalUrl, WebRequestType.GET, null,
                 new WebRequestHandler.ResponseCallback() {
                     @Override
                     public void onResponse(String response) {

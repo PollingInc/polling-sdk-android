@@ -186,16 +186,14 @@ public abstract class DialogHelper
     }
 
 
-    public void availableSurveys(Survey survey)
+    public void availableSurveys(Survey survey, String url)
     {
-        String url = "https://demo.polling.com/sdk/available-surveys";
         showDialog(this.dialogRequest, url, survey);
     }
 
 
-    public void singleSurvey(String surveyId, Survey survey)
+    public void singleSurvey(String surveyId, Survey survey, String url)
     {
-        String url = "https://demo.polling.com/sdk/survey/" + surveyId;
         showDialog(this.dialogRequest, url, survey);
     }
 }
