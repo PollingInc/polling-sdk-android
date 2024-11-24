@@ -36,7 +36,7 @@ public class DataParser {
         return rawData;
     }
 
-    public List<Map<String, String>> parseSurveys(String json, boolean flattenNested) {
+    public void parseSurveys(String json, boolean flattenNested) {
         this.parse(json, flattenNested); // Parse JSON generically
 
         surveys = new ArrayList<>();
@@ -72,8 +72,6 @@ public class DataParser {
                 }
             }
         }
-
-        return surveys;
     }
 
     public List<Map<String, String>> getSurveys() { return surveys; }
