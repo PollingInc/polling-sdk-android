@@ -4,6 +4,7 @@ import android.os.Handler;
 
 import com.polling.sdk.models.CallbackHandler;
 import com.polling.sdk.models.RequestIdentification;
+import com.polling.sdk.models.Survey;
 import com.polling.sdk.network.WebRequestHandler;
 import com.polling.sdk.network.WebRequestType;
 import com.polling.sdk.utils.DataParser;
@@ -29,7 +30,7 @@ public class Polling
     int surveyPollRateMsec = 60_000;
     int surveyClosePostponeMinutes  = 30;
 
-    //boolean isSurveyCurrentlyVisible = false;
+    boolean isSurveyCurrentlyVisible = false;
 
     boolean isAvailableSurveysCheckDisabled = false;
     private Map<String, Object> cachedAvailableSurveys = new HashMap<>();
@@ -121,7 +122,6 @@ public class Polling
         new Thread(() ->
         {
             try {
-                boolean continueRequest = true;
                 WebRequestHandler.ResponseCallback apiCallbacks = new WebRequestHandler.ResponseCallback() {
 
                     @Override
@@ -139,12 +139,10 @@ public class Polling
 
                             Object surveys = result.get("triggered_surveys");
 
-                            continueRequest = true;
 
                             if (surveys instanceof List)
                             {
                                 this.onTriggeredSurveysUpdated(surveys);
-
                             }
 
                         }
@@ -156,29 +154,30 @@ public class Polling
                     }
                 };
 
-                WebRequestHandler.makeRequest(this.eventApiUrl, WebRequestType.POST, "", apiCallbacks);
+                String contentType = "application/x-www-form-urlencoded";
+                String body = "event=" + eventName + "&value=" + eventValue;
 
-                if(!continueRequest) return;
-
-                const response = await fetch( !, {
-                            method:'POST',
-                            headers:{
-                        'Content-Type':'application/x-www-form-urlencoded'
-                    },
-                    body:
-                    new URLSearchParams({
-                            event:eventName,
-                            value:eventValue as any
-                    })
-                });
-
-
+                WebRequestHandler.makeRequest(this.eventApiUrl, WebRequestType.POST, body, apiCallbacks, contentType);
 
             } catch (Exception error) {
                 this.callbackHandler.onFailure("Network error.");
             }
         }).start();
     }
+
+
+    public void showSurvey(String surveyUuid) {
+        if (this.isSurveyCurrentlyVisible) return;
+
+        this.currentSurveyUuid = surveyUuid;
+
+        Survey survey = new Survey(this.surveyViewBaseUrl, requestIdentification,null); //WILL IT HAVE NO CALLBACKS FOR THIS ONE? I DON'T THINK SO.
+        //this.showFullPagePopup(`${this.surveyViewBaseUrl}/survey/${surveyUuid}?customer_id=${this.customerId}&api_key=${this.apiKey}`);
+    }
+
+
+
+
 
 
 }
