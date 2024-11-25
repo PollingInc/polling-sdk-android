@@ -24,7 +24,7 @@ public class Survey
         this.callbackHandler = callbackHandler;
     }
 
-    public DialogHelper dialogHelper(Context context, ViewType viewType)
+    private DialogHelper dialogHelper(Context context, ViewType viewType)
     {
         switch (viewType) {
             case Dialog ->
@@ -50,12 +50,37 @@ public class Survey
         return null;
     }
 
-
+    //----------------------------------------------------------------------------------------------
     public void updateCallbacks(CallbackHandler callbackHandler)
     {
         this.callbackHandler = callbackHandler;
     }
 
+
+    //----------------------------------------------------------------------------------------------
+    public void defaultSurvey(Context context, String viewTypeStr, boolean applyKey)
+    {
+        ViewType viewType = ViewType.valueOf(viewTypeStr);
+        defaultSurvey(context, viewType, applyKey);
+    }
+
+    public void defaultSurvey(Context context, ViewType viewType, boolean applyKey)
+    {
+        DialogHelper dialog = dialogHelper(context, viewType);
+
+        String finalUrl = url;
+
+        if(applyKey)
+        {
+            finalUrl = requestIdentification.ApplyKeyToURL(url);
+        }
+
+
+        if(dialog != null) dialog.defaultSurvey(this, finalUrl);
+
+    }
+
+    //----------------------------------------------------------------------------------------------
     public void availableSurveys(Context context, String viewTypeStr)
     {
         ViewType viewType = ViewType.valueOf(viewTypeStr);
@@ -67,10 +92,10 @@ public class Survey
 
         String finalUrl = requestIdentification.ApplyKeyToURL(url);
 
-        if(dialog != null) dialog.availableSurveys(this, finalUrl);
+        if(dialog != null) dialog.defaultSurvey(this, finalUrl);
     }
 
-
+    //----------------------------------------------------------------------------------------------
     public void singleSurvey(String surveyId, Context context, String viewTypeStr)
     {
         ViewType viewType = ViewType.valueOf(viewTypeStr);
@@ -87,13 +112,14 @@ public class Survey
         if(dialog != null) dialog.singleSurvey(surveyId, this, finalUrl);
     }
 
-
+    //----------------------------------------------------------------------------------------------
     public void completedSurveys()
     {
         String url = "https://demo-api.polling.com/api/sdk/surveys/completed";
         requestSurvey(url);
     }
 
+    //----------------------------------------------------------------------------------------------
     private void requestSurvey(String url)
     {
         String finalUrl = requestIdentification.ApplyKeyToURL(url);

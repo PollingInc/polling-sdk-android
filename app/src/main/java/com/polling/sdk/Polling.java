@@ -20,7 +20,7 @@ public class Polling
     String baseUrl = "https://app.polling.com";
     String baseApiUrl = "https://api.polling.com";
 
-    RequestIdentification requestIdentification;
+    RequestIdentification requestIdentification = new RequestIdentification();
 
 
     public boolean initialized = false;
@@ -42,10 +42,10 @@ public class Polling
     String surveyViewBaseUrl;
     String surveyApiBaseUrlSDK;
     String eventApiBaseUrl;
-    String surveyViewUrl;
-    String surveysDefaultEmbedViewUrl;
-    String surveyApiUrl;
-    String eventApiUrl;
+    String surveyViewUrl = this.surveyViewBaseUrl + "/available-surveys";
+    String surveysDefaultEmbedViewUrl = this.baseUrl + "/embed/";
+    String surveyApiUrl = this.surveyApiBaseUrlSDK + "/available";
+    String eventApiUrl = this.eventApiBaseUrl;
 
     public Polling()
     {
@@ -103,12 +103,12 @@ public class Polling
 
     public void setCustomerId(String customerId) {
         this.requestIdentification.customerId = customerId;
-        this.updateUrls();
+        updateUrls();
     }
 
     public void setApiKey(String apiKey) {
         this.requestIdentification.apiKey = apiKey;
-        this.updateUrls();
+        updateUrls();
     }
 
 
@@ -173,7 +173,7 @@ public class Polling
 
         this.currentSurveyUuid = surveyUuid;
 
-        Survey survey = new Survey(this.surveyViewBaseUrl, requestIdentification,null); //WILL IT HAVE NO CALLBACKS FOR THIS ONE? I DON'T THINK SO.
+        Survey survey = new Survey(this.surveyViewBaseUrl, requestIdentification, null); //WILL IT HAVE NO CALLBACKS FOR THIS ONE? I DON'T THINK SO.
         //this.showFullPagePopup(`${this.surveyViewBaseUrl}/survey/${surveyUuid}?customer_id=${this.customerId}&api_key=${this.apiKey}`);
 
         survey.singleSurvey(surveyUuid, context, ViewType.Dialog);
@@ -184,13 +184,40 @@ public class Polling
         if (this.isSurveyCurrentlyVisible) return;
 
         Survey survey = new Survey(this.surveysDefaultEmbedViewUrl,null, null);
-        survey.singleSurvey();
+        survey.defaultSurvey(context,ViewType.Dialog, false);
     }
 
     public void getLocalSurveyResults(String surveyUuid) {
         return localStorage.getItem(surveyUuid);
     }
 
+    private void updateUrls()
+    {
+        surveysDefaultEmbedViewUrl += requestIdentification.apiKey;
+
+        this.surveysDefaultEmbedViewUrl = requestIdentification.ApplyKeyToURL(surveysDefaultEmbedViewUrl,"customer_id", null);
+        this.surveyViewUrl = requestIdentification.ApplyKeyToURL(surveyViewUrl);
+        this.surveyApiUrl = requestIdentification.ApplyKeyToURL(surveyApiUrl);
+        this.eventApiUrl = requestIdentification.ApplyKeyToURL(eventApiUrl, "user", "api_key");
+    }
+
+    private void intervalLogic() {
+        if (!this.initialized || this.requestIdentification.apiKey == null || this.requestIdentification.customerId == null) return;
+
+        if (!this.isAvailableSurveysCheckDisabled) {
+            this.loadAvailableSurveys();
+        }
+
+        this.checkAvailableTriggeredSurveys();
+    }
+
+    /**
+     * Store the survey results
+     */
+    private void storeLocalSurveyResult(surveyUiid: string, surveyResultData: string)
+    {
+        localStorage.setItem(surveyUiid, surveyResultData);
+    }
 
 
 
