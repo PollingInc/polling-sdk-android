@@ -11,58 +11,13 @@
         android:layout_centerInParent="true">
 
 
-        <!-- Available Surveys -->
+        <!-- Log Event -->
         <Button
-            android:id="@+id/buttonAvailableSurveysDialog"
+            android:id="@+id/buttonLogEvent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Available Surveys [Dialog]"
+            android:text="Log Event"
         />
-        
-        <Button
-            android:id="@+id/buttonAvailableSurveysBottom"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Available Surveys [Bottom]"
-        />
-        
-        <Button
-            android:id="@+id/buttonAvailableSurveysApi"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Available Surveys [API]"
-        />
-
-        
-
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="24dp"
-        />
-        
-
-        <!-- Single Surveys -->
-        <Button
-            android:id="@+id/buttonSingleSurveyDialog"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Single Survey [Dialog]"
-        />
-        
-        <Button
-            android:id="@+id/buttonSingleSurveyBottom"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Single Survey [Bottom]"
-        />
-
-        <Button
-            android:id="@+id/buttonSingleSurveyApi"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Single Survey [API]"
-        />
-
 
 
         <Space
@@ -72,19 +27,6 @@
 
 
         <!-- Completed Surveys -->
-        <!--
-        <Button
-            android:id="@+id/buttonCompletedSurveysDialog"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Completed Surveys [Dialog]"/>
-
-        <Button
-            android:id="@+id/buttonCompletedSurveysBottom"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Completed Surveys [Bottom]"/>
-        -->
 
         <Button
             android:id="@+id/buttonCompletedSurveysApi"

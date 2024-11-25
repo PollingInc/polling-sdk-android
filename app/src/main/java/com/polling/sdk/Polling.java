@@ -140,11 +140,24 @@ public class Polling
                             Map<String, Object> result = parsedData.get(0);
 
                             Object surveys = result.get("triggered_surveys");
+                            android.util.Log.d("Polling", "Trigger results: " + surveys); //TEMPORARY
 
 
                             if (surveys instanceof List)
                             {
-                                onTriggeredSurveysUpdated(surveys);
+
+                                //TEMPORARY ------<
+                                android.util.Log.d("Polling", "Trying to parse");
+                                List<?> surveysList = (List<?>) surveys;
+
+                                if (!surveysList.isEmpty()) {
+                                    android.util.Log.d("Polling", "Trigger parse: " + surveysList.get(0));
+                                }
+                                //TEMPORARY ------>
+
+
+
+                                //onTriggeredSurveysUpdated(surveys);
                             }
 
                         }
@@ -185,7 +198,7 @@ public class Polling
     }
 
     public void getLocalSurveyResults(String surveyUuid) {
-        return localStorage.getItem(surveyUuid);
+        //return localStorage.getItem(surveyUuid);
     }
 
     private void updateUrls()
@@ -202,10 +215,10 @@ public class Polling
         if (!this.initialized || this.requestIdentification.apiKey == null || this.requestIdentification.customerId == null) return;
 
         if (!this.isAvailableSurveysCheckDisabled) {
-            this.loadAvailableSurveys();
+            //this.loadAvailableSurveys();
         }
 
-        this.checkAvailableTriggeredSurveys();
+        //this.checkAvailableTriggeredSurveys();
     }
 
     /**
@@ -213,12 +226,12 @@ public class Polling
      */
     private void storeLocalSurveyResult(String surveyUuid, String surveyResultData)
     {
-        localStorage.setItem(surveyUuid, surveyResultData);
+        //localStorage.setItem(surveyUuid, surveyResultData);
     }
 
     private void setupPostMessageBridge()
     {
-        .//seems to be unnecessary due to what we already have for this SDK in Java.
+        //seems to be unnecessary due to what we already have for this SDK in Java.
     }
 
     private void onFailure(String error)
@@ -231,8 +244,9 @@ public class Polling
         this.callbackHandler.onSurveyAvailable();
     }
 
+/*
     private void onTriggeredSurveysUpdated(List surveys) {
-        // Add the new trigered surveys to the localstorage cache
+        // Add the new triggered surveys to the localstorage cache
         let newTriggeredSurveys = [
             ...JSON.parse(localStorage.getItem('polling:triggered_surveys') || '[]'),
             ...surveys
@@ -250,7 +264,7 @@ public class Polling
 
         this.checkAvailableTriggeredSurveys();
     }
-
+*/
 
 
 
