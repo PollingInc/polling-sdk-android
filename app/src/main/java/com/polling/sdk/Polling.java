@@ -144,7 +144,7 @@ public class Polling
 
                             if (surveys instanceof List)
                             {
-                                this.onTriggeredSurveysUpdated(surveys);
+                                onTriggeredSurveysUpdated(surveys);
                             }
 
                         }
@@ -152,7 +152,7 @@ public class Polling
 
                     @Override
                     public void onError(String error) {
-                        this.onFailure("Failed to log event:" + error);
+                        onFailure("Failed to log event:" + error);
                     }
                 };
 
@@ -167,15 +167,12 @@ public class Polling
         }).start();
     }
 
-
     public void showSurvey(String surveyUuid, Context context) {
         if (this.isSurveyCurrentlyVisible) return;
 
         this.currentSurveyUuid = surveyUuid;
 
         Survey survey = new Survey(this.surveyViewBaseUrl, requestIdentification, null); //WILL IT HAVE NO CALLBACKS FOR THIS ONE? I DON'T THINK SO.
-        //this.showFullPagePopup(`${this.surveyViewBaseUrl}/survey/${surveyUuid}?customer_id=${this.customerId}&api_key=${this.apiKey}`);
-
         survey.singleSurvey(surveyUuid, context, ViewType.Dialog);
     }
 
@@ -214,10 +211,49 @@ public class Polling
     /**
      * Store the survey results
      */
-    private void storeLocalSurveyResult(surveyUiid: string, surveyResultData: string)
+    private void storeLocalSurveyResult(String surveyUuid, String surveyResultData)
     {
-        localStorage.setItem(surveyUiid, surveyResultData);
+        localStorage.setItem(surveyUuid, surveyResultData);
     }
+
+    private void setupPostMessageBridge()
+    {
+        .//seems to be unnecessary due to what we already have for this SDK in Java.
+    }
+
+    private void onFailure(String error)
+    {
+        this.callbackHandler.onFailure(error);
+    }
+
+    private void onSurveyAvailable()
+    {
+        this.callbackHandler.onSurveyAvailable();
+    }
+
+    private void onTriggeredSurveysUpdated(List surveys) {
+        // Add the new trigered surveys to the localstorage cache
+        let newTriggeredSurveys = [
+            ...JSON.parse(localStorage.getItem('polling:triggered_surveys') || '[]'),
+            ...surveys
+        ];
+
+        // Remove duplicates, to prevent showing the same survey multiple times
+        newTriggeredSurveys = newTriggeredSurveys.filter((obj, index) =>
+        newTriggeredSurveys.findIndex((item) => item.location === obj.location) === index
+        );
+
+        localStorage.setItem(
+                'polling:triggered_surveys',
+                JSON.stringify(newTriggeredSurveys)
+        );
+
+        this.checkAvailableTriggeredSurveys();
+    }
+
+
+
+
 
 
 
