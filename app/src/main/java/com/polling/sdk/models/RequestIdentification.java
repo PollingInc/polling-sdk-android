@@ -28,6 +28,8 @@ public class RequestIdentification
     */
     public String ApplyKeyToURL(String url, String customerIdField, String apiKeyField)
     {
+        if(url == null) return null;
+
         StringBuilder buffer = new StringBuilder(url);
 
         if (customerId != null && !customerId.isEmpty() && apiKey != null && !apiKey.isEmpty()) {
