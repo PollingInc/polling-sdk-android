@@ -17,35 +17,35 @@ import java.util.Map;
 
 public class Polling
 {
-    String baseUrl = "https://app.polling.com";
-    String baseApiUrl = "https://api.polling.com";
+    private String baseUrl = "https://app.polling.com";
+    private String baseApiUrl = "https://api.polling.com";
 
-    RequestIdentification requestIdentification = new RequestIdentification();
+    private RequestIdentification requestIdentification = new RequestIdentification();
 
 
     public boolean initialized = false;
-    String currentSurveyUuid = null;
+    private String currentSurveyUuid = null;
 
 
     private Handler surveyPollHandler;
     private Runnable surveyPollRunnable;
-    int surveyPollRateMsec = 60_000;
-    int surveyClosePostponeMinutes  = 30;
+    private int surveyPollRateMsec = 60_000;
+    private int surveyClosePostponeMinutes  = 30;
 
-    boolean isSurveyCurrentlyVisible = false;
+    private boolean isSurveyCurrentlyVisible = false;
 
-    boolean isAvailableSurveysCheckDisabled = false;
+    private boolean isAvailableSurveysCheckDisabled = false;
     private Map<String, Object> cachedAvailableSurveys = new HashMap<>();
     private int numSurveysAvailable = 0;
-    CallbackHandler callbackHandler;
+    private CallbackHandler callbackHandler;
 
-    String surveyViewBaseUrl;
-    String surveyApiBaseUrlSDK;
-    String eventApiBaseUrl;
-    String surveyViewUrl;
-    String surveysDefaultEmbedViewUrl;
-    String surveyApiUrl;
-    String eventApiUrl;
+    private String surveyViewBaseUrl;
+    private String surveyApiBaseUrlSDK;
+    private String eventApiBaseUrl;
+    private String surveyViewUrl;
+    private String surveysDefaultEmbedViewUrl;
+    private String surveyApiUrl;
+    private String eventApiUrl;
 
     public Polling()
     {
