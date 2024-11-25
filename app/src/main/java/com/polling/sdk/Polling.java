@@ -162,7 +162,7 @@ public class Polling
 
 
 
-                                //onTriggeredSurveysUpdated(surveys);
+                                onTriggeredSurveysUpdated(surveys);
                             }
 
                         }
@@ -249,8 +249,9 @@ public class Polling
         this.callbackHandler.onSurveyAvailable();
     }
 
-/*
-    private void onTriggeredSurveysUpdated(List surveys) {
+
+    private void onTriggeredSurveysUpdated(List<?> surveys)
+    {
         // Add the new triggered surveys to the localstorage cache
         let newTriggeredSurveys = [
             ...JSON.parse(localStorage.getItem('polling:triggered_surveys') || '[]'),
@@ -269,7 +270,7 @@ public class Polling
 
         this.checkAvailableTriggeredSurveys();
     }
-*/
+
 
 
 

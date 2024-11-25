@@ -60,7 +60,7 @@ public class TestActivity extends Activity
         Polling polling = new Polling();
         polling.initialize(sdkPayload);
 
-        polling.logEvent("javaTest", "0");
+        polling.logEvent("javaTest", "1");
 
 
     }
