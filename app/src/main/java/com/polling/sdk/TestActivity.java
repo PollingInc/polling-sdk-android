@@ -54,7 +54,7 @@ public class TestActivity extends Activity
         };
 
 
-        SdkPayload sdkPayload = new SdkPayload(requestIdentification, callbackHandler, false);
+        SdkPayload sdkPayload = new SdkPayload(this.getApplicationContext(), requestIdentification, callbackHandler, false);
 
 
         Polling polling = new Polling();

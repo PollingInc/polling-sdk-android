@@ -11,9 +11,11 @@ import com.polling.sdk.network.WebRequestType;
 import com.polling.sdk.utils.DataParser;
 import com.polling.sdk.utils.ViewType;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class Polling
 {
@@ -47,6 +49,8 @@ public class Polling
     private String surveyApiUrl;
     private String eventApiUrl;
 
+    private LocalStorage localStorage;
+
     public Polling()
     {
         this.surveyViewBaseUrl = this.baseUrl + "/sdk";
@@ -66,6 +70,9 @@ public class Polling
         if (this.initialized) {
             return;
         }
+
+        localStorage = new LocalStorage(sdkPayload.context);
+
 
         var customerPayload = sdkPayload.requestIdentification;
         var customerCallbacks = sdkPayload.callbackHandler;
@@ -102,8 +109,6 @@ public class Polling
 
         surveyPollHandler.post(surveyPollRunnable); // Schedules the first execution
         intervalLogic(); // Executes immediately
-
-        return;
     }
 
     public void setCustomerId(String customerId) {
@@ -151,18 +156,16 @@ public class Polling
                             if (surveys instanceof List)
                             {
 
-                                //TEMPORARY ------<
                                 android.util.Log.d("Polling", "Trying to parse");
-                                List<?> surveysList = (List<?>) surveys;
+                                List<String> surveysList = (List<String>) surveys;
 
                                 if (!surveysList.isEmpty()) {
                                     android.util.Log.d("Polling", "Trigger parse: " + surveysList.get(0));
+
+                                    onTriggeredSurveysUpdated(surveysList);
+
                                 }
-                                //TEMPORARY ------>
 
-
-
-                                onTriggeredSurveysUpdated(surveys);
                             }
 
                         }
@@ -202,8 +205,9 @@ public class Polling
         survey.defaultSurvey(context,ViewType.Dialog, false);
     }
 
-    public void getLocalSurveyResults(String surveyUuid) {
-        //return localStorage.getItem(surveyUuid);
+    public List<String> getLocalSurveyResults(String surveyUuid)
+    {
+        return localStorage.getData(surveyUuid, (Set<String>) null);
     }
 
     private void updateUrls()
@@ -231,7 +235,7 @@ public class Polling
      */
     private void storeLocalSurveyResult(String surveyUuid, String surveyResultData)
     {
-        //localStorage.setItem(surveyUuid, surveyResultData);
+        localStorage.saveData(surveyUuid, surveyResultData);
     }
 
     private void setupPostMessageBridge()
@@ -250,13 +254,21 @@ public class Polling
     }
 
 
-    private void onTriggeredSurveysUpdated(List<?> surveys)
+    private void onTriggeredSurveysUpdated(List<String> surveys)
     {
         // Add the new triggered surveys to the localstorage cache
+        /*
         let newTriggeredSurveys = [
             ...JSON.parse(localStorage.getItem('polling:triggered_surveys') || '[]'),
             ...surveys
         ];
+        */
+
+        List<String> storedSurveys = localStorage.getData("polling:triggered_surveys", (Set<String>) null);
+
+        List<String> newTriggeredSurveys = new ArrayList<>(surveys);
+        newTriggeredSurveys.addAll(storedSurveys);
+
 
         // Remove duplicates, to prevent showing the same survey multiple times
         newTriggeredSurveys = newTriggeredSurveys.filter((obj, index) =>
@@ -270,7 +282,6 @@ public class Polling
 
         this.checkAvailableTriggeredSurveys();
     }
-
 
 
 
