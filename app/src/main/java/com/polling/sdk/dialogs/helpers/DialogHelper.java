@@ -186,7 +186,7 @@ public abstract class DialogHelper
     }
 
 
-    public void availableSurveys(Survey survey, String url)
+    public void defaultSurvey(Survey survey, String url)
     {
         showDialog(this.dialogRequest, url, survey);
     }
