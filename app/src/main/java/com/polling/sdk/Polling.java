@@ -42,16 +42,21 @@ public class Polling
     String surveyViewBaseUrl;
     String surveyApiBaseUrlSDK;
     String eventApiBaseUrl;
-    String surveyViewUrl = this.surveyViewBaseUrl + "/available-surveys";
-    String surveysDefaultEmbedViewUrl = this.baseUrl + "/embed/";
-    String surveyApiUrl = this.surveyApiBaseUrlSDK + "/available";
-    String eventApiUrl = this.eventApiBaseUrl;
+    String surveyViewUrl;
+    String surveysDefaultEmbedViewUrl;
+    String surveyApiUrl;
+    String eventApiUrl;
 
     public Polling()
     {
         this.surveyViewBaseUrl = this.baseUrl + "/sdk";
         this.surveyApiBaseUrlSDK = this.baseApiUrl + "/api/sdk/surveys";
         this.eventApiBaseUrl = this.baseApiUrl + "/api/events/collect";
+
+        surveyViewUrl = this.surveyViewBaseUrl + "/available-surveys";
+        surveysDefaultEmbedViewUrl = this.baseUrl + "/embed/";
+        surveyApiUrl = this.surveyApiBaseUrlSDK + "/available";
+        eventApiUrl = this.eventApiBaseUrl;
     }
 
 
