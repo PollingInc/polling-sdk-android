@@ -28,6 +28,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CountDownLatch;
 
 public class Polling
 {
@@ -335,6 +336,7 @@ public class Polling
             return;
         }
 
+
         List<TriggeredSurvey> triggeredSurveys = localStorage.getData("polling:triggered_surveys");
 
         if (triggeredSurveys == null || triggeredSurveys.isEmpty()) {
@@ -346,7 +348,7 @@ public class Polling
         TriggeredSurvey triggeredSurvey = null;
         for (TriggeredSurvey survey : triggeredSurveys) {
             try {
-                SimpleDateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
+                SimpleDateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
                 Date delayedTimestamp = isoFormat.parse(survey.getDelayedTimestamp());
 
                 if (delayedTimestamp.getTime() < now) {
@@ -363,57 +365,58 @@ public class Polling
         }
 
         final TriggeredSurvey surveyToCheck = triggeredSurvey;
+
+
         new Thread(() -> {
             SurveyDetails surveyDetails = getSurveyDetails(surveyToCheck.getSurvey().getSurveyUuid());
+
 
             new Handler(Looper.getMainLooper()).post(() -> {
                 if (surveyDetails == null || !"available".equals(surveyDetails.getUserSurveyStatus())) {
                     removeTriggeredSurvey(surveyToCheck.getSurvey().getSurveyUuid());
                     checkAvailableTriggeredSurveys();
-                }
-                else {
-
+                } else {
                     showSurvey(surveyToCheck.getSurvey().getSurveyUuid(), _sdkPayload.context);
                 }
             });
         }).start();
     }
 
-    private SurveyDetails getSurveyDetails(String surveyUuid)
-    {
-        String url = baseApiUrl + "/api/sdk/surveys/" + surveyUuid;
 
+    private SurveyDetails getSurveyDetails(String surveyUuid) {
+        String url = baseApiUrl + "/api/sdk/surveys/" + surveyUuid;
         url = requestIdentification.ApplyKeyToURL(url);
 
-        SurveyDetails searchedSurvey = new SurveyDetails();
+        CountDownLatch latch = new CountDownLatch(1);
+        SurveyDetails[] result = new SurveyDetails[1];
 
         try {
-
             WebRequestHandler.ResponseCallback apiCallbacks = new WebRequestHandler.ResponseCallback() {
 
                 @Override
-                public void onResponse(String response)
-                {
-                    SurveyDetails surveyDetails = SurveyDetailsParser.parseSurveyResponse(response);
+                public void onResponse(String response) {
+                    result[0] = SurveyDetailsParser.parseSurveyResponse(response);
+                    latch.countDown();
                 }
 
                 @Override
                 public void onError(String error) {
-                    onFailure("Failed to log event:" + error);
+                    onFailure("Failed to load survey details: " + error);
+                    latch.countDown();
                 }
             };
 
-
-
             WebRequestHandler.makeRequest(url, WebRequestType.GET, null, apiCallbacks);
+            latch.await();
 
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             onFailure("Network error.");
             e.printStackTrace();
-            return null;
         }
+
+        return result[0];
     }
+
 
 
 
