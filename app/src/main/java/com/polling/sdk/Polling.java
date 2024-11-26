@@ -3,16 +3,19 @@ package com.polling.sdk;
 import android.content.Context;
 import android.os.Handler;
 
-import com.polling.sdk.models.CallbackHandler;
-import com.polling.sdk.models.RequestIdentification;
-import com.polling.sdk.models.Survey;
-import com.polling.sdk.network.WebRequestHandler;
-import com.polling.sdk.network.WebRequestType;
-import com.polling.sdk.utils.DataParser;
-import com.polling.sdk.utils.ViewType;
+import com.polling.sdk.api.models.TriggeredSurvey;
+import com.polling.sdk.core.models.CallbackHandler;
+import com.polling.sdk.core.models.RequestIdentification;
+import com.polling.sdk.core.models.Survey;
+import com.polling.sdk.core.network.WebRequestHandler;
+import com.polling.sdk.core.network.WebRequestType;
+import com.polling.sdk.core.utils.DataParser;
+import com.polling.sdk.utils.LocalStorage;
+import com.polling.sdk.core.utils.ViewType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -254,30 +257,25 @@ public class Polling
     }
 
 
-    private void onTriggeredSurveysUpdated(List<String> surveys)
+    private void onTriggeredSurveysUpdated(List<TriggeredSurvey> newSurveys)
     {
-        // Add the new triggered surveys to the localstorage cache
-        /*
-        let newTriggeredSurveys = [
-            ...JSON.parse(localStorage.getItem('polling:triggered_surveys') || '[]'),
-            ...surveys
-        ];
-        */
+        List<TriggeredSurvey> storedSurveys = localStorage.getData("polling:triggered_surveys");
 
-        List<String> storedSurveys = localStorage.getData("polling:triggered_surveys", (Set<String>) null);
-
-        List<String> newTriggeredSurveys = new ArrayList<>(surveys);
-        newTriggeredSurveys.addAll(storedSurveys);
+        List<TriggeredSurvey> newTriggeredSurveys = new ArrayList<>(storedSurveys);
+        newTriggeredSurveys.addAll(newSurveys);
 
 
-        // Remove duplicates, to prevent showing the same survey multiple times
-        newTriggeredSurveys = newTriggeredSurveys.filter((obj, index) =>
-        newTriggeredSurveys.findIndex((item) => item.location === obj.location) === index
-        );
+        Map<String, TriggeredSurvey> deduplicatedMap = new LinkedHashMap<>();
+        for (TriggeredSurvey survey : newTriggeredSurveys) {
+            deduplicatedMap.put(survey.getSurvey().getSurveyUuid(), survey);
+        }
 
-        localStorage.setItem(
-                'polling:triggered_surveys',
-                JSON.stringify(newTriggeredSurveys)
+        List<TriggeredSurvey> deduplicatedSurveys = new ArrayList<>(deduplicatedMap.values());
+
+
+        localStorage.saveData(
+                "polling:triggered_surveys",
+                deduplicatedSurveys
         );
 
         this.checkAvailableTriggeredSurveys();
