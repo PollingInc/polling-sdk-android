@@ -1,4 +1,4 @@
-package com.polling.sdk.dialogs.helpers;
+package com.polling.sdk.core.dialogs.helpers;
 
 import android.webkit.WebView;
 

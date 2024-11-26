@@ -1,14 +1,14 @@
-package com.polling.sdk.models;
+package com.polling.sdk.core.models;
 
 import android.app.Activity;
 import android.content.Context;
 
-import com.polling.sdk.utils.ViewType;
-import com.polling.sdk.network.WebRequestHandler;
-import com.polling.sdk.network.WebRequestType;
-import com.polling.sdk.dialogs.helpers.DialogHelper;
-import com.polling.sdk.dialogs.helpers.WebViewBottomHelper;
-import com.polling.sdk.dialogs.helpers.WebViewDialogHelper;
+import com.polling.sdk.core.dialogs.helpers.DialogHelper;
+import com.polling.sdk.core.dialogs.helpers.WebViewBottomHelper;
+import com.polling.sdk.core.dialogs.helpers.WebViewDialogHelper;
+import com.polling.sdk.core.network.WebRequestHandler;
+import com.polling.sdk.core.network.WebRequestType;
+import com.polling.sdk.core.utils.ViewType;
 
 public class Survey
 {

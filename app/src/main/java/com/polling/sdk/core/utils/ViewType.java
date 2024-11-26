@@ -1,4 +1,4 @@
-package com.polling.sdk.utils;
+package com.polling.sdk.core.utils;
 
 public enum ViewType
 {

@@ -1,4 +1,4 @@
-package com.polling.sdk.models;
+package com.polling.sdk.core.models;
 
 import java.net.URLEncoder;
 

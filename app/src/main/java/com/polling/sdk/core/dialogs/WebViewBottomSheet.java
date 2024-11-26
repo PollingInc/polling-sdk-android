@@ -1,4 +1,4 @@
-package com.polling.sdk.dialogs;
+package com.polling.sdk.core.dialogs;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,8 +7,8 @@ import android.webkit.WebView;
 import androidx.annotation.Nullable;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.polling.sdk.R;
-import com.polling.sdk.models.RequestIdentification;
-import com.polling.sdk.dialogs.helpers.WebViewConfigs;
+import com.polling.sdk.core.dialogs.helpers.WebViewConfigs;
+import com.polling.sdk.core.models.RequestIdentification;
 
 public class WebViewBottomSheet extends BottomSheetDialogFragment
 {

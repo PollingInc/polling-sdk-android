@@ -1,16 +1,16 @@
-package com.polling.sdk.dialogs.helpers;
+package com.polling.sdk.core.dialogs.helpers;
 
 import android.content.DialogInterface;
 import android.app.Dialog;
 import android.util.Log;
 
-import com.polling.sdk.models.CallbackHandler;
-import com.polling.sdk.models.DialogRequest;
-import com.polling.sdk.models.Survey;
-import com.polling.sdk.utils.DataParser;
-import com.polling.sdk.network.WebRequestHandler;
-import com.polling.sdk.network.WebRequestType;
-import com.polling.sdk.dialogs.WebViewBottom;
+import com.polling.sdk.core.utils.DataParser;
+import com.polling.sdk.core.models.CallbackHandler;
+import com.polling.sdk.core.models.DialogRequest;
+import com.polling.sdk.core.models.Survey;
+import com.polling.sdk.core.network.WebRequestHandler;
+import com.polling.sdk.core.network.WebRequestType;
+import com.polling.sdk.core.dialogs.WebViewBottom;
 
 import java.util.ArrayList;
 import java.util.List;

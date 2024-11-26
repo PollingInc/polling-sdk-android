@@ -1,4 +1,4 @@
-package com.polling.sdk.utils;
+package com.polling.sdk.core.utils;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;

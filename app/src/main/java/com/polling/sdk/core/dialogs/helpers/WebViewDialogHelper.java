@@ -1,8 +1,8 @@
-package com.polling.sdk.dialogs.helpers;
+package com.polling.sdk.core.dialogs.helpers;
 
-import com.polling.sdk.models.DialogRequest;
-import com.polling.sdk.models.Survey;
-import com.polling.sdk.dialogs.WebViewDialog;
+import com.polling.sdk.core.models.DialogRequest;
+import com.polling.sdk.core.models.Survey;
+import com.polling.sdk.core.dialogs.WebViewDialog;
 
 
 public class WebViewDialogHelper extends DialogHelper
