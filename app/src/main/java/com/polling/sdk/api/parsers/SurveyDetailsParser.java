@@ -1,10 +1,14 @@
 package com.polling.sdk.api.parsers;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.polling.sdk.api.models.SurveyDetails;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.lang.reflect.Type;
+import java.util.List;
 
 public class SurveyDetailsParser
 {
@@ -22,4 +26,21 @@ public class SurveyDetailsParser
             return null;
         }
     }
+
+    public static List<SurveyDetails> parseSurveysResponse(String jsonResponse) {
+        Gson gson = new Gson();
+
+        try {
+            JSONObject root = new JSONObject(jsonResponse);
+
+            String data = root.getJSONArray("data").toString();
+            Type listType = new TypeToken<List<SurveyDetails>>() {}.getType();
+
+            return gson.fromJson(data, listType);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 }
