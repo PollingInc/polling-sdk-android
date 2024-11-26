@@ -454,11 +454,12 @@ public class Polling
      * Callback method that is triggered when the available surveys are updated
      */
     private void onSurveysUpdated() {
-        var previousSurveysAvailable = this.numSurveysAvailable;
+        int previousSurveysAvailable = this.numSurveysAvailable;
 
         if (previousSurveysAvailable == 0 && this.numSurveysAvailable > 0) {
             this.onSurveyAvailable();
         }
+        
         this.numSurveysAvailable = this.cachedAvailableSurveys.size();
     }
 
