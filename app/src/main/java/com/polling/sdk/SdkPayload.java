@@ -2,8 +2,8 @@ package com.polling.sdk;
 
 import android.content.Context;
 
-import com.polling.sdk.models.CallbackHandler;
-import com.polling.sdk.models.RequestIdentification;
+import com.polling.sdk.core.models.CallbackHandler;
+import com.polling.sdk.core.models.RequestIdentification;
 
 public class SdkPayload
 {

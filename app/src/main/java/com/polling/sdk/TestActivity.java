@@ -6,8 +6,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
-import com.polling.sdk.models.CallbackHandler;
-import com.polling.sdk.models.RequestIdentification;
+import com.polling.sdk.core.models.CallbackHandler;
+import com.polling.sdk.core.models.RequestIdentification;
 
 public class TestActivity extends Activity
 {
