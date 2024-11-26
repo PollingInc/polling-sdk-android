@@ -2,8 +2,11 @@ package com.polling.sdk;
 
 import android.content.Context;
 import android.os.Handler;
+import android.os.Looper;
 
-import com.polling.sdk.api.models.SurveyParser;
+import com.polling.sdk.api.models.SurveyDetails;
+import com.polling.sdk.api.parsers.SurveyDetailsParser;
+import com.polling.sdk.api.parsers.SurveyParser;
 import com.polling.sdk.api.models.SurveyResponse;
 import com.polling.sdk.api.models.TriggeredSurvey;
 import com.polling.sdk.core.models.CallbackHandler;
@@ -11,7 +14,6 @@ import com.polling.sdk.core.models.RequestIdentification;
 import com.polling.sdk.core.models.Survey;
 import com.polling.sdk.core.network.WebRequestHandler;
 import com.polling.sdk.core.network.WebRequestType;
-import com.polling.sdk.core.utils.DataParser;
 import com.polling.sdk.utils.LocalStorage;
 import com.polling.sdk.core.utils.ViewType;
 import com.polling.sdk.utils.TimestampDelayer;
@@ -19,7 +21,6 @@ import com.polling.sdk.utils.TimestampDelayer;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -60,6 +61,8 @@ public class Polling
     private String surveyApiUrl;
     private String eventApiUrl;
 
+
+    private SdkPayload _sdkPayload;
     private LocalStorage localStorage;
 
     public Polling()
@@ -83,6 +86,7 @@ public class Polling
         }
 
         localStorage = new LocalStorage(sdkPayload.context);
+        _sdkPayload = sdkPayload;
 
 
         var customerPayload = sdkPayload.requestIdentification;
@@ -326,6 +330,90 @@ public class Polling
     }
 
 
+    private void checkAvailableTriggeredSurveys() {
+        if (isSurveyCurrentlyVisible) {
+            return;
+        }
+
+        List<TriggeredSurvey> triggeredSurveys = localStorage.getData("polling:triggered_surveys");
+
+        if (triggeredSurveys == null || triggeredSurveys.isEmpty()) {
+            return;
+        }
+
+        long now = System.currentTimeMillis();
+
+        TriggeredSurvey triggeredSurvey = null;
+        for (TriggeredSurvey survey : triggeredSurveys) {
+            try {
+                SimpleDateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
+                Date delayedTimestamp = isoFormat.parse(survey.getDelayedTimestamp());
+
+                if (delayedTimestamp.getTime() < now) {
+                    triggeredSurvey = survey;
+                    break;
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if (triggeredSurvey == null) {
+            return;
+        }
+
+        final TriggeredSurvey surveyToCheck = triggeredSurvey;
+        new Thread(() -> {
+            SurveyDetails surveyDetails = getSurveyDetails(surveyToCheck.getSurvey().getSurveyUuid());
+
+            new Handler(Looper.getMainLooper()).post(() -> {
+                if (surveyDetails == null || !"available".equals(surveyDetails.getUserSurveyStatus())) {
+                    removeTriggeredSurvey(surveyToCheck.getSurvey().getSurveyUuid());
+                    checkAvailableTriggeredSurveys();
+                }
+                else {
+
+                    showSurvey(surveyToCheck.getSurvey().getSurveyUuid(), _sdkPayload.context);
+                }
+            });
+        }).start();
+    }
+
+    private SurveyDetails getSurveyDetails(String surveyUuid)
+    {
+        String url = baseApiUrl + "/api/sdk/surveys/" + surveyUuid;
+
+        url = requestIdentification.ApplyKeyToURL(url);
+
+        SurveyDetails searchedSurvey = new SurveyDetails();
+
+        try {
+
+            WebRequestHandler.ResponseCallback apiCallbacks = new WebRequestHandler.ResponseCallback() {
+
+                @Override
+                public void onResponse(String response)
+                {
+                    SurveyDetails surveyDetails = SurveyDetailsParser.parseSurveyResponse(response);
+                }
+
+                @Override
+                public void onError(String error) {
+                    onFailure("Failed to log event:" + error);
+                }
+            };
+
+
+
+            WebRequestHandler.makeRequest(url, WebRequestType.GET, null, apiCallbacks);
+
+        }
+        catch (Exception e) {
+            onFailure("Network error.");
+            e.printStackTrace();
+            return null;
+        }
+    }
 
 
 
