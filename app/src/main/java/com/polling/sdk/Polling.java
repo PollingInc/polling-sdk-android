@@ -3,6 +3,8 @@ package com.polling.sdk;
 import android.content.Context;
 import android.os.Handler;
 
+import com.polling.sdk.api.models.SurveyParser;
+import com.polling.sdk.api.models.SurveyResponse;
 import com.polling.sdk.api.models.TriggeredSurvey;
 import com.polling.sdk.core.models.CallbackHandler;
 import com.polling.sdk.core.models.RequestIdentification;
@@ -140,36 +142,18 @@ public class Polling
                 WebRequestHandler.ResponseCallback apiCallbacks = new WebRequestHandler.ResponseCallback() {
 
                     @Override
-                    public void onResponse(String response) {
+                    public void onResponse(String response)
+                    {
 
-                        DataParser dataParser = new DataParser();
+                        SurveyResponse surveyResponse = SurveyParser.parseSurveyResponse(response);
 
-                        dataParser.parse(response, false);
-                        var parsedData = dataParser.get();
+                        List<TriggeredSurvey> triggeredSurveys = surveyResponse.getTriggeredSurveys();
 
-
-                        if (parsedData != null && !parsedData.isEmpty())
+                        if(triggeredSurveys != null && !triggeredSurveys.isEmpty())
                         {
-                            Map<String, Object> result = parsedData.get(0);
-
-                            Object surveys = result.get("triggered_surveys");
-                            android.util.Log.d("Polling", "Trigger results: " + surveys); //TEMPORARY
-
-
-                            if (surveys instanceof List)
-                            {
-
-                                android.util.Log.d("Polling", "Trying to parse");
-                                List<String> surveysList = (List<String>) surveys;
-
-                                if (!surveysList.isEmpty()) {
-                                    android.util.Log.d("Polling", "Trigger parse: " + surveysList.get(0));
-
-                                    onTriggeredSurveysUpdated(surveysList);
-
-                                }
-
-                            }
+                            android.util.Log.d("Polling", "Trigger results: " + triggeredSurveys); //TEMPORARY
+                            android.util.Log.d("Polling", "EXAMPLE - First trigger: " + triggeredSurveys.get(0).getSurvey().getName()); //TEMPORARY
+                            onTriggeredSurveysUpdated(triggeredSurveys);
 
                         }
                     }
@@ -278,7 +262,7 @@ public class Polling
                 deduplicatedSurveys
         );
 
-        this.checkAvailableTriggeredSurveys();
+        //this.checkAvailableTriggeredSurveys();
     }
 
 
