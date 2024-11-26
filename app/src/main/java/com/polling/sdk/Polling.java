@@ -52,7 +52,7 @@ public class Polling
     private boolean isSurveyCurrentlyVisible = false;
 
     private boolean isAvailableSurveysCheckDisabled = false;
-    private Map<String, Object> cachedAvailableSurveys = new HashMap<>();
+    private List<SurveyDetails> cachedAvailableSurveys;
     private int numSurveysAvailable = 0;
     private CallbackHandler callbackHandler;
 
@@ -385,6 +385,37 @@ public class Polling
     }
 
 
+    private void loadAvailableSurveys() {
+        try {
+
+            WebRequestHandler.ResponseCallback apiCallbacks = new WebRequestHandler.ResponseCallback() {
+
+                @Override
+                public void onResponse(String response)
+                {
+                    cachedAvailableSurveys = SurveyDetailsParser.parseSurveysResponse(response);
+                    onSurveysUpdated();
+                }
+
+                @Override
+                public void onError(String error) {
+                    onFailure("Failed to load survey details: " + error);
+                }
+            };
+
+
+            WebRequestHandler.makeRequest(
+                    this.surveyApiUrl,WebRequestType.GET, null, apiCallbacks);
+
+
+        } catch (Exception error) {
+            this.onFailure("Network error.");
+        }
+
+    }
+
+
+
     private SurveyDetails getSurveyDetails(String surveyUuid) {
         String url = baseApiUrl + "/api/sdk/surveys/" + surveyUuid;
         url = requestIdentification.ApplyKeyToURL(url);
@@ -419,6 +450,17 @@ public class Polling
         return result[0];
     }
 
+    /**
+     * Callback method that is triggered when the available surveys are updated
+     */
+    private void onSurveysUpdated() {
+        var previousSurveysAvailable = this.numSurveysAvailable;
+
+        if (previousSurveysAvailable == 0 && this.numSurveysAvailable > 0) {
+            this.onSurveyAvailable();
+        }
+        this.numSurveysAvailable = this.cachedAvailableSurveys.size();
+    }
 
 
 
