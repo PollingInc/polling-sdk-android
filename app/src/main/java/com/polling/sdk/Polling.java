@@ -6,14 +6,16 @@ import android.os.Looper;
 
 import com.polling.sdk.api.models.SurveyDetails;
 import com.polling.sdk.api.parsers.SurveyDetailsParser;
+import com.polling.sdk.core.models.Survey;
 import com.polling.sdk.api.parsers.SurveyParser;
 import com.polling.sdk.api.models.SurveyResponse;
 import com.polling.sdk.api.models.TriggeredSurvey;
+
 import com.polling.sdk.core.models.CallbackHandler;
 import com.polling.sdk.core.models.RequestIdentification;
-import com.polling.sdk.core.models.Survey;
 import com.polling.sdk.core.network.WebRequestHandler;
 import com.polling.sdk.core.network.WebRequestType;
+
 import com.polling.sdk.utils.LocalStorage;
 import com.polling.sdk.core.utils.ViewType;
 import com.polling.sdk.utils.TimestampDelayer;
