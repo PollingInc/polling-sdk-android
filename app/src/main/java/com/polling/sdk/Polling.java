@@ -14,9 +14,15 @@ import com.polling.sdk.core.network.WebRequestType;
 import com.polling.sdk.core.utils.DataParser;
 import com.polling.sdk.utils.LocalStorage;
 import com.polling.sdk.core.utils.ViewType;
+import com.polling.sdk.utils.TimestampDelayer;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -211,10 +217,10 @@ public class Polling
         if (!this.initialized || this.requestIdentification.apiKey == null || this.requestIdentification.customerId == null) return;
 
         if (!this.isAvailableSurveysCheckDisabled) {
-            //this.loadAvailableSurveys();
+            this.loadAvailableSurveys();
         }
 
-        //this.checkAvailableTriggeredSurveys();
+        this.checkAvailableTriggeredSurveys();
     }
 
     /**
@@ -262,8 +268,63 @@ public class Polling
                 deduplicatedSurveys
         );
 
-        //this.checkAvailableTriggeredSurveys();
+        this.checkAvailableTriggeredSurveys();
     }
+
+    private void removeTriggeredSurvey(String surveyUuid)
+    {
+        List<TriggeredSurvey> triggeredSurveys = localStorage.getData("polling:triggered_surveys");
+
+        if (triggeredSurveys == null) {
+            return;
+        }
+
+        Iterator<TriggeredSurvey> iterator = triggeredSurveys.iterator();
+        while (iterator.hasNext()) {
+            TriggeredSurvey survey = iterator.next();
+            if (survey.getSurvey().getSurveyUuid().equals(surveyUuid)) {
+                iterator.remove();
+            }
+        }
+
+        localStorage.saveData("polling:triggered_surveys", triggeredSurveys);
+    }
+
+    private void postponeTriggeredSurvey(String surveyUuid)
+    {
+
+        List<TriggeredSurvey> triggeredSurveys = localStorage.getData("polling:triggered_surveys");
+        if (triggeredSurveys == null) return;
+
+        TriggeredSurvey triggeredSurvey = null;
+
+        for (TriggeredSurvey survey : triggeredSurveys) {
+            if (survey.getSurvey().getSurveyUuid().equals(surveyUuid)) {
+                triggeredSurvey = survey;
+                break;
+            }
+        }
+
+        if (triggeredSurvey == null) return;
+
+
+        int currentDelay = triggeredSurvey.getDelaySeconds();
+        triggeredSurvey.setDelaySeconds(currentDelay + (surveyClosePostponeMinutes * 60));
+
+        String currentTimestamp = triggeredSurvey.getDelayedTimestamp();
+        String updatedTimestamp = TimestampDelayer.addMinutesToTimestamp(currentTimestamp, surveyClosePostponeMinutes);
+        triggeredSurvey.setDelayedTimestamp(updatedTimestamp);
+
+        for (int i = 0; i < triggeredSurveys.size(); i++) {
+            if (triggeredSurveys.get(i).getSurvey().getSurveyUuid().equals(surveyUuid)) {
+                triggeredSurveys.set(i, triggeredSurvey);
+                break;
+            }
+        }
+
+        localStorage.saveData("polling:triggered_surveys", triggeredSurveys);
+    }
+
 
 
 
