@@ -2,16 +2,16 @@ package com.polling.sdk.api.models;
 
 public class TriggeredSurvey
 {
-    private SurveyModel survey;
+    private SurveyShort survey;
     private int delay_seconds;
     private String delayed_timestamp;
 
     // Getters and setters
-    public SurveyModel getSurvey() {
+    public SurveyShort getSurvey() {
         return survey;
     }
 
-    public void setSurvey(SurveyModel survey) {
+    public void setSurvey(SurveyShort survey) {
         this.survey = survey;
     }
 

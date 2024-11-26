@@ -1,6 +1,7 @@
-package com.polling.sdk.api.models;
+package com.polling.sdk.api.parsers;
 
 import com.google.gson.Gson;
+import com.polling.sdk.api.models.SurveyResponse;
 
 public class SurveyParser {
     public static SurveyResponse parseSurveyResponse(String jsonResponse) {

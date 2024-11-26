@@ -1,11 +1,11 @@
 package com.polling.sdk.api.models;
 
-public class SurveyModel
+public class SurveyShort
 {
     private String survey_uuid;
     private String name;
 
-    // Getters and setters
+
     public String getSurveyUuid() {
         return survey_uuid;
     }
