@@ -17,11 +17,14 @@ public class Survey
 
     public String url;
 
-    public Survey(String url, RequestIdentification requestIdentification, CallbackHandler callbackHandler)
+    public String completionUrl;
+
+    public Survey(String url, RequestIdentification requestIdentification, CallbackHandler callbackHandler, String completionUrl)
     {
         this.url = url;
         this.requestIdentification = requestIdentification;
         this.callbackHandler = callbackHandler;
+        this.completionUrl = completionUrl;
     }
 
     private DialogHelper dialogHelper(Context context, ViewType viewType)

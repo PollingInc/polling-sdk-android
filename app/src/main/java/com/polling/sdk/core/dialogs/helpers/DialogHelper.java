@@ -4,6 +4,8 @@ import android.content.DialogInterface;
 import android.app.Dialog;
 import android.util.Log;
 
+import com.polling.sdk.api.models.SurveyDetails;
+import com.polling.sdk.api.parsers.SurveyDetailsParser;
 import com.polling.sdk.core.utils.DataParser;
 import com.polling.sdk.core.models.CallbackHandler;
 import com.polling.sdk.core.models.DialogRequest;
@@ -41,7 +43,7 @@ public abstract class DialogHelper
 
     private void runDefault(String url, Survey survey)
     {
-        awaitForReward(dialogRequest, prePostRewardCallback(false, null));
+        awaitForReward(dialogRequest, prePostRewardCallback(false, null), survey);
 
         var dialog = new WebViewBottom(url, dialogRequest); //used as default, but can be overridden on extended classes
 
@@ -53,7 +55,7 @@ public abstract class DialogHelper
                             @Override
                             public void onDismiss(DialogInterface dialogInterface)
                             {
-                                awaitForReward(dialogRequest, prePostRewardCallback(true, survey.callbackHandler));
+                                awaitForReward(dialogRequest, prePostRewardCallback(true, survey.callbackHandler), survey);
                             }
                         }
                 );
@@ -61,7 +63,7 @@ public abstract class DialogHelper
 
     public void runOverride(Dialog dialog, Survey survey)
     {
-        awaitForReward(dialogRequest, prePostRewardCallback(false, null));
+        awaitForReward(dialogRequest, prePostRewardCallback(false, null), survey);
         dialog.show();
         dialog.setOnDismissListener
                 (
@@ -70,7 +72,7 @@ public abstract class DialogHelper
                             @Override
                             public void onDismiss(DialogInterface dialogInterface)
                             {
-                                awaitForReward(dialogRequest, prePostRewardCallback(true, survey.callbackHandler));
+                                awaitForReward(dialogRequest, prePostRewardCallback(true, survey.callbackHandler), survey);
                             }
                         }
                 );
@@ -78,12 +80,9 @@ public abstract class DialogHelper
     }
 
 
-    private void awaitForReward(DialogRequest dialog, WebRequestHandler.ResponseCallback apiCallback)
+    private void awaitForReward(DialogRequest dialog, WebRequestHandler.ResponseCallback apiCallback, Survey survey)
     {
-        String url = "https://demo-api.polling.com/api/sdk/surveys/completed";
-        url = dialog.ApplyKeyToURL(url);
-
-        WebRequestHandler.makeRequest(url, WebRequestType.GET,null, apiCallback);
+        WebRequestHandler.makeRequest(survey.completionUrl, WebRequestType.GET,null, apiCallback);
     }
 
     private WebRequestHandler.ResponseCallback prePostRewardCallback(Boolean post, CallbackHandler callback)
@@ -92,8 +91,11 @@ public abstract class DialogHelper
             @Override
             public void onResponse (String response)
             {
-                if(!post) getRewardsPreDialog(response);
-                else getRewardsPostDialog(response, callback);
+
+                List<SurveyDetails> surveyDetails = SurveyDetailsParser.parseSurveysResponse(response);
+
+                if(!post) getRewardsPreDialog(surveyDetails);
+                else getRewardsPostDialog(surveyDetails, callback);
             }
             @Override
             public void onError (String error)
@@ -103,38 +105,30 @@ public abstract class DialogHelper
     }
 
 
-    private void getRewardsPreDialog(String json)
+    private void getRewardsPreDialog(List<SurveyDetails> surveyDetails)
     {
-        Log.i("Polling", "Parsing JSON: " + json);
+        if(surveyDetails == null) return;
 
-        DataParser surveyParser = new DataParser();
+        Log.i("Polling", "Pre-dialog available");
 
-        surveyParser.parseSurveys(json, true);
-        var surveys = surveyParser.getSurveys();
 
-        surveysUid = new ArrayList<String>();
-
-        for (var s : surveys)
+        for (var s : surveyDetails)
         {
-            surveysUid.add(s.get("uuid"));
+            surveysUid.add(s.getUuid());
         }
 
     }
 
-    private void getRewardsPostDialog(String json, CallbackHandler callbackHandler)
+    private void getRewardsPostDialog(List<SurveyDetails> surveyDetails, CallbackHandler callbackHandler)
     {
         Log.w("Polling", "Entering post dialog");
 
-        DataParser surveyParser = new DataParser();
-
-        surveyParser.parseSurveys(json, true);
-        var surveys = surveyParser.getSurveys();
 
         List<String> pendingUuids = new ArrayList<String>();
 
-        for (var s : surveys)
+        for (var s : surveyDetails)
         {
-            var uuid = s.get("uuid");
+            var uuid = s.getUuid();
             if(!surveysUid.contains(uuid))
             {
                 Log.w("Polling", "Pending Uuid: " + uuid);
@@ -143,10 +137,10 @@ public abstract class DialogHelper
             else Log.w("Polling", "Not pending Uuid: " + uuid);
         }
 
-        List<Map<String, String>> filteredSurveys = new ArrayList<>();
+        List<SurveyDetails> filteredSurveys = new ArrayList<>();
 
-        for (Map<String, String> survey : surveys) {
-            String uuid = survey.get("uuid");
+        for (var survey : surveyDetails) {
+            String uuid = survey.getUuid();
             if (pendingUuids.contains(uuid)) {
                 Log.w("Polling:", "Filtered survey uuid: " + uuid);
                 filteredSurveys.add(survey);
@@ -155,32 +149,8 @@ public abstract class DialogHelper
 
         if(!filteredSurveys.isEmpty())
         {
-            StringBuilder jsonBuilder = new StringBuilder();
-            jsonBuilder.append("[");
-
-            for (int i = 0; i < filteredSurveys.size(); i++) {
-                Map<String, String> survey = filteredSurveys.get(i);
-                jsonBuilder.append("{");
-                for (String key : survey.keySet()) {
-                    jsonBuilder.append("\"").append(key).append("\":\"").append(survey.get(key)).append("\",");
-                }
-                // Remove the trailing comma
-                if (!survey.isEmpty()) {
-                    jsonBuilder.deleteCharAt(jsonBuilder.length() - 1);
-                }
-                jsonBuilder.append("}");
-                if (i < filteredSurveys.size() - 1) {
-                    jsonBuilder.append(",");
-                }
-            }
-
-            jsonBuilder.append("]");
-            Log.w("Polling", "Rewards json: " + jsonBuilder.toString());
-
-            callbackHandler.onSuccess(jsonBuilder.toString());
-
-
-
+            //REWARD
+            callbackHandler.onSuccess();
         }
 
     }

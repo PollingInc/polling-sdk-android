@@ -196,7 +196,10 @@ public class Polling
 
         this.currentSurveyUuid = surveyUuid;
 
-        Survey survey = new Survey(this.surveyViewBaseUrl, requestIdentification, null); //WILL IT HAVE NO CALLBACKS FOR THIS ONE? I DON'T THINK SO.
+
+        String completionUrl = baseApiUrl + "/api/sdk/surveys/" + surveyUuid;
+
+        Survey survey = new Survey(this.surveyViewBaseUrl, requestIdentification, null, completionUrl); //WILL IT HAVE NO CALLBACKS FOR THIS ONE? I DON'T THINK SO.
         survey.singleSurvey(surveyUuid, context, this.viewType);
     }
 
@@ -204,7 +207,9 @@ public class Polling
     public void showEmbedView(Context context) {
         if (this.isSurveyCurrentlyVisible) return;
 
-        Survey survey = new Survey(this.surveysDefaultEmbedViewUrl,null, null);
+        String completionUrl = baseApiUrl + "/api/sdk/surveys/" + currentSurveyUuid; //CHECK IF THIS CODE IS RIGHT LATER <----------------------------------------------------
+
+        Survey survey = new Survey(this.surveysDefaultEmbedViewUrl,null, null, completionUrl);
         survey.defaultSurvey(context, this.viewType, false);
     }
 
