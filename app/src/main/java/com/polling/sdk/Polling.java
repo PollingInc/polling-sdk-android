@@ -24,7 +24,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -67,6 +66,8 @@ public class Polling
 
     private SdkPayload _sdkPayload;
     private LocalStorage localStorage;
+
+    private ViewType viewType = ViewType.Dialog;
 
     public Polling()
     {
@@ -139,6 +140,10 @@ public class Polling
         updateUrls();
     }
 
+    public void setViewType(String viewType) {
+        this.viewType = ViewType.valueOf(viewType);
+    }
+
 
     public void logPurchase(int integerCents) {
         this.logEvent("Purchase", Integer.toString(integerCents));
@@ -164,8 +169,6 @@ public class Polling
 
                         if(triggeredSurveys != null && !triggeredSurveys.isEmpty())
                         {
-                            android.util.Log.d("Polling", "Trigger results: " + triggeredSurveys); //TEMPORARY
-                            android.util.Log.d("Polling", "EXAMPLE - First trigger: " + triggeredSurveys.get(0).getSurvey().getName()); //TEMPORARY
                             onTriggeredSurveysUpdated(triggeredSurveys);
 
                         }
@@ -194,7 +197,7 @@ public class Polling
         this.currentSurveyUuid = surveyUuid;
 
         Survey survey = new Survey(this.surveyViewBaseUrl, requestIdentification, null); //WILL IT HAVE NO CALLBACKS FOR THIS ONE? I DON'T THINK SO.
-        survey.singleSurvey(surveyUuid, context, ViewType.Dialog);
+        survey.singleSurvey(surveyUuid, context, this.viewType);
     }
 
 
@@ -202,7 +205,7 @@ public class Polling
         if (this.isSurveyCurrentlyVisible) return;
 
         Survey survey = new Survey(this.surveysDefaultEmbedViewUrl,null, null);
-        survey.defaultSurvey(context,ViewType.Dialog, false);
+        survey.defaultSurvey(context, this.viewType, false);
     }
 
     public List<String> getLocalSurveyResults(String surveyUuid)
@@ -459,7 +462,7 @@ public class Polling
         if (previousSurveysAvailable == 0 && this.numSurveysAvailable > 0) {
             this.onSurveyAvailable();
         }
-        
+
         this.numSurveysAvailable = this.cachedAvailableSurveys.size();
     }
 
