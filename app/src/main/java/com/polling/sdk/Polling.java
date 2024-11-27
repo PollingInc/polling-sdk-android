@@ -109,7 +109,7 @@ public class Polling
             this.setApiKey(customerPayload.apiKey);
         }
 
-        this.callbackHandler = customerCallbacks;
+        this.callbackHandler = customerCallbacks;;
 
         this.setupPostMessageBridge();
 
@@ -195,11 +195,9 @@ public class Polling
         if (this.isSurveyCurrentlyVisible) return;
 
         this.currentSurveyUuid = surveyUuid;
-
-
         String completionUrl = baseApiUrl + "/api/sdk/surveys/" + surveyUuid;
 
-        Survey survey = new Survey(this.surveyViewBaseUrl, requestIdentification, null, completionUrl); //WILL IT HAVE NO CALLBACKS FOR THIS ONE? I DON'T THINK SO.
+        Survey survey = new Survey(this.surveyViewBaseUrl, requestIdentification, null, completionUrl, surveyUuid); //WILL IT HAVE NO CALLBACKS FOR THIS ONE? I DON'T THINK SO.
         survey.singleSurvey(surveyUuid, context, this.viewType);
     }
 
@@ -209,7 +207,7 @@ public class Polling
 
         String completionUrl = baseApiUrl + "/api/sdk/surveys/" + currentSurveyUuid; //CHECK IF THIS CODE IS RIGHT LATER <----------------------------------------------------
 
-        Survey survey = new Survey(this.surveysDefaultEmbedViewUrl,null, null, completionUrl);
+        Survey survey = new Survey(this.surveysDefaultEmbedViewUrl,null, null, completionUrl, currentSurveyUuid);
         survey.defaultSurvey(context, this.viewType, false);
     }
 
@@ -260,6 +258,13 @@ public class Polling
     {
         this.callbackHandler.onSurveyAvailable();
     }
+
+    //NEEDS TO DEFINE CALLBACK HANDLER AND THEN USE THIS IN showSurvey AND showEmbed <--------------------------------------
+    private void onPostpone(String uuid)
+    {
+        postponeTriggeredSurvey(uuid);
+    }
+
 
 
     private void onTriggeredSurveysUpdated(List<TriggeredSurvey> newSurveys)

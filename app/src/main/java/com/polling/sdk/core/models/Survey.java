@@ -16,15 +16,16 @@ public class Survey
     public CallbackHandler callbackHandler;
 
     public String url;
-
     public String completionUrl;
+    public String surveyUuid;
 
-    public Survey(String url, RequestIdentification requestIdentification, CallbackHandler callbackHandler, String completionUrl)
+    public Survey(String url, RequestIdentification requestIdentification, CallbackHandler callbackHandler, String completionUrl, String surveyUuid)
     {
         this.url = url;
         this.requestIdentification = requestIdentification;
         this.callbackHandler = callbackHandler;
         this.completionUrl = completionUrl;
+        this.surveyUuid = surveyUuid;
     }
 
     private DialogHelper dialogHelper(Context context, ViewType viewType)

@@ -6,5 +6,6 @@ public interface CallbackHandler
     void onFailure(String error);
     default void onReward(){}; //optional
     default void onSurveyAvailable(){}; //optional
+    default void onPostpone(String surveyUuid){};
 
 }

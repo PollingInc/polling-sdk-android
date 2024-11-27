@@ -43,7 +43,7 @@ public abstract class DialogHelper
 
     private void runDefault(String url, Survey survey)
     {
-        awaitForReward(dialogRequest, prePostRewardCallback(false, null), survey);
+        awaitForReward(dialogRequest, prePostRewardCallback(false, null, survey), survey);
 
         var dialog = new WebViewBottom(url, dialogRequest); //used as default, but can be overridden on extended classes
 
@@ -55,7 +55,7 @@ public abstract class DialogHelper
                             @Override
                             public void onDismiss(DialogInterface dialogInterface)
                             {
-                                awaitForReward(dialogRequest, prePostRewardCallback(true, survey.callbackHandler), survey);
+                                awaitForReward(dialogRequest, prePostRewardCallback(true, survey.callbackHandler, survey), survey);
                             }
                         }
                 );
@@ -63,7 +63,7 @@ public abstract class DialogHelper
 
     public void runOverride(Dialog dialog, Survey survey)
     {
-        awaitForReward(dialogRequest, prePostRewardCallback(false, null), survey);
+        awaitForReward(dialogRequest, prePostRewardCallback(false, null, survey), survey);
         dialog.show();
         dialog.setOnDismissListener
                 (
@@ -72,7 +72,7 @@ public abstract class DialogHelper
                             @Override
                             public void onDismiss(DialogInterface dialogInterface)
                             {
-                                awaitForReward(dialogRequest, prePostRewardCallback(true, survey.callbackHandler), survey);
+                                awaitForReward(dialogRequest, prePostRewardCallback(true, survey.callbackHandler, survey), survey);
                             }
                         }
                 );
@@ -85,17 +85,17 @@ public abstract class DialogHelper
         WebRequestHandler.makeRequest(survey.completionUrl, WebRequestType.GET,null, apiCallback);
     }
 
-    private WebRequestHandler.ResponseCallback prePostRewardCallback(Boolean post, CallbackHandler callback)
+    private WebRequestHandler.ResponseCallback prePostRewardCallback(Boolean post, CallbackHandler callback, Survey survey)
     {
         return new WebRequestHandler.ResponseCallback() {
             @Override
             public void onResponse (String response)
             {
 
-                List<SurveyDetails> surveyDetails = SurveyDetailsParser.parseSurveysResponse(response);
+                List<SurveyDetails> surveysDetails = SurveyDetailsParser.parseSurveysResponse(response);
 
-                if(!post) getRewardsPreDialog(surveyDetails);
-                else getRewardsPostDialog(surveyDetails, callback);
+                if(!post) getRewardsPreDialog(surveysDetails, survey);
+                else getRewardsPostDialog(surveysDetails, callback, survey);
             }
             @Override
             public void onError (String error)
@@ -105,7 +105,7 @@ public abstract class DialogHelper
     }
 
 
-    private void getRewardsPreDialog(List<SurveyDetails> surveyDetails)
+    private void getRewardsPreDialog(List<SurveyDetails> surveyDetails, Survey survey)
     {
         if(surveyDetails == null) return;
 
@@ -119,39 +119,28 @@ public abstract class DialogHelper
 
     }
 
-    private void getRewardsPostDialog(List<SurveyDetails> surveyDetails, CallbackHandler callbackHandler)
+    private void getRewardsPostDialog(List<SurveyDetails> surveyDetails, CallbackHandler callbackHandler, Survey survey)
     {
         Log.w("Polling", "Entering post dialog");
 
-
-        List<String> pendingUuids = new ArrayList<String>();
-
         for (var s : surveyDetails)
         {
-            var uuid = s.getUuid();
-            if(!surveysUid.contains(uuid))
+            String uuid = s.getUuid();
+
+            if(uuid.equals(survey.surveyUuid))
             {
-                Log.w("Polling", "Pending Uuid: " + uuid);
-                pendingUuids.add(uuid);
-            }
-            else Log.w("Polling", "Not pending Uuid: " + uuid);
-        }
+                String status = s.getUserSurveyStatus();
 
-        List<SurveyDetails> filteredSurveys = new ArrayList<>();
+                if(!status.equals( "complete"))
+                {
+                    callbackHandler.onPostpone(uuid);
+                    return;
+                }
 
-        for (var survey : surveyDetails) {
-            String uuid = survey.getUuid();
-            if (pendingUuids.contains(uuid)) {
-                Log.w("Polling:", "Filtered survey uuid: " + uuid);
-                filteredSurveys.add(survey);
             }
         }
 
-        if(!filteredSurveys.isEmpty())
-        {
-            //REWARD
-            callbackHandler.onSuccess();
-        }
+        callbackHandler.onSuccess();
 
     }
 
