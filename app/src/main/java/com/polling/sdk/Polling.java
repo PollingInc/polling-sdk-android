@@ -498,10 +498,9 @@ public class Polling
     /**
      * Callback method that is triggered when the available surveys are updated
      */
-    private void onSurveysUpdated() {
-        int previousSurveysAvailable = this.numSurveysAvailable;
-
-        if (previousSurveysAvailable == 0 && this.numSurveysAvailable > 0) {
+    private void onSurveysUpdated()
+    {
+        if (this.numSurveysAvailable > 0) {
             this.onSurveyAvailable();
         }
 
