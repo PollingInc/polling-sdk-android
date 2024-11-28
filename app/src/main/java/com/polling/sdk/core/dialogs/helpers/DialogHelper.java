@@ -137,10 +137,11 @@ public abstract class DialogHelper
                     return;
                 }
 
+                String json = SurveyDetailsParser.serializeSurveyDetails(s);
+                callbackHandler.onSuccess(json);
+
             }
         }
-
-        callbackHandler.onSuccess();
 
     }
 

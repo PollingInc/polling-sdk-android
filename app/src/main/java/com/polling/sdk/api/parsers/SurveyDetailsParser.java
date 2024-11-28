@@ -43,4 +43,12 @@ public class SurveyDetailsParser
         }
     }
 
+
+    //----------------------------------------------------------------------------------------------
+
+    public static String serializeSurveyDetails(SurveyDetails surveyDetails) {
+        Gson gson = new Gson();
+        return gson.toJson(surveyDetails);
+    }
+
 }
