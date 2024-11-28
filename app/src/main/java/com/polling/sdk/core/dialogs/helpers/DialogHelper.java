@@ -23,7 +23,7 @@ public abstract class DialogHelper
 
     public DialogRequest dialogRequest;
 
-    private List<String> surveysUid;
+    private List<String> surveysUid = new ArrayList<>();
 
     public DialogHelper(DialogRequest dialog)
     {
@@ -107,6 +107,7 @@ public abstract class DialogHelper
             @Override
             public void onError (String error)
             {
+                survey.callbackHandler.onFailure(error);
             }
         };
     }
@@ -142,12 +143,12 @@ public abstract class DialogHelper
 
                 if(!status.equals( "complete"))
                 {
-                    callbackHandler.onPostpone(uuid);
+                    survey.callbackHandler.onPostpone(uuid);
                     return;
                 }
 
                 String json = SurveyDetailsParser.serializeSurveyDetails(s);
-                callbackHandler.onSuccess(json);
+                survey.callbackHandler.onSuccess(json);
 
             }
         }

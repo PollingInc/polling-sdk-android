@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
 import com.polling.sdk.api.models.SurveyDetails;
 import com.polling.sdk.api.parsers.SurveyDetailsParser;
@@ -183,6 +184,9 @@ public class Polling
     }
 
     public void logEvent(String eventName, String eventValue) {
+
+        Log.d("Polling", "logEvent called");
+
         new Thread(() ->
         {
             try {
@@ -191,6 +195,7 @@ public class Polling
                     @Override
                     public void onResponse(String response)
                     {
+                        Log.d("Polling", "logEvent API response received.");
 
                         SurveyResponse surveyResponse = SurveyParser.parseSurveyResponse(response);
 
@@ -198,6 +203,7 @@ public class Polling
 
                         if(triggeredSurveys != null && !triggeredSurveys.isEmpty())
                         {
+                            Log.d("Polling", "logEvent calling onTriggeredSurveysUpdated");
                             onTriggeredSurveysUpdated(triggeredSurveys);
 
                         }
@@ -222,12 +228,16 @@ public class Polling
 
     //--------------------------------------------------------------------------------------------------
     public void showSurvey(String surveyUuid, Activity activity) {
+
+        Log.d("Polling", "showSurvey requested on Polling class");
+
         if (this.isSurveyCurrentlyVisible) return;
 
         this.currentSurveyUuid = surveyUuid;
         String completionUrl = baseApiUrl + "/api/sdk/surveys/" + surveyUuid;
+        completionUrl = requestIdentification.ApplyKeyToURL(completionUrl);
 
-        Survey survey = new Survey(this.surveyViewBaseUrl, requestIdentification, null, completionUrl, surveyUuid); //WILL IT HAVE NO CALLBACKS FOR THIS ONE? I DON'T THINK SO.
+        Survey survey = new Survey(this.surveyViewBaseUrl, requestIdentification, this.callbackHandler, completionUrl, surveyUuid); //WILL IT HAVE NO CALLBACKS FOR THIS ONE? I DON'T THINK SO.
         survey.singleSurvey(surveyUuid, activity, this.viewType);
     }
 
@@ -236,8 +246,10 @@ public class Polling
         if (this.isSurveyCurrentlyVisible) return;
 
         String completionUrl = baseApiUrl + "/api/sdk/surveys/" + currentSurveyUuid; //CHECK IF THIS CODE IS RIGHT LATER <----------------------------------------------------
+        completionUrl = requestIdentification.ApplyKeyToURL(completionUrl);
 
-        Survey survey = new Survey(this.surveysDefaultEmbedViewUrl,null, null, completionUrl, currentSurveyUuid);
+
+        Survey survey = new Survey(this.surveysDefaultEmbedViewUrl,null, this.callbackHandler, completionUrl, currentSurveyUuid);
         survey.defaultSurvey(activity, this.viewType, false);
     }
 
@@ -385,13 +397,14 @@ public class Polling
             return;
         }
 
-
         List<TriggeredSurvey> triggeredSurveys = localStorage.getData("polling:triggered_surveys");
 
         if (triggeredSurveys == null || triggeredSurveys.isEmpty()) {
+           Log.d("Polling", "No triggered surveys available.");
             return;
         }
 
+        Log.d("Polling", "Triggered survey(s) available.");
         long now = System.currentTimeMillis();
 
         TriggeredSurvey triggeredSurvey = null;
@@ -400,16 +413,31 @@ public class Polling
                 SimpleDateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
                 Date delayedTimestamp = isoFormat.parse(survey.getDelayedTimestamp());
 
+                //DEBUG -----------------------------
+                Log.d("Polling", " Delayed timestamp:" + delayedTimestamp);
+
+                Date nowDate = new Date();
+                nowDate.setTime(now);
+
+                Log.d("Polling", " Now:" + nowDate);
+                //DEBUG -----------------------------
+
+
+
                 if (delayedTimestamp.getTime() < now) {
                     triggeredSurvey = survey;
                     break;
                 }
+
+                Log.d("Polling", "Triggered survey should be delayed.");
+
             } catch (ParseException e) {
                 e.printStackTrace();
             }
         }
 
-        if (triggeredSurvey == null) {
+        if (triggeredSurvey == null)
+        {
             return;
         }
 
@@ -422,9 +450,11 @@ public class Polling
 
             new Handler(Looper.getMainLooper()).post(() -> {
                 if (surveyDetails == null || !"available".equals(surveyDetails.getUserSurveyStatus())) {
+                    Log.d("Polling", "None of the present surveys are in available status.");
                     removeTriggeredSurvey(surveyToCheck.getSurvey().getSurveyUuid());
                     checkAvailableTriggeredSurveys();
                 } else {
+                    Log.d("Polling", "Found survey in available status. Requesting showSurvey");
                     showSurvey(surveyToCheck.getSurvey().getSurveyUuid(), _sdkPayload.activity);
                 }
             });

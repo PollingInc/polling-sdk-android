@@ -37,7 +37,10 @@ public class TestActivity extends Activity
     public void testLogEvent()
     {
 
-        RequestIdentification requestIdentification = new RequestIdentification("test-java", "H3uZsrv6B2qyRXGePLxQ9U8g7vilWFTjIhZO");
+        RequestIdentification requestIdentification =
+                new RequestIdentification(
+                        "test-java18",
+                        "H3uZsrv6B2qyRXGePLxQ9U8g7vilWFTjIhZO");
         CallbackHandler callbackHandler = new CallbackHandler() {
             @Override
             public void onSuccess(String response)
@@ -56,10 +59,12 @@ public class TestActivity extends Activity
 
         SdkPayload sdkPayload = new SdkPayload(this, requestIdentification, callbackHandler, false);
 
-
+        Log.d("Polling", "Requesting Polling initialization.");
         Polling polling = new Polling();
         polling.initialize(sdkPayload);
+        Log.d("Polling", "Polling initialized.");
 
+        Log.d("Polling", "Calling logEvent.");
         polling.logEvent("javaTest", "1");
 
 

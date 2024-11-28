@@ -2,6 +2,7 @@ package com.polling.sdk.core.models;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 
 import com.polling.sdk.core.dialogs.helpers.DialogHelper;
 import com.polling.sdk.core.dialogs.helpers.WebViewBottomHelper;
@@ -110,8 +111,13 @@ public class Survey
     {
         DialogHelper dialog = dialogHelper(activity, viewType);
 
+        Log.d("Polling", "1 - singleSurvey URL: " +  url);
+
         String finalUrl = (url.endsWith("/") ? url : url + "/") + "survey/" + surveyId;
         finalUrl = requestIdentification.ApplyKeyToURL(finalUrl);
+
+        Log.d("Polling", " 1 - singleSurvey URL: " +  finalUrl);
+
 
         if(dialog != null) dialog.singleSurvey(surveyId, this, finalUrl);
     }

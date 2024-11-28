@@ -1,5 +1,7 @@
 package com.polling.sdk.api.parsers;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.polling.sdk.api.models.SurveyDetails;
@@ -32,16 +34,28 @@ public class SurveyDetailsParser
 
         try {
             JSONObject root = new JSONObject(jsonResponse);
+            
+            Object data = root.opt("data");
 
-            String data = root.getJSONArray("data").toString();
-            Type listType = new TypeToken<List<SurveyDetails>>() {}.getType();
-
-            return gson.fromJson(data, listType);
+            if (data instanceof org.json.JSONArray) {
+                Type listType = new TypeToken<List<SurveyDetails>>() {}.getType();
+                return gson.fromJson(data.toString(), listType);
+            } else if (data instanceof org.json.JSONObject) {
+                SurveyDetails surveyDetails = gson.fromJson(data.toString(), SurveyDetails.class);
+                return List.of(surveyDetails);
+            } else {
+                Log.e("Polling", "Unexpected 'data' field type or null in JSON: " + data);
+                return List.of();
+            }
         } catch (JSONException e) {
             e.printStackTrace();
-            return null;
+            return List.of();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return List.of();
         }
     }
+
 
 
     //----------------------------------------------------------------------------------------------

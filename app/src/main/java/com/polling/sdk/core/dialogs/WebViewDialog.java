@@ -2,6 +2,7 @@ package com.polling.sdk.core.dialogs;
 
 import android.app.Dialog;
 import android.os.Bundle;
+import android.util.Log;
 import android.webkit.WebView;
 
 import com.polling.sdk.core.dialogs.helpers.WebViewConfigs;
@@ -25,6 +26,9 @@ public class WebViewDialog extends Dialog {
         setContentView(R.layout.dialog_webview);
 
         WebView webView = WebViewConfigs.applyDefault(findViewById(R.id.webview));
+
+        Log.d("Polling", "Showing webview with URL: " + url);
+
 
         webView.loadUrl(url);
     }
