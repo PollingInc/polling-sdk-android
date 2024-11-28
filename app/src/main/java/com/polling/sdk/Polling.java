@@ -109,7 +109,42 @@ public class Polling
             this.setApiKey(customerPayload.apiKey);
         }
 
-        this.callbackHandler = customerCallbacks;;
+
+
+
+        this.callbackHandler = new CallbackHandler() {
+            @Override
+            public void onPostpone(String surveyUuid) {
+                onPostponeDefault(surveyUuid); //the only callback that is locked and can't be modified by client
+            }
+
+            @Override
+            public void onSuccess(String response) {
+                customerCallbacks.onSuccess(response);
+            }
+
+            @Override
+            public void onFailure(String error) {
+                customerCallbacks.onFailure(error);
+            }
+
+            @Override
+            public void onReward() {
+                customerCallbacks.onReward();
+            }
+
+            @Override
+            public void onSurveyAvailable() {
+                customerCallbacks.onSurveyAvailable();
+            }
+        };
+
+
+
+
+
+
+
 
         this.setupPostMessageBridge();
 
@@ -259,13 +294,10 @@ public class Polling
         this.callbackHandler.onSurveyAvailable();
     }
 
-    //NEEDS TO DEFINE CALLBACK HANDLER AND THEN USE THIS IN showSurvey AND showEmbed <--------------------------------------
-    private void onPostpone(String uuid)
+    private void onPostponeDefault(String uuid)
     {
         postponeTriggeredSurvey(uuid);
     }
-
-
 
     private void onTriggeredSurveysUpdated(List<TriggeredSurvey> newSurveys)
     {
@@ -434,14 +466,14 @@ public class Polling
         url = requestIdentification.ApplyKeyToURL(url);
 
         CountDownLatch latch = new CountDownLatch(1);
-        SurveyDetails[] result = new SurveyDetails[1];
+        SurveyDetails[] result = new SurveyDetails[1]; //storing in an array as a trick
 
         try {
             WebRequestHandler.ResponseCallback apiCallbacks = new WebRequestHandler.ResponseCallback() {
 
                 @Override
                 public void onResponse(String response) {
-                    result[0] = SurveyDetailsParser.parseSurveyResponse(response);
+                    result[0] = SurveyDetailsParser.parseSurveyResponse(response); //still part of the trick
                     latch.countDown();
                 }
 
