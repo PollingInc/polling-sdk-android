@@ -69,6 +69,7 @@ public class Polling
 
     private ViewType viewType = ViewType.Dialog;
 
+
     public Polling()
     {
         this.surveyViewBaseUrl = this.baseUrl + "/sdk";
@@ -81,9 +82,7 @@ public class Polling
         eventApiUrl = this.eventApiBaseUrl;
     }
 
-
-
-
+    //--------------------------------------------------------------------------------------------------
     public void initialize(SdkPayload sdkPayload) {
         if (this.initialized) {
             return;
@@ -108,8 +107,6 @@ public class Polling
         {
             this.setApiKey(customerPayload.apiKey);
         }
-
-
 
 
         this.callbackHandler = new CallbackHandler() {
@@ -140,12 +137,6 @@ public class Polling
         };
 
 
-
-
-
-
-
-
         this.setupPostMessageBridge();
 
         if (surveyPollHandler != null) {
@@ -165,6 +156,7 @@ public class Polling
         intervalLogic(); // Executes immediately
     }
 
+    //--------------------------------------------------------------------------------------------------
     public void setCustomerId(String customerId) {
         this.requestIdentification.customerId = customerId;
         updateUrls();
@@ -179,7 +171,7 @@ public class Polling
         this.viewType = ViewType.valueOf(viewType);
     }
 
-
+    //--------------------------------------------------------------------------------------------------
     public void logPurchase(int integerCents) {
         this.logEvent("Purchase", Integer.toString(integerCents));
     }
@@ -226,6 +218,7 @@ public class Polling
         }).start();
     }
 
+    //--------------------------------------------------------------------------------------------------
     public void showSurvey(String surveyUuid, Context context) {
         if (this.isSurveyCurrentlyVisible) return;
 
@@ -246,11 +239,13 @@ public class Polling
         survey.defaultSurvey(context, this.viewType, false);
     }
 
+    //--------------------------------------------------------------------------------------------------
     public List<String> getLocalSurveyResults(String surveyUuid)
     {
         return localStorage.getData(surveyUuid, (Set<String>) null);
     }
 
+    //--------------------------------------------------------------------------------------------------
     private void updateUrls()
     {
         surveysDefaultEmbedViewUrl += requestIdentification.apiKey;
@@ -261,6 +256,7 @@ public class Polling
         this.eventApiUrl = requestIdentification.ApplyKeyToURL(eventApiUrl, "user", "api_key");
     }
 
+    //--------------------------------------------------------------------------------------------------
     private void intervalLogic() {
         if (!this.initialized || this.requestIdentification.apiKey == null || this.requestIdentification.customerId == null) return;
 
@@ -271,6 +267,7 @@ public class Polling
         this.checkAvailableTriggeredSurveys();
     }
 
+    //--------------------------------------------------------------------------------------------------
     /**
      * Store the survey results
      */
@@ -279,11 +276,13 @@ public class Polling
         localStorage.saveData(surveyUuid, surveyResultData);
     }
 
+    //--------------------------------------------------------------------------------------------------
     private void setupPostMessageBridge()
     {
         //seems to be unnecessary due to what we already have for this SDK in Java.
     }
 
+    //--------------------------------------------------------------------------------------------------
     private void onFailure(String error)
     {
         this.callbackHandler.onFailure(error);
@@ -299,6 +298,7 @@ public class Polling
         postponeTriggeredSurvey(uuid);
     }
 
+    //--------------------------------------------------------------------------------------------------
     private void onTriggeredSurveysUpdated(List<TriggeredSurvey> newSurveys)
     {
         List<TriggeredSurvey> storedSurveys = localStorage.getData("polling:triggered_surveys");
@@ -429,7 +429,7 @@ public class Polling
         }).start();
     }
 
-
+    //--------------------------------------------------------------------------------------------------
     private void loadAvailableSurveys() {
         try {
 
@@ -459,8 +459,7 @@ public class Polling
 
     }
 
-
-
+    //--------------------------------------------------------------------------------------------------
     private SurveyDetails getSurveyDetails(String surveyUuid) {
         String url = baseApiUrl + "/api/sdk/surveys/" + surveyUuid;
         url = requestIdentification.ApplyKeyToURL(url);
@@ -495,6 +494,7 @@ public class Polling
         return result[0];
     }
 
+    //--------------------------------------------------------------------------------------------------
     /**
      * Callback method that is triggered when the available surveys are updated
      */
@@ -507,10 +507,5 @@ public class Polling
 
         this.numSurveysAvailable = this.cachedAvailableSurveys.size();
     }
-
-
-
-
-
 
 }
