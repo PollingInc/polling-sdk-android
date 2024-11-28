@@ -33,8 +33,8 @@ import java.util.concurrent.CountDownLatch;
 
 public class Polling
 {
-    private String baseUrl = "https://app.polling.com";
-    private String baseApiUrl = "https://api.polling.com";
+    private final String baseUrl = "https://app.polling.com";
+    private final String baseApiUrl = "https://api.polling.com";
 
     private RequestIdentification requestIdentification = new RequestIdentification();
 
@@ -45,6 +45,7 @@ public class Polling
 
     private Handler surveyPollHandler;
     private Runnable surveyPollRunnable;
+
     private int surveyPollRateMsec = 60_000;
     private int surveyClosePostponeMinutes  = 30;
 
@@ -157,12 +158,12 @@ public class Polling
     }
 
     //--------------------------------------------------------------------------------------------------
-    public void setCustomerId(String customerId) {
+    private void setCustomerId(String customerId) {
         this.requestIdentification.customerId = customerId;
         updateUrls();
     }
 
-    public void setApiKey(String apiKey) {
+    private void setApiKey(String apiKey) {
         this.requestIdentification.apiKey = apiKey;
         updateUrls();
     }
