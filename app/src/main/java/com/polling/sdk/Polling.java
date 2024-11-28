@@ -1,5 +1,6 @@
 package com.polling.sdk;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
@@ -89,7 +90,7 @@ public class Polling
             return;
         }
 
-        localStorage = new LocalStorage(sdkPayload.context);
+        localStorage = new LocalStorage(sdkPayload.activity.getApplicationContext());
         _sdkPayload = sdkPayload;
 
 
@@ -220,24 +221,24 @@ public class Polling
     }
 
     //--------------------------------------------------------------------------------------------------
-    public void showSurvey(String surveyUuid, Context context) {
+    public void showSurvey(String surveyUuid, Activity activity) {
         if (this.isSurveyCurrentlyVisible) return;
 
         this.currentSurveyUuid = surveyUuid;
         String completionUrl = baseApiUrl + "/api/sdk/surveys/" + surveyUuid;
 
         Survey survey = new Survey(this.surveyViewBaseUrl, requestIdentification, null, completionUrl, surveyUuid); //WILL IT HAVE NO CALLBACKS FOR THIS ONE? I DON'T THINK SO.
-        survey.singleSurvey(surveyUuid, context, this.viewType);
+        survey.singleSurvey(surveyUuid, activity, this.viewType);
     }
 
 
-    public void showEmbedView(Context context) {
+    public void showEmbedView(Activity activity) {
         if (this.isSurveyCurrentlyVisible) return;
 
         String completionUrl = baseApiUrl + "/api/sdk/surveys/" + currentSurveyUuid; //CHECK IF THIS CODE IS RIGHT LATER <----------------------------------------------------
 
         Survey survey = new Survey(this.surveysDefaultEmbedViewUrl,null, null, completionUrl, currentSurveyUuid);
-        survey.defaultSurvey(context, this.viewType, false);
+        survey.defaultSurvey(activity, this.viewType, false);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -424,7 +425,7 @@ public class Polling
                     removeTriggeredSurvey(surveyToCheck.getSurvey().getSurveyUuid());
                     checkAvailableTriggeredSurveys();
                 } else {
-                    showSurvey(surveyToCheck.getSurvey().getSurveyUuid(), _sdkPayload.context);
+                    showSurvey(surveyToCheck.getSurvey().getSurveyUuid(), _sdkPayload.activity);
                 }
             });
         }).start();

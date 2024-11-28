@@ -28,13 +28,13 @@ public class Survey
         this.surveyUuid = surveyUuid;
     }
 
-    private DialogHelper dialogHelper(Context context, ViewType viewType)
+    private DialogHelper dialogHelper(Activity activity, ViewType viewType)
     {
         switch (viewType) {
             case Dialog ->
             {
                 DialogRequest dialogRequest = new DialogRequest(
-                        (Activity) context,
+                        activity,
                         requestIdentification.customerId,
                         requestIdentification.apiKey);
 
@@ -43,7 +43,7 @@ public class Survey
             case Bottom ->
             {
                 DialogRequest dialogRequest = new DialogRequest(
-                        (Activity) context,
+                        activity,
                         requestIdentification.customerId,
                         requestIdentification.apiKey);
 
@@ -62,15 +62,15 @@ public class Survey
 
 
     //----------------------------------------------------------------------------------------------
-    public void defaultSurvey(Context context, String viewTypeStr, boolean applyKey)
+    public void defaultSurvey(Activity activity, String viewTypeStr, boolean applyKey)
     {
         ViewType viewType = ViewType.valueOf(viewTypeStr);
-        defaultSurvey(context, viewType, applyKey);
+        defaultSurvey(activity, viewType, applyKey);
     }
 
-    public void defaultSurvey(Context context, ViewType viewType, boolean applyKey)
+    public void defaultSurvey(Activity activity, ViewType viewType, boolean applyKey)
     {
-        DialogHelper dialog = dialogHelper(context, viewType);
+        DialogHelper dialog = dialogHelper(activity, viewType);
 
         String finalUrl = url;
 
@@ -85,14 +85,14 @@ public class Survey
     }
 
     //----------------------------------------------------------------------------------------------
-    public void availableSurveys(Context context, String viewTypeStr)
+    public void availableSurveys(Activity activity, String viewTypeStr)
     {
         ViewType viewType = ViewType.valueOf(viewTypeStr);
-        availableSurveys(context, viewType);
+        availableSurveys(activity, viewType);
     }
-    public void availableSurveys(Context context, ViewType viewType)
+    public void availableSurveys(Activity activity, ViewType viewType)
     {
-        DialogHelper dialog = dialogHelper(context, viewType);
+        DialogHelper dialog = dialogHelper(activity, viewType);
 
         String finalUrl = requestIdentification.ApplyKeyToURL(url);
 
@@ -100,15 +100,15 @@ public class Survey
     }
 
     //----------------------------------------------------------------------------------------------
-    public void singleSurvey(String surveyId, Context context, String viewTypeStr)
+    public void singleSurvey(String surveyId, Activity activity, String viewTypeStr)
     {
         ViewType viewType = ViewType.valueOf(viewTypeStr);
-        singleSurvey(surveyId, context, viewType);
+        singleSurvey(surveyId, activity, viewType);
     }
 
-    public void singleSurvey(String surveyId, Context context, ViewType viewType)
+    public void singleSurvey(String surveyId, Activity activity, ViewType viewType)
     {
-        DialogHelper dialog = dialogHelper(context, viewType);
+        DialogHelper dialog = dialogHelper(activity, viewType);
 
         String finalUrl = (url.endsWith("/") ? url : url + "/") + "survey/" + surveyId;
         finalUrl = requestIdentification.ApplyKeyToURL(finalUrl);
