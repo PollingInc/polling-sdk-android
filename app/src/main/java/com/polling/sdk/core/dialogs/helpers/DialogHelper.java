@@ -91,8 +91,15 @@ public abstract class DialogHelper
             @Override
             public void onResponse (String response)
             {
-
+                Log.d("Polling", "onResponse json: " + response);
                 List<SurveyDetails> surveysDetails = SurveyDetailsParser.parseSurveysResponse(response);
+
+                String result = "None";
+                if(surveysDetails != null){
+                    result = surveysDetails.get(0).getUuid();
+                }
+
+                Log.d("Polling", "onResponse surveyDetails: " + result);
 
                 if(!post) getRewardsPreDialog(surveysDetails, survey);
                 else getRewardsPostDialog(surveysDetails, callback, survey);
@@ -122,6 +129,8 @@ public abstract class DialogHelper
     private void getRewardsPostDialog(List<SurveyDetails> surveyDetails, CallbackHandler callbackHandler, Survey survey)
     {
         Log.w("Polling", "Entering post dialog");
+
+        if(surveyDetails == null) return;
 
         for (var s : surveyDetails)
         {

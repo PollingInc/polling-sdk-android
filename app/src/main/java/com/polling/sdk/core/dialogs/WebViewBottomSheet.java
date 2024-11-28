@@ -32,10 +32,7 @@ public class WebViewBottomSheet extends BottomSheetDialogFragment
         View v = inflater.inflate(R.layout.fragment_bottom_sheet_webview, container, false);
         WebView webView = WebViewConfigs.applyDefault(v.findViewById(R.id.webview));
 
-        String endpoint = requestIdentification.ApplyKeyToURL(url);
-        endpoint = requestIdentification.ApplyCompletionBypassToURL(endpoint);
-
-        webView.loadUrl(endpoint);
+        webView.loadUrl(url);
 
         return v;
     }

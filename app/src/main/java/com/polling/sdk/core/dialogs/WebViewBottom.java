@@ -41,11 +41,8 @@ public class WebViewBottom extends Dialog
 
         WebView webView = findViewById(R.id.webview);
 
-        String endpoint = dialogRequest.ApplyKeyToURL(url);
-        endpoint = dialogRequest.ApplyCompletionBypassToURL(endpoint);
-
         WebViewConfigs.applyDefault(webView);
-        webView.loadUrl(endpoint);
+        webView.loadUrl(url);
 
     }
 }

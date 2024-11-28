@@ -26,9 +26,7 @@ public class WebViewDialog extends Dialog {
 
         WebView webView = WebViewConfigs.applyDefault(findViewById(R.id.webview));
 
-        String endpoint = dialog.ApplyKeyToURL(url);
-        endpoint = dialog.ApplyCompletionBypassToURL(endpoint);
-        webView.loadUrl(endpoint);
+        webView.loadUrl(url);
     }
 }
 
