@@ -149,6 +149,7 @@ public abstract class DialogHelper
 
                 String json = SurveyDetailsParser.serializeSurveyDetails(s);
                 survey.callbackHandler.onSuccess(json);
+                survey.callbackHandler.onReward(s.getReward());
 
             }
         }
