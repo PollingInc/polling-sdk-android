@@ -60,7 +60,7 @@ public class TestActivity extends Activity
             @Override
             public void onReward(Reward reward)
             {
-                Log.d("Polling", "Source onReward triggered.");
+                Log.d("Polling", "Source onReward triggered. " + reward.getRewardName() + ": " + reward.getRewardAmount());
             }
 
             @Override
