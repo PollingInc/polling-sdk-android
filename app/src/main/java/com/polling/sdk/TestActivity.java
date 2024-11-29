@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import com.polling.sdk.api.models.Reward;
 import com.polling.sdk.core.models.CallbackHandler;
 import com.polling.sdk.core.models.RequestIdentification;
 
@@ -46,14 +47,26 @@ public class TestActivity extends Activity
             @Override
             public void onSuccess(String response)
             {
-                Log.d("Polling", response);
+                Log.d("Polling", "Source onSuccess: " + response);
 
             }
 
             @Override
             public void onFailure(String error)
             {
-                Log.d("Polling", error);
+                Log.d("Polling", "Source onFailure: " + error);
+            }
+
+            @Override
+            public void onReward(Reward reward)
+            {
+                Log.d("Polling", "Source onReward triggered.");
+            }
+
+            @Override
+            public void onSurveyAvailable()
+            {
+                Log.d("Polling", "Source onSurveyAvailable triggered.");
             }
         };
 

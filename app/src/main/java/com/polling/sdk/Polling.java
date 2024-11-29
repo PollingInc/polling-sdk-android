@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
+import com.polling.sdk.api.models.Reward;
 import com.polling.sdk.api.models.SurveyDetails;
 import com.polling.sdk.api.parsers.SurveyDetailsParser;
 import com.polling.sdk.core.models.Survey;
@@ -129,8 +130,8 @@ public class Polling
             }
 
             @Override
-            public void onReward() {
-                customerCallbacks.onReward();
+            public void onReward(Reward reward) {
+                customerCallbacks.onReward(reward);
             }
 
             @Override
