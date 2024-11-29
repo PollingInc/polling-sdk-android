@@ -141,7 +141,7 @@ public abstract class DialogHelper
             {
                 String status = s.getUserSurveyStatus();
 
-                if(!status.equals( "complete"))
+                if(!status.equals( "completed"))
                 {
                     survey.callbackHandler.onPostpone(uuid);
                     return;

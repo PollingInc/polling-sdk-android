@@ -39,7 +39,7 @@ public class TestActivity extends Activity
     {
         RequestIdentification requestIdentification =
                 new RequestIdentification(
-                        "test-java25",
+                        "test-java" + System.currentTimeMillis(),
                         "H3uZsrv6B2qyRXGePLxQ9U8g7vilWFTjIhZO");
 
         CallbackHandler callbackHandler = new CallbackHandler() {
