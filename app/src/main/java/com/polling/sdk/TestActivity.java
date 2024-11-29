@@ -37,10 +37,9 @@ public class TestActivity extends Activity
 
     public void testLogEvent()
     {
-
         RequestIdentification requestIdentification =
                 new RequestIdentification(
-                        "test-java18",
+                        "test-java25",
                         "H3uZsrv6B2qyRXGePLxQ9U8g7vilWFTjIhZO");
 
         CallbackHandler callbackHandler = new CallbackHandler() {

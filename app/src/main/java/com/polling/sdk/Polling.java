@@ -32,6 +32,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TimeZone;
 import java.util.concurrent.CountDownLatch;
 
 public class Polling
@@ -220,6 +221,8 @@ public class Polling
                 String body = "event=" + eventName + "&value=" + eventValue;
 
                 WebRequestHandler.makeRequest(this.eventApiUrl, WebRequestType.POST, body, apiCallbacks, contentType);
+
+                Log.d("Polling", "Web request sent to: " + eventApiUrl);
 
             } catch (Exception error) {
                 this.callbackHandler.onFailure("Network error.");
@@ -411,19 +414,24 @@ public class Polling
         TriggeredSurvey triggeredSurvey = null;
         for (TriggeredSurvey survey : triggeredSurveys) {
             try {
+                String delayedTimestampStr = survey.getDelayedTimestamp();
+
+                if (delayedTimestampStr.endsWith("Z")) {
+                    delayedTimestampStr = delayedTimestampStr.replace("Z", "+0000");
+                }
+
                 SimpleDateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
-                Date delayedTimestamp = isoFormat.parse(survey.getDelayedTimestamp());
+                isoFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+                Date delayedTimestamp = isoFormat.parse(delayedTimestampStr);
 
-                //DEBUG -----------------------------
-                Log.d("Polling", " Delayed timestamp:" + delayedTimestamp);
+                // DEBUG -----------------------------
+                Log.d("Polling", "API delayed timestamp: "+ survey.getDelayedTimestamp());
+                Log.d("Polling", "Delayed timestamp (UTC): " + delayedTimestamp);
 
-                Date nowDate = new Date();
-                nowDate.setTime(now);
-
-                Log.d("Polling", " Now:" + nowDate);
-                //DEBUG -----------------------------
-
-
+                // Ensure "now" is interpreted in UTC
+                Date nowDate = new Date(now);
+                Log.d("Polling", "Current time (UTC): " + nowDate);
+                // DEBUG -----------------------------
 
                 if (delayedTimestamp.getTime() < now) {
                     triggeredSurvey = survey;
