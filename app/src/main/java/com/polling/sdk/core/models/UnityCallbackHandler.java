@@ -11,12 +11,16 @@ public class UnityCallbackHandler implements CallbackHandler {
     private final String successCallback;
     private final String errorCallback;
     private final String rewardCallback;
+    private final String surveyAvailableCallback;
 
-    public UnityCallbackHandler(String gameObject, String successCallback, String errorCallback, String rewardCallback) {
+    public UnityCallbackHandler(String gameObject, String successCallback, String errorCallback,
+                                String rewardCallback, String surveyAvailableCallback)
+    {
         this.gameObject = gameObject;
         this.successCallback = successCallback;
         this.errorCallback = errorCallback;
         this.rewardCallback = rewardCallback;
+        this.surveyAvailableCallback = surveyAvailableCallback;
     }
 
     @Override
@@ -31,6 +35,10 @@ public class UnityCallbackHandler implements CallbackHandler {
 
     @Override
     public void onReward(Reward reward) { invokeUnityMessage(rewardCallback, Reward.serialize(reward)); }
+
+    @Override
+    public void onSurveyAvailable() { invokeUnityMessage(surveyAvailableCallback, null);}
+
 
     private void invokeUnityMessage(String methodName, String message)
     {

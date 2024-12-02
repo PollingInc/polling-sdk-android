@@ -24,6 +24,7 @@ public class Reward {
 
 
     public static String serialize(Reward reward) {
+        if(reward == null) return null;
         Gson gson = new Gson();
         return gson.toJson(reward);
     }
