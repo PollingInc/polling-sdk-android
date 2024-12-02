@@ -321,21 +321,24 @@ public class Polling
     {
         List<TriggeredSurvey> storedSurveys = localStorage.getData("polling:triggered_surveys");
 
-        List<TriggeredSurvey> newTriggeredSurveys = new ArrayList<>(storedSurveys);
-        newTriggeredSurveys.addAll(newSurveys);
-
-
         Map<String, TriggeredSurvey> deduplicatedMap = new LinkedHashMap<>();
-        for (TriggeredSurvey survey : newTriggeredSurveys) {
+
+        for (TriggeredSurvey survey : storedSurveys) {
             deduplicatedMap.put(survey.getSurvey().getSurveyUuid(), survey);
         }
 
-        List<TriggeredSurvey> deduplicatedSurveys = new ArrayList<>(deduplicatedMap.values());
+        for (TriggeredSurvey survey : newSurveys) {
+            String surveyUuid = survey.getSurvey().getSurveyUuid();
+            if (!deduplicatedMap.containsKey(surveyUuid)) {
+                deduplicatedMap.put(surveyUuid, survey);
+            }
+        }
 
+        List<TriggeredSurvey> deduplicateSurveys = new ArrayList<>(deduplicatedMap.values());
 
         localStorage.saveData(
                 "polling:triggered_surveys",
-                deduplicatedSurveys
+                deduplicateSurveys
         );
 
         this.checkAvailableTriggeredSurveys();
