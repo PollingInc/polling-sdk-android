@@ -1,5 +1,7 @@
 package com.polling.sdk.api.models;
 
+import com.google.gson.Gson;
+
 public class Reward {
     private String reward_amount;
     private String reward_name;
@@ -18,5 +20,11 @@ public class Reward {
 
     public void setRewardName(String reward_name) {
         this.reward_name = reward_name;
+    }
+
+
+    public static String serialize(Reward reward) {
+        Gson gson = new Gson();
+        return gson.toJson(reward);
     }
 }

@@ -2,17 +2,21 @@ package com.polling.sdk.core.models;
 
 import android.util.Log;
 
+import com.polling.sdk.api.models.Reward;
+
 import java.lang.reflect.Method;
 
 public class UnityCallbackHandler implements CallbackHandler {
     private final String gameObject;
     private final String successCallback;
     private final String errorCallback;
+    private final String rewardCallback;
 
-    public UnityCallbackHandler(String gameObject, String successCallback, String errorCallback) {
+    public UnityCallbackHandler(String gameObject, String successCallback, String errorCallback, String rewardCallback) {
         this.gameObject = gameObject;
         this.successCallback = successCallback;
         this.errorCallback = errorCallback;
+        this.rewardCallback = rewardCallback;
     }
 
     @Override
@@ -24,6 +28,9 @@ public class UnityCallbackHandler implements CallbackHandler {
     public void onFailure(String error) {
         invokeUnityMessage(errorCallback, error);
     }
+
+    @Override
+    public void onReward(Reward reward) { invokeUnityMessage(rewardCallback, Reward.serialize(reward)); }
 
     private void invokeUnityMessage(String methodName, String message)
     {
