@@ -13,12 +13,16 @@ import com.polling.sdk.core.models.RequestIdentification;
 public class TestActivity extends Activity
 {
 
+    Polling polling;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
 
         setContentView(R.layout.activity_test);
+
+        initializePolling();
 
         Button buttonLogEvent = findViewById(R.id.buttonLogEvent);
 
@@ -33,9 +37,7 @@ public class TestActivity extends Activity
 
     }
 
-
-
-    public void testLogEvent()
+    public void initializePolling()
     {
         RequestIdentification requestIdentification =
                 new RequestIdentification(
@@ -73,16 +75,19 @@ public class TestActivity extends Activity
         SdkPayload sdkPayload = new SdkPayload(this, requestIdentification, callbackHandler, false);
 
         Log.d("Polling", "Requesting Polling initialization.");
-        Polling polling = new Polling();
-        polling.initialize(sdkPayload);
+        this.polling = new Polling();
+        this.polling.initialize(sdkPayload);
         Log.d("Polling", "Polling initialized.");
 
 
-        polling.setViewType("Bottom");
+        this.polling.setViewType("Bottom");
+
+    }
+
+    public void testLogEvent()
+    {
 
         Log.d("Polling", "Calling logEvent.");
         polling.logEvent("javaTest", "1");
-
-
     }
 }
