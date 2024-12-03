@@ -282,6 +282,7 @@ public class Polling
             this.loadAvailableSurveys();
         }
 
+        Log.d("Polling","checkAvailableTriggeredSurveys called by intervalLogic");
         this.checkAvailableTriggeredSurveys();
     }
 
@@ -341,6 +342,7 @@ public class Polling
                 deduplicateSurveys
         );
 
+        Log.d("Polling","checkAvailableTriggeredSurveys called by onTriggeredSurveysUpdated");
         this.checkAvailableTriggeredSurveys();
     }
 
@@ -456,14 +458,23 @@ public class Polling
         final TriggeredSurvey surveyToCheck = triggeredSurvey;
 
 
-        new Thread(() -> {
-            SurveyDetails surveyDetails = getSurveyDetails(surveyToCheck.getSurvey().getSurveyUuid());
+        SurveyDetails surveyDetails = getSurveyDetails(surveyToCheck.getSurvey().getSurveyUuid());
 
+        Log.i("Polling",
+                "Survey to check - " + surveyToCheck.getSurvey().getSurveyUuid() +
+                    " - status - " + surveyDetails.getUserSurveyStatus()
+        );
+
+
+        new Thread(() -> {
+            //SurveyDetails surveyDetails = getSurveyDetails(surveyToCheck.getSurvey().getSurveyUuid());
 
             new Handler(Looper.getMainLooper()).post(() -> {
                 if (surveyDetails == null || !"available".equals(surveyDetails.getUserSurveyStatus())) {
                     Log.d("Polling", "None of the present surveys are in available status.");
                     removeTriggeredSurvey(surveyToCheck.getSurvey().getSurveyUuid());
+
+                    Log.d("Polling","checkAvailableTriggeredSurveys called by itself");
                     checkAvailableTriggeredSurveys();
                 } else {
                     Log.d("Polling", "Found survey in available status. Requesting showSurvey");
