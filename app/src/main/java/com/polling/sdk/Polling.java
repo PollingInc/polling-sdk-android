@@ -202,6 +202,10 @@ public class Polling
         this.viewType = ViewType.valueOf(viewType);
     }
 
+    public void setViewType(ViewType viewType) {
+        this.viewType = viewType;
+    }
+
     //--------------------------------------------------------------------------------------------------
     public void logPurchase(int integerCents) {
         this.logEvent("Purchase", Integer.toString(integerCents));

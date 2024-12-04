@@ -9,6 +9,7 @@ import android.widget.Button;
 import com.polling.sdk.api.models.Reward;
 import com.polling.sdk.core.models.CallbackHandler;
 import com.polling.sdk.core.models.RequestIdentification;
+import com.polling.sdk.core.utils.ViewType;
 
 public class TestActivity extends Activity
 {
@@ -80,7 +81,7 @@ public class TestActivity extends Activity
         Log.d("Polling", "Polling initialized.");
 
 
-        this.polling.setViewType("Bottom");
+        this.polling.setViewType(ViewType.Bottom);
 
     }
 
