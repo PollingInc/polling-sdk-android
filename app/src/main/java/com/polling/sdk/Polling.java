@@ -53,7 +53,7 @@ public class Polling
     private int surveyPollRateMsec = 60_000;
     private int surveyClosePostponeMinutes  = 30;
 
-    private boolean isSurveyCurrentlyVisible = false;
+    private boolean isSurveyCurrentlyVisible = false; //visible actually means "being displayed". Keeping name like in JS SDK.
 
     private boolean isAvailableSurveysCheckDisabled = false;
     private List<SurveyDetails> cachedAvailableSurveys;
@@ -117,6 +117,21 @@ public class Polling
 
 
         this.callbackHandler = new CallbackHandler() {
+
+            @Override
+            public void onOpen()
+            {
+                Log.d("Polling", "Survey dialog was opened.");
+                isSurveyCurrentlyVisible = true;
+            }
+
+            @Override
+            public void onDismiss()
+            {
+                Log.d("Polling", "Survey dialog was dismissed.");
+                isSurveyCurrentlyVisible = false;
+            }
+
             @Override
             public void onPostpone(String surveyUuid) {
                 onPostponeDefault(surveyUuid); //the only callback that is locked and can't be modified by client

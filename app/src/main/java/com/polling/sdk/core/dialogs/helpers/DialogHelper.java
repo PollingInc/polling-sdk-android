@@ -48,6 +48,8 @@ public abstract class DialogHelper
         var dialog = new WebViewBottom(url, dialogRequest); //used as default, but can be overridden on extended classes
 
         dialog.show();
+        survey.callbackHandler.onOpen();
+
         dialog.setOnDismissListener
                 (
                         new DialogInterface.OnDismissListener()
@@ -55,6 +57,7 @@ public abstract class DialogHelper
                             @Override
                             public void onDismiss(DialogInterface dialogInterface)
                             {
+                                survey.callbackHandler.onDismiss();
                                 awaitForReward(dialogRequest, prePostRewardCallback(true, survey.callbackHandler, survey), survey);
                             }
                         }
@@ -65,6 +68,8 @@ public abstract class DialogHelper
     {
         awaitForReward(dialogRequest, prePostRewardCallback(false, null, survey), survey);
         dialog.show();
+        survey.callbackHandler.onOpen();
+
         dialog.setOnDismissListener
                 (
                         new DialogInterface.OnDismissListener()
@@ -72,6 +77,7 @@ public abstract class DialogHelper
                             @Override
                             public void onDismiss(DialogInterface dialogInterface)
                             {
+                                survey.callbackHandler.onDismiss();
                                 awaitForReward(dialogRequest, prePostRewardCallback(true, survey.callbackHandler, survey), survey);
                             }
                         }

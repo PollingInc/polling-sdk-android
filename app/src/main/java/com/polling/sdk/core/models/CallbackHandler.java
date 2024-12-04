@@ -8,6 +8,9 @@ public interface CallbackHandler
     void onFailure(String error);
     void onReward(Reward reward); //optional
     default void onSurveyAvailable(){}; //optional
-    default void onPostpone(String surveyUuid){};
+    default void onPostpone(String surveyUuid){}; //internal usage
+
+    default void onOpen(){}; //internal usage
+    default void onDismiss(){}; //internal usage
 
 }
