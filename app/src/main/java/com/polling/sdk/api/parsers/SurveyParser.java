@@ -6,6 +6,7 @@ import com.polling.sdk.api.models.TriggeredSurvey;
 import com.polling.sdk.utils.TimestampDelayer;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
@@ -28,15 +29,17 @@ public class SurveyParser {
         {
             long nowLong = System.currentTimeMillis();
 
-            String now = formatter.format(new Date(nowLong));
-            now = now.substring(0, 22) + ":" + now.substring(22);
+            Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+            calendar.setTimeInMillis(nowLong);
 
-            t.setDelayedTimestamp(
-                    TimestampDelayer.addMinutesToTimestamp(
-                            now,
-                            t.getDelaySeconds() * 60
-                    )
-            );
+            if (t.getDelaySeconds() > 0) {
+                calendar.add(Calendar.SECOND, t.getDelaySeconds());
+                String delayedTimestamp = formatter.format(calendar.getTime());
+
+                delayedTimestamp = delayedTimestamp.substring(0, 22) + ":" + delayedTimestamp.substring(22);
+                t.setDelayedTimestamp(delayedTimestamp);
+            }
+
         }
 
         return survey;
