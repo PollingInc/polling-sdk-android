@@ -36,3 +36,44 @@ dependencies {
     implementation("com.google.code.gson:gson:2.10")
 }
 
+androidComponents {
+    onVariants(selector().withBuildType("release")) { variant ->
+        val outputDir = layout.buildDirectory.dir("outputs/aar").get().asFile
+        val originalFileName = "app-release.aar"
+        val newFileName = "polling-release.aar"
+
+        tasks.register<DefaultTask>("renameReleaseAar") {
+            doLast {
+                val originalFile = File(outputDir, originalFileName)
+                val newFile = File(outputDir, newFileName)
+
+                if (originalFile.exists()) {
+                    originalFile.renameTo(newFile)
+                    println("Renamed AAR file to $newFileName")
+                } else {
+                    println("AAR file not found: $originalFile")
+                }
+            }
+        }
+    }
+}
+
+tasks.whenTaskAdded {
+    if (name == "assembleRelease") {
+        doLast {
+            val outputDir = layout.buildDirectory.dir("outputs/aar").get().asFile
+            val originalFile = File(outputDir, "app-release.aar")
+            val newFile = File(outputDir, "polling-release.aar")
+
+            if (originalFile.exists()) {
+                if (originalFile.renameTo(newFile)) {
+                    println("Renamed AAR file to polling-release.aar")
+                } else {
+                    println("Failed to rename AAR file.")
+                }
+            } else {
+                println("AAR file not found: $originalFile")
+            }
+        }
+    }
+}
