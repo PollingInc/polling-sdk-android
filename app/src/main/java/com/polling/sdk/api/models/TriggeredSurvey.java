@@ -6,6 +6,9 @@ public class TriggeredSurvey
     private int delay_seconds;
     private String delayed_timestamp;
 
+    public boolean isInUse;
+
+
     // Getters and setters
     public SurveyShort getSurvey() {
         return survey;

@@ -73,6 +73,8 @@ public class Polling
     private LocalStorage localStorage;
 
     private ViewType viewType = ViewType.Dialog;
+    private final Handler surveyDispatcher = new Handler(); // Shared Handler
+
 
 
     public Polling()
@@ -416,7 +418,6 @@ public class Polling
         Log.d("Polling", "Triggered survey(s) available.");
         long now = System.currentTimeMillis();
 
-        TriggeredSurvey triggeredSurvey = null;
         for (TriggeredSurvey survey : triggeredSurveys) {
             try {
                 String delayedTimestampStr = survey.getDelayedTimestamp();
@@ -430,6 +431,7 @@ public class Polling
                 Date delayedTimestamp = isoFormat.parse(delayedTimestampStr);
 
                 // DEBUG -----------------------------
+                Log.d("Polling", "API delay in seconds: " + survey.getDelaySeconds());
                 Log.d("Polling", "API delayed timestamp: "+ survey.getDelayedTimestamp());
                 Log.d("Polling", "Delayed timestamp (UTC): " + delayedTimestamp);
 
@@ -438,10 +440,68 @@ public class Polling
                 Log.d("Polling", "Current time (UTC): " + nowDate);
                 // DEBUG -----------------------------
 
-                if (delayedTimestamp.getTime() < now) {
-                    triggeredSurvey = survey;
-                    break;
+                int delayInSeconds;
+
+                if (delayedTimestamp.getTime() < now)
+                {
+                    delayInSeconds = 0;
                 }
+
+                else
+                {
+                    delayInSeconds = survey.getDelaySeconds();
+                }
+
+
+                Log.d("Polling", "Final delay is " + delayInSeconds);
+
+
+                if(survey.isInUse) continue;
+
+                final TriggeredSurvey finalSurvey = survey;
+
+                var surveyRunnable = new Runnable(){
+
+                    @Override
+                    public void run()
+                    {
+                        var savedSurveys = localStorage.getData("polling:triggered_surveys");
+
+                        if(savedSurveys.contains(finalSurvey))
+                        {
+                            int index = savedSurveys.indexOf(finalSurvey);
+                            finalSurvey.isInUse = true;
+                            savedSurveys.set(index, finalSurvey);
+                            localStorage.saveData("polling:triggered_surveys", savedSurveys);
+                        }
+
+
+                        final SurveyDetails surveyDetails = getSurveyDetails(finalSurvey.getSurvey().getSurveyUuid());
+
+                        if (surveyDetails == null || !"available".equals(surveyDetails.getUserSurveyStatus())) {
+                            Log.d("Polling", "None of the present surveys are in available status.");
+                            removeTriggeredSurvey(finalSurvey.getSurvey().getSurveyUuid());
+
+                            Log.d("Polling", "checkAvailableTriggeredSurveys called by itself");
+                            checkAvailableTriggeredSurveys();
+                        } else {
+                            Log.d("Polling", "Found survey in available status. Requesting showSurvey");
+                            showSurvey(finalSurvey.getSurvey().getSurveyUuid(), _sdkPayload.activity);
+                        }
+
+                        savedSurveys = localStorage.getData("polling:triggered_surveys");
+
+                        if(savedSurveys.contains(finalSurvey))
+                        {
+                            int index = savedSurveys.indexOf(finalSurvey);
+                            finalSurvey.isInUse = false;
+                            savedSurveys.set(index, finalSurvey);
+                            localStorage.saveData("polling:triggered_surveys", savedSurveys);
+                        }
+                    }
+                };
+
+                surveyDispatcher.postDelayed(surveyRunnable, delayInSeconds * 1000L);
 
                 Log.d("Polling", "Triggered survey should be delayed.");
 
@@ -449,39 +509,6 @@ public class Polling
                 e.printStackTrace();
             }
         }
-
-        if (triggeredSurvey == null)
-        {
-            return;
-        }
-
-        final TriggeredSurvey surveyToCheck = triggeredSurvey;
-
-
-        SurveyDetails surveyDetails = getSurveyDetails(surveyToCheck.getSurvey().getSurveyUuid());
-
-        Log.i("Polling",
-                "Survey to check - " + surveyToCheck.getSurvey().getSurveyUuid() +
-                    " - status - " + surveyDetails.getUserSurveyStatus()
-        );
-
-
-        new Thread(() -> {
-            //SurveyDetails surveyDetails = getSurveyDetails(surveyToCheck.getSurvey().getSurveyUuid());
-
-            new Handler(Looper.getMainLooper()).post(() -> {
-                if (surveyDetails == null || !"available".equals(surveyDetails.getUserSurveyStatus())) {
-                    Log.d("Polling", "None of the present surveys are in available status.");
-                    removeTriggeredSurvey(surveyToCheck.getSurvey().getSurveyUuid());
-
-                    Log.d("Polling","checkAvailableTriggeredSurveys called by itself");
-                    checkAvailableTriggeredSurveys();
-                } else {
-                    Log.d("Polling", "Found survey in available status. Requesting showSurvey");
-                    showSurvey(surveyToCheck.getSurvey().getSurveyUuid(), _sdkPayload.activity);
-                }
-            });
-        }).start();
     }
 
     //--------------------------------------------------------------------------------------------------
