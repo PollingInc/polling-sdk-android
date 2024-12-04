@@ -46,7 +46,7 @@ Polling SDK provides an easy way to integrate polling functionality into your An
    * **API Key:** found in Polling dashboard in Embeds
 
    Here's how it looks:
-   ```
+   ```Java
      RequestIdentification requestIdentification =
        new RequestIdentification(
          customerId,
@@ -64,7 +64,7 @@ Polling SDK provides an easy way to integrate polling functionality into your An
    Define the functions that will run as callbacks from the survey using overrides.
    
    Example of usage:
-   ```
+   ```Java
     CallbackHandler callbackHandler = new CallbackHandler() {
         @Override
         public void onSuccess(String response)
@@ -108,7 +108,7 @@ Polling SDK provides an easy way to integrate polling functionality into your An
    ---
    #### 2.4 Initialize()
    Finally, we can initialize the SDK by doing this:
-   ```
+   ```Java
      Polling polling = new Polling();
      polling.initialize(sdkPayload);
    ```
@@ -147,7 +147,7 @@ Polling SDK provides an easy way to integrate polling functionality into your An
    ### Usage example
 
    Here's the full example of a Activity using Polling:
-   ```
+   ```Java
       package com.polling.sdk;
       
       import android.app.Activity;
