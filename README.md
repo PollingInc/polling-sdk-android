@@ -33,6 +33,8 @@ Polling SDK provides an easy way to integrate polling functionality into your An
 
 3. Sync your Gradle files with the project to make sure the .aar is correctly included.
 
+---
+
 ### Step 2: Import the SDK and initialize
 1. After integrating the .aar, you can import the Polling class into your project:
    ```import com.polling.sdk.Polling;```
@@ -125,7 +127,8 @@ Polling SDK provides an easy way to integrate polling functionality into your An
    * **Dialog:** Opens like a centered popup in the middle of the screen as a square that keeps its edges free to view the background.
    * **Bottom:** Opens like a sheet in the bottom of the screen. Uses more screen and occupies full-width with no edges.
    They can be set in `polling.setViewType(ViewRype viewType)` OR `polling.setViewType(String viewTypeStr)`
-   
+
+   ---
 
    ### Step 4: Use the SDK:
    You can use it just as is in the JS docs in "Available Methods" section:
