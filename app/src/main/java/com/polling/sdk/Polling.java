@@ -138,6 +138,15 @@ public class Polling
             }
 
             @Override
+            public void onCompletion(SurveyDetails surveyDetails)
+            {
+                if(!"available".equals(surveyDetails.getUserSurveyStatus()))
+                {
+                    removeTriggeredSurvey(surveyDetails.getUuid());
+                }
+            }
+
+            @Override
             public void onSuccess(String response) {
                 customerCallbacks.onSuccess(response);
             }
@@ -374,7 +383,9 @@ public class Polling
         Iterator<TriggeredSurvey> iterator = triggeredSurveys.iterator();
         while (iterator.hasNext()) {
             TriggeredSurvey survey = iterator.next();
-            if (survey.getSurvey().getSurveyUuid().equals(surveyUuid)) {
+            if (survey.getSurvey().getSurveyUuid().equals(surveyUuid))
+            {
+                Log.d("Polling", "Deleting survey " + surveyUuid);
                 iterator.remove();
             }
         }

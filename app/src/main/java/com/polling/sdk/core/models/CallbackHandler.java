@@ -1,6 +1,7 @@
 package com.polling.sdk.core.models;
 
 import com.polling.sdk.api.models.Reward;
+import com.polling.sdk.api.models.SurveyDetails;
 
 public interface CallbackHandler
 {
@@ -12,5 +13,7 @@ public interface CallbackHandler
 
     default void onOpen(){}; //internal usage
     default void onDismiss(){}; //internal usage
+
+    default void onCompletion(SurveyDetails surveyDetails){}; //internal usage
 
 }
