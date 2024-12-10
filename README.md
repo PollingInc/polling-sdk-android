@@ -85,6 +85,7 @@ Polling SDK provides an easy way to integrate polling functionality into your An
         public void onReward(Reward reward)
         {
             Log.d("Polling", "Source onReward triggered. " + reward.getRewardName() + ": " + reward.getRewardAmount());
+            if(reward.getCompleteExtraJson() != null) Log.d("Polling", "Reward extra json (raw): " + reward.getCompleteExtraJson());
         }
 
         @Override
