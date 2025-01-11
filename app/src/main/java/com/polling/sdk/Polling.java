@@ -296,7 +296,11 @@ public class Polling
     //--------------------------------------------------------------------------------------------------
     private void updateUrls()
     {
-        surveysDefaultEmbedViewUrl += requestIdentification.apiKey;
+        if(requestIdentification.apiKey != null)
+        {
+            surveysDefaultEmbedViewUrl += requestIdentification.apiKey;
+        }
+
 
         this.surveysDefaultEmbedViewUrl = requestIdentification.ApplyKeyToURL(surveysDefaultEmbedViewUrl,"customer_id", null);
         this.surveyViewUrl = requestIdentification.ApplyKeyToURL(surveyViewUrl);
@@ -483,7 +487,7 @@ public class Polling
                 }
 
 
-                Log.d("Polling", "Final delay is " + delayInSeconds);
+                Log.d("Polling", "Final delay is " + delayInSeconds + "for survey " + survey.getSurvey().getSurveyUuid());
 
 
                 if(survey.isInUse) continue;
