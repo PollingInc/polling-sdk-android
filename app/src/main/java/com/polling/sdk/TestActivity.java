@@ -26,6 +26,7 @@ public class TestActivity extends Activity
         initializePolling();
 
         Button buttonLogEvent = findViewById(R.id.buttonLogEvent);
+        Button buttonShowEmbed = findViewById(R.id.buttonShowEmbed);
 
         //LOG EVENT
         buttonLogEvent.setOnClickListener(
@@ -34,6 +35,14 @@ public class TestActivity extends Activity
             public void onClick(View v) {
                 testLogEvent();
             }
+        });
+
+        buttonShowEmbed.setOnClickListener(
+                new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                testShowEmbed();
+                    }
         });
 
     }
@@ -89,8 +98,13 @@ public class TestActivity extends Activity
 
     public void testLogEvent()
     {
-
         Log.d("Polling", "Calling logEvent.");
         polling.logEvent("javaTest", "1");
+    }
+
+    public void testShowEmbed()
+    {
+        Log.d("Polling", "Calling logEvent.");
+        polling.showEmbedView(this);
     }
 }
