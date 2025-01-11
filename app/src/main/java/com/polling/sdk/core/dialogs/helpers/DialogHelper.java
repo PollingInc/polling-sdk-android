@@ -101,7 +101,10 @@ public abstract class DialogHelper
                 List<SurveyDetails> surveysDetails = SurveyDetailsParser.parseSurveysResponse(response);
 
                 String result = "None";
-                if(surveysDetails != null){
+                if(surveysDetails != null)
+                {
+                    if(surveysDetails.size() == 0) return;
+
                     result = surveysDetails.get(0).getUuid();
                 }
 

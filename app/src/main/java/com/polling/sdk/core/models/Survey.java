@@ -23,7 +23,7 @@ public class Survey
     public Survey(String url, RequestIdentification requestIdentification, CallbackHandler callbackHandler, String completionUrl, String surveyUuid)
     {
         this.url = url;
-        this.requestIdentification = requestIdentification;
+        this.requestIdentification = (requestIdentification != null ? requestIdentification : new RequestIdentification());
         this.callbackHandler = callbackHandler;
         this.completionUrl = completionUrl;
         this.surveyUuid = surveyUuid;
