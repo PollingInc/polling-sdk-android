@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.app.Dialog;
 import android.util.Log;
 
+import com.polling.sdk.Polling;
 import com.polling.sdk.api.models.SurveyDetails;
 import com.polling.sdk.api.parsers.SurveyDetailsParser;
 import com.polling.sdk.core.utils.DataParser;
@@ -13,6 +14,7 @@ import com.polling.sdk.core.models.Survey;
 import com.polling.sdk.core.network.WebRequestHandler;
 import com.polling.sdk.core.network.WebRequestType;
 import com.polling.sdk.core.dialogs.WebViewBottom;
+import com.polling.sdk.utils.LocalStorage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -146,24 +148,42 @@ public abstract class DialogHelper
         {
             String uuid = s.getUuid();
 
-            if(uuid.equals(survey.surveyUuid))
+            if(survey.isEmbedView)
             {
-                String status = s.getUserSurveyStatus();
+                List<SurveyDetails> completedSurveys = LocalStorage.getData("polling:completed_surveys", SurveyDetails.class);
 
-                if(!status.equals( "completed"))
+                if(!completedSurveys.contains(s))
                 {
-                    survey.callbackHandler.onPostpone(uuid);
-                    return;
-                }
+                    completedSurveys.add(s);
+                    LocalStorage.saveData("polling:completed_surveys", completedSurveys);
 
-                String json = SurveyDetailsParser.serializeSurveyDetails(s);
-                survey.callbackHandler.onSuccess(json);
-                survey.callbackHandler.onReward(s.getReward());
-                survey.callbackHandler.onCompletion(s);
+                    completeSurvey(survey, s);
+                }
+            }
+
+            else if(uuid.equals(survey.surveyUuid))
+            {
+                completeSurvey(survey, s);
 
             }
         }
 
+    }
+
+    public void completeSurvey(Survey survey, SurveyDetails surveyDetails)
+    {
+        String status = surveyDetails.getUserSurveyStatus();
+
+        if(!status.equals( "completed"))
+        {
+            survey.callbackHandler.onPostpone(survey.surveyUuid);
+            return;
+        }
+
+        String json = SurveyDetailsParser.serializeSurveyDetails(surveyDetails);
+        survey.callbackHandler.onSuccess(json);
+        survey.callbackHandler.onReward(surveyDetails.getReward());
+        survey.callbackHandler.onCompletion(surveyDetails);
     }
 
 

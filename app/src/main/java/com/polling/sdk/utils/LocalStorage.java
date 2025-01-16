@@ -14,25 +14,44 @@ import java.util.Set;
 
 public class LocalStorage
 {
-    private SharedPreferences sharedPreferences;
 
-    public LocalStorage(Context context) {
+    private static LocalStorage instance;
+
+    private static SharedPreferences sharedPreferences;
+
+    private LocalStorage() {}
+
+    public static LocalStorage getInstance()
+    {
+        if (instance == null) {
+            instance = new LocalStorage();
+        }
+
+        return instance;
+    }
+
+    public static void setup(Context context)
+    {
+        if (instance == null) {
+            getInstance();
+        }
+
         sharedPreferences = context.getApplicationContext().getSharedPreferences("PollingUserData", Context.MODE_PRIVATE);
     }
 
-    public void saveData(String key, String value) {
+    public static void saveData(String key, String value) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(key, value);
         editor.apply();
     }
 
-    public void saveData(String key, Set<String> value) {
+    public static void saveData(String key, Set<String> value) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putStringSet(key, value);
         editor.apply();
     }
 
-    public void saveData(String key, List<TriggeredSurvey> data) {
+    public static <T> void saveData(String key, List<T> data) {
         Gson gson = new Gson();
         String json = gson.toJson(data);
 
@@ -44,18 +63,19 @@ public class LocalStorage
 
 
 
+
     public String getData(String key, String defaultValue)
     {
         return sharedPreferences.getString(key, defaultValue);
     }
 
-    public List<String> getData(String key, Set<String> defaultValue)
+    public static List<String> getData(String key, Set<String> defaultValue)
     {
         var set =  sharedPreferences.getStringSet(key, defaultValue);
         return new ArrayList<>(set);
     }
 
-    public List<TriggeredSurvey> getData(String key) {
+    public static List<TriggeredSurvey> getData(String key) {
         Gson gson = new Gson();
         String json = sharedPreferences.getString(key, null);
 
@@ -66,6 +86,19 @@ public class LocalStorage
         Type listType = new TypeToken<List<TriggeredSurvey>>() {}.getType();
         return gson.fromJson(json, listType);
     }
+
+    public static <T> List<T> getData(String key, Class<T> clazz) {
+        Gson gson = new Gson();
+        String json = sharedPreferences.getString(key, null);
+
+        if (json == null) {
+            return new ArrayList<>(); // Return an empty list if no data is found
+        }
+
+        Type listType = TypeToken.getParameterized(List.class, clazz).getType();
+        return gson.fromJson(json, listType);
+    }
+
 
 
 

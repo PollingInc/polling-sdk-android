@@ -20,13 +20,21 @@ public class Survey
     public String completionUrl;
     public String surveyUuid;
 
+    public boolean isEmbedView;
+
     public Survey(String url, RequestIdentification requestIdentification, CallbackHandler callbackHandler, String completionUrl, String surveyUuid)
+    {
+        this(url, requestIdentification, callbackHandler,completionUrl, surveyUuid, false);
+    }
+
+    public Survey(String url, RequestIdentification requestIdentification, CallbackHandler callbackHandler, String completionUrl, String surveyUuid, Boolean isEmbedView)
     {
         this.url = url;
         this.requestIdentification = (requestIdentification != null ? requestIdentification : new RequestIdentification());
         this.callbackHandler = callbackHandler;
         this.completionUrl = completionUrl;
         this.surveyUuid = surveyUuid;
+        this.isEmbedView = isEmbedView;
     }
 
     private DialogHelper dialogHelper(Activity activity, ViewType viewType)

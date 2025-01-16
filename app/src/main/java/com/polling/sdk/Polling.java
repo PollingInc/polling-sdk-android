@@ -65,12 +65,12 @@ public class Polling
     private String eventApiBaseUrl;
     private String surveyViewUrl;
     private String surveysDefaultEmbedViewUrl;
+    private String surveysEmbedViewCompletionUrl;
     private String surveyApiUrl;
     private String eventApiUrl;
 
 
     private SdkPayload _sdkPayload;
-    private LocalStorage localStorage;
 
     private ViewType viewType = ViewType.Dialog;
     private final Handler surveyDispatcher = new Handler(); // Shared Handler
@@ -85,6 +85,7 @@ public class Polling
 
         surveyViewUrl = this.surveyViewBaseUrl + "/available-surveys";
         surveysDefaultEmbedViewUrl = this.baseUrl + "/embed/";
+        surveysEmbedViewCompletionUrl = this.surveyApiBaseUrlSDK + "/completed";
         surveyApiUrl = this.surveyApiBaseUrlSDK + "/available";
         eventApiUrl = this.eventApiBaseUrl;
     }
@@ -95,7 +96,9 @@ public class Polling
             return;
         }
 
-        localStorage = new LocalStorage(sdkPayload.activity.getApplicationContext());
+        LocalStorage.getInstance();
+        LocalStorage.setup(sdkPayload.activity.getApplicationContext());
+
         _sdkPayload = sdkPayload;
 
 
@@ -166,7 +169,6 @@ public class Polling
                 customerCallbacks.onSurveyAvailable();
             }
         };
-
 
         this.setupPostMessageBridge();
 
@@ -279,18 +281,15 @@ public class Polling
     public void showEmbedView(Activity activity) {
         if (this.isSurveyCurrentlyVisible) return;
 
-        String completionUrl = baseApiUrl + "/api/sdk/surveys/" + currentSurveyUuid; //CHECK IF THIS CODE IS RIGHT LATER <----------------------------------------------------
-        completionUrl = requestIdentification.ApplyKeyToURL(completionUrl);
 
-
-        Survey survey = new Survey(this.surveysDefaultEmbedViewUrl,null, this.callbackHandler, completionUrl, currentSurveyUuid);
+        Survey survey = new Survey(this.surveysDefaultEmbedViewUrl,null, this.callbackHandler, surveysEmbedViewCompletionUrl, currentSurveyUuid, true);
         survey.defaultSurvey(activity, this.viewType, false);
     }
 
     //--------------------------------------------------------------------------------------------------
     public List<String> getLocalSurveyResults(String surveyUuid)
     {
-        return localStorage.getData(surveyUuid, (Set<String>) null);
+        return LocalStorage.getData(surveyUuid, (Set<String>) null);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -303,6 +302,7 @@ public class Polling
 
 
         this.surveysDefaultEmbedViewUrl = requestIdentification.ApplyKeyToURL(surveysDefaultEmbedViewUrl,"customer_id", null);
+        this.surveysEmbedViewCompletionUrl = requestIdentification.ApplyKeyToURL(surveysEmbedViewCompletionUrl);
         this.surveyViewUrl = requestIdentification.ApplyKeyToURL(surveyViewUrl);
         this.surveyApiUrl = requestIdentification.ApplyKeyToURL(surveyApiUrl);
         this.eventApiUrl = requestIdentification.ApplyKeyToURL(eventApiUrl, "user", "api_key");
@@ -326,7 +326,7 @@ public class Polling
      */
     private void storeLocalSurveyResult(String surveyUuid, String surveyResultData)
     {
-        localStorage.saveData(surveyUuid, surveyResultData);
+        LocalStorage.saveData(surveyUuid, surveyResultData);
     }
 
     //--------------------------------------------------------------------------------------------------
@@ -354,7 +354,7 @@ public class Polling
     //--------------------------------------------------------------------------------------------------
     private void onTriggeredSurveysUpdated(List<TriggeredSurvey> newSurveys)
     {
-        List<TriggeredSurvey> storedSurveys = localStorage.getData("polling:triggered_surveys");
+        List<TriggeredSurvey> storedSurveys = LocalStorage.getData("polling:triggered_surveys");
 
         Map<String, TriggeredSurvey> deduplicatedMap = new LinkedHashMap<>();
 
@@ -371,7 +371,7 @@ public class Polling
 
         List<TriggeredSurvey> deduplicateSurveys = new ArrayList<>(deduplicatedMap.values());
 
-        localStorage.saveData(
+        LocalStorage.saveData(
                 "polling:triggered_surveys",
                 deduplicateSurveys
         );
@@ -382,7 +382,7 @@ public class Polling
 
     private void removeTriggeredSurvey(String surveyUuid)
     {
-        List<TriggeredSurvey> triggeredSurveys = localStorage.getData("polling:triggered_surveys");
+        List<TriggeredSurvey> triggeredSurveys = LocalStorage.getData("polling:triggered_surveys");
 
         if (triggeredSurveys == null) {
             return;
@@ -398,13 +398,13 @@ public class Polling
             }
         }
 
-        localStorage.saveData("polling:triggered_surveys", triggeredSurveys);
+        LocalStorage.saveData("polling:triggered_surveys", triggeredSurveys);
     }
 
     private void postponeTriggeredSurvey(String surveyUuid)
     {
 
-        List<TriggeredSurvey> triggeredSurveys = localStorage.getData("polling:triggered_surveys");
+        List<TriggeredSurvey> triggeredSurveys = LocalStorage.getData("polling:triggered_surveys");
         if (triggeredSurveys == null) return;
 
         TriggeredSurvey triggeredSurvey = null;
@@ -433,7 +433,7 @@ public class Polling
             }
         }
 
-        localStorage.saveData("polling:triggered_surveys", triggeredSurveys);
+        LocalStorage.saveData("polling:triggered_surveys", triggeredSurveys);
     }
 
 
@@ -442,7 +442,7 @@ public class Polling
             return;
         }
 
-        List<TriggeredSurvey> triggeredSurveys = localStorage.getData("polling:triggered_surveys");
+        List<TriggeredSurvey> triggeredSurveys = LocalStorage.getData("polling:triggered_surveys");
 
         if (triggeredSurveys == null || triggeredSurveys.isEmpty()) {
            Log.d("Polling", "No triggered surveys available.");
@@ -499,14 +499,14 @@ public class Polling
                     @Override
                     public void run()
                     {
-                        var savedSurveys = localStorage.getData("polling:triggered_surveys");
+                        var savedSurveys = LocalStorage.getData("polling:triggered_surveys");
 
                         if(savedSurveys.contains(finalSurvey))
                         {
                             int index = savedSurveys.indexOf(finalSurvey);
                             finalSurvey.isInUse = true;
                             savedSurveys.set(index, finalSurvey);
-                            localStorage.saveData("polling:triggered_surveys", savedSurveys);
+                            LocalStorage.saveData("polling:triggered_surveys", savedSurveys);
                         }
 
 
@@ -523,14 +523,14 @@ public class Polling
                             showSurvey(finalSurvey.getSurvey().getSurveyUuid(), _sdkPayload.activity);
                         }
 
-                        savedSurveys = localStorage.getData("polling:triggered_surveys");
+                        savedSurveys = LocalStorage.getData("polling:triggered_surveys");
 
                         if(savedSurveys.contains(finalSurvey))
                         {
                             int index = savedSurveys.indexOf(finalSurvey);
                             finalSurvey.isInUse = false;
                             savedSurveys.set(index, finalSurvey);
-                            localStorage.saveData("polling:triggered_surveys", savedSurveys);
+                            LocalStorage.saveData("polling:triggered_surveys", savedSurveys);
                         }
                     }
                 };

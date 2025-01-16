@@ -6,6 +6,7 @@ public class SurveyDetails {
     private Reward reward;
     private int question_count;
     private String user_survey_status;
+    private String started_at;
     private String completed_at;
 
     public String getUuid() {
@@ -46,6 +47,14 @@ public class SurveyDetails {
 
     public void setUserSurveyStatus(String user_survey_status) {
         this.user_survey_status = user_survey_status;
+    }
+
+    public String getStartedAt() {
+        return started_at;
+    }
+
+    public void setStartedAt(String started_at) {
+        this.started_at = started_at;
     }
 
     public String getCompletedAt() {
