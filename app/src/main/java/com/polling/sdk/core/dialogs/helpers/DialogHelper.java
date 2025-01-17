@@ -152,9 +152,19 @@ public abstract class DialogHelper
             {
                 List<SurveyDetails> completedSurveys = LocalStorage.getData("polling:completed_surveys", SurveyDetails.class);
 
-                if(!completedSurveys.contains(s))
+                boolean foundCompleted = false;
+                for (SurveyDetails c : completedSurveys) {
+                    if (c.getUuid().equals(s.getUuid())) {
+                        foundCompleted = true;
+                        break;
+                    }
+                }
+
+                if (!foundCompleted)
                 {
                     completedSurveys.add(s);
+                    Log.w("Polling", "Adding to completed: " + s.getUuid());
+
                     LocalStorage.saveData("polling:completed_surveys", completedSurveys);
 
                     completeSurvey(survey, s);
