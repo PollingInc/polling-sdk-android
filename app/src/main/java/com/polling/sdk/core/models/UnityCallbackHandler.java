@@ -37,7 +37,7 @@ public class UnityCallbackHandler implements CallbackHandler {
     public void onReward(Reward reward) { invokeUnityMessage(rewardCallback, Reward.serialize(reward)); }
 
     @Override
-    public void onSurveyAvailable() { invokeUnityMessage(surveyAvailableCallback, null);}
+    public void onSurveyAvailable() { invokeUnityMessage(surveyAvailableCallback);}
 
 
     private void invokeUnityMessage(String methodName, String message)
@@ -51,9 +51,13 @@ public class UnityCallbackHandler implements CallbackHandler {
         catch (Exception e) {
             e.printStackTrace();
         }
-
-
-
     }
+
+    private void invokeUnityMessage(String methodName)
+    {
+        invokeUnityMessage(methodName, "");
+    }
+
+
 
 }
