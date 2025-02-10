@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 
 import com.polling.sdk.api.models.Reward;
 import com.polling.sdk.core.models.CallbackHandler;
@@ -25,8 +26,19 @@ public class TestActivity extends Activity
 
         initializePolling();
 
+        EditText inputSurveyUuid = findViewById(R.id.inputSurveyUuid);
+        Button buttonShowSurvey = findViewById(R.id.buttonShowSurvey);
+
         Button buttonLogEvent = findViewById(R.id.buttonLogEvent);
         Button buttonShowEmbed = findViewById(R.id.buttonShowEmbed);
+
+        //SHOW SURVEY
+        buttonShowSurvey.setOnClickListener(
+                new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                testShowSurvey(inputSurveyUuid.getText().toString()); }
+        });
 
         //LOG EVENT
         buttonLogEvent.setOnClickListener(
@@ -37,6 +49,7 @@ public class TestActivity extends Activity
             }
         });
 
+        //SHOW EMBED
         buttonShowEmbed.setOnClickListener(
                 new View.OnClickListener() {
             @Override
@@ -94,6 +107,12 @@ public class TestActivity extends Activity
 
         this.polling.setViewType(ViewType.Bottom);
 
+    }
+
+    public void testShowSurvey(String uuid)
+    {
+        Log.d("Polling", "Calling showSurvey with uuid: " + uuid);
+        polling.showSurvey(uuid, this);
     }
 
     public void testLogEvent()

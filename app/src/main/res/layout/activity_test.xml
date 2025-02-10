@@ -11,7 +11,29 @@
         android:layout_centerInParent="true">
 
 
+        <!-- Show Survey -->
+
+        <EditText
+        android:id="@+id/inputSurveyUuid"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:hint="Enter survey uuid..." 
+        />
+
+        <Button
+            android:id="@+id/buttonShowSurvey"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Show Survey" 
+        />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="24dp"
+        />
+
         <!-- Log Event -->
+
         <Button
             android:id="@+id/buttonLogEvent"
             android:layout_width="match_parent"
