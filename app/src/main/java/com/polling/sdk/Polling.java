@@ -616,11 +616,13 @@ public class Polling
      */
     private void onSurveysUpdated()
     {
-        if (this.numSurveysAvailable > 0) {
+        var previousSurveysAvailable = this.numSurveysAvailable;
+        this.numSurveysAvailable = this.cachedAvailableSurveys.size();
+
+        if (previousSurveysAvailable == 0 && this.numSurveysAvailable > 0) {
             this.onSurveyAvailable();
         }
 
-        this.numSurveysAvailable = this.cachedAvailableSurveys.size();
     }
 
 }
