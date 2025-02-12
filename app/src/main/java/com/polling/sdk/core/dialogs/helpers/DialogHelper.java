@@ -109,6 +109,7 @@ public abstract class DialogHelper
                     if(surveysDetails != null && surveysDetails.size() > 0)
                     {
                         result =  surveysDetails.get(0).getUuid();
+                        Log.d("Polling", "onResponse surveyDetails: " + result);
                     }
                     else return;
                 }
@@ -116,11 +117,7 @@ public abstract class DialogHelper
                 catch (IndexOutOfBoundsException e)
                 {
                     Log.d("Polling", "onResponse surveyDetails doesn't contain data.");
-                    return;
                 }
-
-
-                Log.d("Polling", "onResponse surveyDetails: " + result);
 
                 if(!post) getRewardsPreDialog(surveysDetails, survey);
                 else getRewardsPostDialog(surveysDetails, callback, survey);
