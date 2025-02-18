@@ -44,8 +44,8 @@ Polling SDK provides an easy way to integrate polling functionality into your An
    ---
    #### 2.1 RequestIdentification
    Define a request identification by providing a:
-   * **Customer ID:** this is what you use in your application to identify your user
-   * **API Key:** found in Polling dashboard in Embeds
+   * **Customer ID:** you should assign an unique value in which you use in your application to identify your users.
+   * **API Key:** : Provided by an Embed you can create through the dashboard. Embeds allow you to embed Polling somewhere and in this case, you will be embedding Polling to Unity. You can find this info into the specific Embed > Integrations.
 
    Here's how it looks:
    ```Java
