@@ -1,8 +1,8 @@
-# Polling.com Java/Android SDK
+# Polling.com Android SDK
 
 ## Introduction
 
-Polling.com Java SDK is a Java/Native Android library for interacting with Polling.com services by using an AAR package.
+Polling.com Android SDK is a Java/Native Android library for interacting with Polling.com services by using an AAR package.
 
 This SDK allows you to send events, log sessions and purchases, display embedded survey pages or show a specific survey seamlessly within your Java application.
 
