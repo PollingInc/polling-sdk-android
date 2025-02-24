@@ -50,7 +50,7 @@ public class Polling
     private Handler surveyPollHandler;
     private Runnable surveyPollRunnable;
 
-    private int surveyPollRateMsec = 60_000;
+    private int surveyPollRateMsec = 3_600_000; //1 hour
     private int surveyClosePostponeMinutes  = 30;
 
     private boolean isSurveyCurrentlyVisible = false; //visible actually means "being displayed". Keeping name like in JS SDK.
@@ -147,6 +147,8 @@ public class Polling
                 {
                     removeTriggeredSurvey(surveyDetails.getUuid());
                 }
+
+                resetIntervalLogic(true);
             }
 
             @Override
@@ -172,6 +174,11 @@ public class Polling
 
         this.setupPostMessageBridge();
 
+        resetIntervalLogic(true);
+    }
+    //--------------------------------------------------------------------------------------------------
+    private void resetIntervalLogic(boolean runImmediately)
+    {
         if (surveyPollHandler != null) {
             surveyPollHandler.removeCallbacksAndMessages(null);
         }
@@ -185,9 +192,13 @@ public class Polling
             }
         };
 
+        if(runImmediately)
+        {
+            intervalLogic(); //runs intervalLogic immediately and then let it sets to next interval
+        }
         surveyPollHandler.post(surveyPollRunnable); // Schedules the first execution
-        intervalLogic(); // Executes immediately
     }
+
 
     //--------------------------------------------------------------------------------------------------
     private void setCustomerId(String customerId) {
@@ -209,7 +220,8 @@ public class Polling
     }
 
     //--------------------------------------------------------------------------------------------------
-    public void logPurchase(int integerCents) {
+    public void logPurchase(int integerCents)
+    {
         this.logEvent("Purchase", Integer.toString(integerCents));
     }
 
@@ -217,8 +229,8 @@ public class Polling
         this.logEvent("Session", null);
     }
 
-    public void logEvent(String eventName, String eventValue) {
-
+    public void logEvent(String eventName, String eventValue)
+    {
         Log.d("Polling", "logEvent called");
 
         new Thread(() ->
@@ -253,6 +265,9 @@ public class Polling
                 String body = "event=" + eventName + "&value=" + eventValue;
 
                 WebRequestHandler.makeRequest(this.eventApiUrl, WebRequestType.POST, body, apiCallbacks, contentType);
+
+                resetIntervalLogic(true);
+
 
                 Log.d("Polling", "Web request sent to: " + eventApiUrl);
 
