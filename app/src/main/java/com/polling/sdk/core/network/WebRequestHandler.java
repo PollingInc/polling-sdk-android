@@ -56,7 +56,10 @@ public class WebRequestHandler {
 
                     connection.connect();
 
-                    InputStream stream = connection.getResponseCode() < HttpURLConnection.HTTP_BAD_REQUEST ? connection.getInputStream() : connection.getErrorStream();
+                    int responseCode = connection.getResponseCode(); // Get HTTP response code
+
+
+                    InputStream stream = responseCode < HttpURLConnection.HTTP_BAD_REQUEST ? connection.getInputStream() : connection.getErrorStream();
                     reader = new BufferedReader(new InputStreamReader(stream));
 
                     StringBuilder response = new StringBuilder();
@@ -66,8 +69,15 @@ public class WebRequestHandler {
                         response.append(line).append('\n');
                     }
 
-                    if (callback != null) {
-                        callback.onResponse(response.toString());
+                    if (callback != null)
+                    {
+                        if (responseCode >= 400)
+                        {
+                            callback.onError("HTTP " + responseCode + ": " + response.toString());
+                        }
+                        else {
+                            callback.onResponse(response.toString());
+                        }
                     }
                 } catch (IOException e) {
                     if (callback != null) {
