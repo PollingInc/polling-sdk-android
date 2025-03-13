@@ -194,6 +194,7 @@ public class Polling
             surveyPollRunnable = new Runnable() {
                 @Override
                 public void run() {
+                    if (surveyPollHandler == null) return;
                     intervalLogic(); // Executes the logic
                     surveyPollHandler.postDelayed(this, surveyPollRateMsec); // Re-schedules itself
                 }
