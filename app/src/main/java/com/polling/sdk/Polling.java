@@ -179,29 +179,36 @@ public class Polling
     //--------------------------------------------------------------------------------------------------
     private void resetIntervalLogic(boolean runImmediately)
     {
-        if (surveyPollHandler == null)
+        try
         {
-            surveyPollHandler = new Handler(Looper.getMainLooper());
-        }
-
-        else
-        {
-            surveyPollHandler.removeCallbacksAndMessages(null);
-        }
-
-        surveyPollRunnable = new Runnable() {
-            @Override
-            public void run() {
-                intervalLogic(); // Executes the logic
-                surveyPollHandler.postDelayed(this, surveyPollRateMsec); // Re-schedules itself
+            if (surveyPollHandler == null)
+            {
+                surveyPollHandler = new Handler(Looper.getMainLooper());
             }
-        };
 
-        if(runImmediately)
-        {
-            intervalLogic(); //runs intervalLogic immediately and then let it sets to next interval
+            else
+            {
+                surveyPollHandler.removeCallbacksAndMessages(null);
+            }
+
+            surveyPollRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    intervalLogic(); // Executes the logic
+                    surveyPollHandler.postDelayed(this, surveyPollRateMsec); // Re-schedules itself
+                }
+            };
+
+            if(runImmediately)
+            {
+                intervalLogic(); //runs intervalLogic immediately and then let it sets to next interval
+            }
+            surveyPollHandler.post(surveyPollRunnable); // Schedules the first execution
         }
-        surveyPollHandler.post(surveyPollRunnable); // Schedules the first execution
+        catch (Exception e)
+        {
+            Log.e("Polling", "Failure on resetting interval logic.");
+        }
     }
 
 
