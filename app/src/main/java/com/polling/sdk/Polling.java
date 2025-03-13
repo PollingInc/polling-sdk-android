@@ -148,7 +148,7 @@ public class Polling
                     removeTriggeredSurvey(surveyDetails.getUuid());
                 }
 
-                resetIntervalLogic(true);
+                resetIntervalLogic(true); //seems to cause issue from here: Can't create handler inside thread
             }
 
             @Override
@@ -179,11 +179,16 @@ public class Polling
     //--------------------------------------------------------------------------------------------------
     private void resetIntervalLogic(boolean runImmediately)
     {
-        if (surveyPollHandler != null) {
+        if (surveyPollHandler == null)
+        {
+            surveyPollHandler = new Handler(Looper.getMainLooper());
+        }
+
+        else
+        {
             surveyPollHandler.removeCallbacksAndMessages(null);
         }
 
-        surveyPollHandler = new Handler();
         surveyPollRunnable = new Runnable() {
             @Override
             public void run() {
