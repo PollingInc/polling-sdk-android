@@ -2,6 +2,7 @@ package com.polling.sdk.core.dialogs.helpers;
 
 import android.content.DialogInterface;
 import android.app.Dialog;
+import android.os.Looper;
 import android.util.Log;
 
 import com.polling.sdk.Polling;
@@ -14,6 +15,8 @@ import com.polling.sdk.core.models.Survey;
 import com.polling.sdk.core.network.WebRequestHandler;
 import com.polling.sdk.core.network.WebRequestType;
 import com.polling.sdk.core.dialogs.WebViewBottom;
+import com.polling.sdk.core.utils.EmbedCompletionRetrier;
+import com.polling.sdk.core.utils.SingleCallback;
 import com.polling.sdk.utils.LocalStorage;
 
 import java.util.ArrayList;
@@ -120,7 +123,7 @@ public abstract class DialogHelper
                 }
 
                 if(!post) getRewardsPreDialog(surveysDetails, survey);
-                else getRewardsPostDialog(surveysDetails, callback, survey);
+                else getRewardsPostDialog(surveysDetails, callback, survey, false);
             }
             @Override
             public void onError (String error)
@@ -137,7 +140,6 @@ public abstract class DialogHelper
 
         Log.i("Polling", "Pre-dialog available");
 
-
         for (var s : surveyDetails)
         {
             surveysUid.add(s.getUuid());
@@ -145,11 +147,33 @@ public abstract class DialogHelper
 
     }
 
-    private void getRewardsPostDialog(List<SurveyDetails> surveyDetails, CallbackHandler callbackHandler, Survey survey)
+    private void getRewardsPostDialog(List<SurveyDetails> surveyDetails, CallbackHandler callbackHandler, Survey survey, boolean hasPostCheck)
     {
         Log.w("Polling", "Entering post dialog");
 
-        if(surveyDetails == null) return;
+        if(surveyDetails == null)
+        {
+            if(survey.isEmbedView)
+            {
+                if(!hasPostCheck && !survey.attemptedRetryOnce)
+                {
+                    Log.w("Polling", "Using delayed check as complete list from server is still null");
+
+                    survey.attemptedRetryOnce = true;
+                    embedPostCheck(() -> prePostRewardCallback(true, callbackHandler, survey));
+                }
+            }
+
+        }
+        else
+        {
+            postDialog(surveyDetails, callbackHandler, survey, survey.attemptedRetryOnce);
+        }
+    }
+
+    private void postDialog(List<SurveyDetails> surveyDetails, CallbackHandler callbackHandler, Survey survey, boolean hasPostCheck)
+    {
+        boolean newSurveyCompleted = false;
 
         for (var s : surveyDetails)
         {
@@ -161,7 +185,8 @@ public abstract class DialogHelper
 
                 boolean foundCompleted = false;
                 for (SurveyDetails c : completedSurveys) {
-                    if (c.getUuid().equals(s.getUuid())) {
+                    if (c.getUuid().equals(s.getUuid()))
+                    {
                         foundCompleted = true;
                         break;
                     }
@@ -169,6 +194,7 @@ public abstract class DialogHelper
 
                 if (!foundCompleted)
                 {
+                    newSurveyCompleted = true;
                     completedSurveys.add(s);
                     Log.w("Polling", "Adding to completed: " + s.getUuid());
 
@@ -185,6 +211,17 @@ public abstract class DialogHelper
             }
         }
 
+        if(!newSurveyCompleted && survey.isEmbedView && !hasPostCheck)
+        {
+            Log.w("Polling", "Embed post check as complete list as no new survey was found as complete from server");
+            embedPostCheck(() -> postDialog(surveyDetails, callbackHandler, survey, true));
+        }
+    }
+
+    public void embedPostCheck(SingleCallback embedCompletionCallback)
+    {
+        var completionRetrier = new EmbedCompletionRetrier(embedCompletionCallback,2, 1000);
+        completionRetrier.start();
     }
 
     public void completeSurvey(Survey survey, SurveyDetails surveyDetails)

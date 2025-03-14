@@ -21,6 +21,7 @@ public class Survey
     public String surveyUuid;
 
     public boolean isEmbedView;
+    public boolean attemptedRetryOnce = false;
 
     public Survey(String url, RequestIdentification requestIdentification, CallbackHandler callbackHandler, String completionUrl, String surveyUuid)
     {
